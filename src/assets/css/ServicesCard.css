@@ -1,0 +1,113 @@
+.service-card {
+    border-radius: 8px;
+    padding: 2.5rem 2rem;
+    color: #ffffff;
+    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 460px;
+}
+
+.service-card:hover {
+    transform: translateY(-6px);
+    background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.service-title {
+    font-size: 2.25rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.service-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: auto;
+}
+
+.service-card:hover .service-description {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Button styles */
+.service-button {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 0px;
+    color: #1c2230;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin-top: auto;
+}
+
+.service-button:hover {
+    background: #ffffff;
+}
+
+.service-button svg {
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-button svg {
+    transform: translateX(4px);
+}
+
+/* Container for cards */
+.services-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.75rem;
+    padding: 0.375rem;
+}
+
+@media screen and (max-width: 768px) {
+    .service-card {
+        min-height: 420px;
+        padding: 2rem;
+    }
+
+    .service-title {
+        font-size: 2.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-description {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .service-card {
+        min-height: 380px;
+        padding: 1.75rem;
+    }
+
+    .service-title {
+        font-size: 2rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .services-container {
+        gap: 0.5rem;
+    }
+}

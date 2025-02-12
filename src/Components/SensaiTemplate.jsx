@@ -76,6 +76,9 @@ import testimonial5 from '../assets/images/resource/testimonial-5.png';
 import testimonial6 from '../assets/images/resource/testimonial-6.png';
 import testimonial7 from '../assets/images/resource/testimonial-7.png';
 import { Link } from 'react-router-dom';
+import ServicesCard from './ServicesCard';
+import ServicesComparison from './ServicesComparison'
+import { Shield, Wallet, Users } from 'lucide-react'; // Import icons
 
 const SensaiTemplate = () => {
   const [loading, setLoading] = useState(true);
@@ -93,6 +96,7 @@ const SensaiTemplate = () => {
 
     return () => clearTimeout(timer);
   }, []);
+  
 
   useEffect(() => {
     // Load external scripts after component mounts
@@ -129,6 +133,54 @@ const SensaiTemplate = () => {
       });
     };
   }, []);
+  const ServicesSection = () => {
+    const services = [
+      {
+       
+        title: "Granted Security",
+        description: "Enhanced protection for your digital assets with state-of-the-art security protocols and real-time monitoring systems."
+      },
+      {
+       
+        title: "Instant Payout",
+        description: "Seamless and immediate transaction processing with our advanced payment infrastructure and automated systems."
+      },
+      {
+       
+        title: "Expert Support Team",
+        description: "24/7 dedicated support from our experienced team of professionals to assist you with any queries or concerns."
+      }
+    ];
+  
+    return (
+      <section className="services-section" style={{
+        padding: '80px 0',
+        
+      }}>
+        <div className="auto-container">
+          <div className="sec-title mb_55 centred">
+            <span className="sub-title">Our Services</span>
+            <h2>What We Offer</h2>
+          </div>
+          <div className="row clearfix" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '30px'
+          }}>
+            {services.map((service, index) => (
+              <div key={index}>
+                <ServicesCard
+                  icon={service.icon}
+                  title={service.title}
+                  description={service.description}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  };
 
   return (
     <>
@@ -370,6 +422,9 @@ const SensaiTemplate = () => {
             </div>
           </div>
         </section>
+        
+        <ServicesSection />
+        <ServicesComparison />
         {/* Feature Style Three */}
         <section className="feature-style-three pb_120 centred">
           <div className="auto-container">
