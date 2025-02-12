@@ -46,6 +46,9 @@ import shape56 from '../assets/images/shape/shape-56.png';
 import shape57 from '../assets/images/shape/shape-57.png';
 import shape58 from '../assets/images/shape/shape-58.png';
 import shape59 from '../assets/images/shape/shape-59.png';
+import shape60 from '../assets/images/shape/shape-60.png';
+import shape61 from '../assets/images/shape/shape-61.png';
+import shape62 from '../assets/images/shape/shape-62.png';
 import shape63 from '../assets/images/shape/shape-63.png';
 import shape66 from '../assets/images/shape/shape-66.png';
 
@@ -686,7 +689,198 @@ const SensaiTemplate = () => {
             </div>
           </div>
         </section>
-
+    
+        <section class="pricing-style-four pt_150 pb_120 centred">
+            <div class="pattern-layer">
+                <div class="pattern-1" style={{ backgroundImage: `url(${shape60})` }}></div>
+                <div class="pattern-2" style={{ backgroundImage: `url(${shape61})` }}></div>
+                <div class="pattern-3 float-bob-y" style={{ backgroundImage: `url(${shape62})` }}></div>
+            </div>
+            <div class="auto-container">
+                <div class="sec-title mb_55">
+                    <span class="sub-title">Pricing Plans</span>
+                    <h2>Affordable Pricing</h2>
+                </div>
+                <div class="tabs-box">
+                    <div class="tab-btn-box p_relative mb_60">
+                        <ul class="tab-btns tab-buttons p_relative clearfix">
+                            <li class="tab-btn active-btn" data-tab="#tab-1">Monthly</li>
+                            <li class="tab-btn" data-tab="#tab-2">Yearly</li>
+                        </ul>
+                    </div>
+                    <div class="tabs-content">
+                        <div class="tab active-tab" id="tab-1">
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Personal Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$35<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two active-block">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Business Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$45<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-one">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Professional Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$55<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Team Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$65<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab" id="tab-2">
+                            <div class="row clearfix">
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Personal Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$135<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two active-block">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Business Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$145<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-one">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Professional Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$155<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                                    <div class="pricing-block-two">
+                                        <div class="pricing-table">
+                                            <div class="table-header mb_40">
+                                                <h3>Team Plan</h3>
+                                                <p>For bloggers, freelancers and businesses</p>
+                                                <h2>$165<span> /Month</span></h2>
+                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                                            </div>
+                                            <div class="table-content">
+                                                <ul class="feature-list clearfix">
+                                                    <li>Up to 10 Members</li>
+                                                    <li>Unlimited Usage</li>
+                                                    <li>Unlimited Drive Storage</li>
+                                                    <li>Concierge Help Center</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         {/* Testimonial Section */}
         <section className="testimonial-section centred pb_140">
           <div className="shape">
