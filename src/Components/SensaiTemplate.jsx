@@ -51,6 +51,7 @@ import shape61 from '../assets/images/shape/shape-61.png';
 import shape62 from '../assets/images/shape/shape-62.png';
 import shape63 from '../assets/images/shape/shape-63.png';
 import shape66 from '../assets/images/shape/shape-66.png';
+import xdiallogo from '../assets/images/xdiallogo.png';
 
 // Client logo imports
 import client29 from '../assets/images/clients/clients-29.png';
@@ -79,6 +80,10 @@ import { Link } from 'react-router-dom';
 import ServicesCard from './ServicesCard';
 import ServicesComparison from './ServicesComparison'
 import { Shield, Wallet, Users } from 'lucide-react'; // Import icons
+import AITopFeatures from './AITopFeatures';
+import AutoDialerService from './AutoDialerService';
+import MainIntro from './MainIntro';
+
 
 const SensaiTemplate = () => {
   const [loading, setLoading] = useState(true);
@@ -96,7 +101,7 @@ const SensaiTemplate = () => {
 
     return () => clearTimeout(timer);
   }, []);
-  
+
 
   useEffect(() => {
     // Load external scripts after component mounts
@@ -134,49 +139,16 @@ const SensaiTemplate = () => {
     };
   }, []);
   const ServicesSection = () => {
-    const services = [
-      {
-       
-        title: "Granted Security",
-        description: "Enhanced protection for your digital assets with state-of-the-art security protocols and real-time monitoring systems."
-      },
-      {
-       
-        title: "Instant Payout",
-        description: "Seamless and immediate transaction processing with our advanced payment infrastructure and automated systems."
-      },
-      {
-       
-        title: "Expert Support Team",
-        description: "24/7 dedicated support from our experienced team of professionals to assist you with any queries or concerns."
-      }
-    ];
-  
     return (
       <section className="services-section" style={{
         padding: '80px 0',
-        
       }}>
         <div className="auto-container">
           <div className="sec-title mb_55 centred">
             <span className="sub-title">Our Services</span>
             <h2>What We Offer</h2>
           </div>
-          <div className="row clearfix" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '30px'
-          }}>
-            {services.map((service, index) => (
-              <div key={index}>
-                <ServicesCard
-                  icon={service.icon}
-                  title={service.title}
-                  description={service.description}
-                />
-              </div>
-            ))}
-          </div>
+          <ServicesCard />
         </div>
       </section>
     );
@@ -200,7 +172,7 @@ const SensaiTemplate = () => {
         </Helmet>
       </HelmetProvider>
 
-      <div className="dark-home dark-color-2 ltr" style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}>
+      <div className="dark-home dark-color-2 ltr" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {/* Preloader */}
         {loading && (
           <div className="loader-wrap">
@@ -224,10 +196,7 @@ const SensaiTemplate = () => {
         )}
 
         {/* Page Direction */}
-        <div className="page_direction">
-          <div className="demo-rtl direction_switch"><button className="rtl">RTL</button></div>
-          <div className="demo-ltr direction_switch"><button className="ltr">LTR</button></div>
-        </div>
+
         {/* Search Popup */}
         <div id="search-popup" className="search-popup">
           <div className="popup-inner">
@@ -282,53 +251,53 @@ const SensaiTemplate = () => {
                           </ul>
                         </li>
                         <li><a href="about.html">About</a></li>
-                        <li class="dropdown"><a href="#">Pages</a>
-                                            <ul>
-                                                <li class="dropdown"><a href="#">Our Services</a>
-                                                    <ul>
-                                                        <li><a href="service.html">Services One</a></li>
-                                                        <li><a href="service-2.html">Services Two</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown"><a href="#">FAQ’s</a>
-                                                    <ul>
-                                                        <li><a href="faq.html">FAQ’s One</a></li>
-                                                        <li><a href="faq-2.html">FAQ’s Two</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown"><a href="#">Pricing</a>
-                                                    <ul>
-                                                        <li><a href="pricing.html">Pricing One</a></li>
-                                                        <li><a href="pricing-2.html">Pricing Two</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown"><a href="#">Testimonials</a>
-                                                    <ul>
-                                                        <li><a href="testimonial.html">Testimonials One</a></li>
-                                                        <li><a href="testimonial-2.html">Testimonials Two</a></li>
-                                                        <li><a href="testimonial-3.html">Testimonials Three</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown"><a href="#">Shop</a>
-                                                    <ul>
-                                                        <li><a href="shop.html">Our Shop</a></li>
-                                                        <li><a href="shop-details.html">Shop Details</a></li>
-                                                        <li><a href="cart.html">Cart</a></li>
-                                                        <li><a href="checkout.html">Checkout</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="team.html">Our Team</a></li>
-                                                <li><a href="error.html">404</a></li>
-                                            </ul>
-                                        </li> 
-                                        <li class="dropdown"><a href="#">News</a>
-                                            <ul>
-                                                <li><a href="blog.html">Blog Grid</a></li>
-                                                <li><a href="blog-2.html">Blog Standard</a></li>
-                                                <li><a href="blog-details.html">Blog Details</a></li>
-                                            </ul>
-                                        </li>  
-                                        <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
+                        <li class="dropdown"><a href="#">Services</a>
+                          <ul>
+                            <li class="dropdown"><a href="#">Our Services</a>
+                              <ul>
+                                <li><Link to="/ai-bot-voip">AI Bot & VoIP</Link></li>
+                                <li><Link to="/auto-dialer-service">Auto Dialer</Link></li>
+                              </ul>
+                            </li>
+                            <li class="dropdown"><a href="#">FAQ’s</a>
+                              <ul>
+                                <li><a href="faq.html">FAQ’s One</a></li>
+                                <li><a href="faq-2.html">FAQ’s Two</a></li>
+                              </ul>
+                            </li>
+                            <li class="dropdown"><a href="#">Pricing</a>
+                              <ul>
+                                <li><a href="pricing.html">Pricing One</a></li>
+                                <li><a href="pricing-2.html">Pricing Two</a></li>
+                              </ul>
+                            </li>
+                            <li class="dropdown"><a href="#">Testimonials</a>
+                              <ul>
+                                <li><a href="testimonial.html">Testimonials One</a></li>
+                                <li><a href="testimonial-2.html">Testimonials Two</a></li>
+                                <li><a href="testimonial-3.html">Testimonials Three</a></li>
+                              </ul>
+                            </li>
+                            <li class="dropdown"><a href="#">Shop</a>
+                              <ul>
+                                <li><a href="shop.html">Our Shop</a></li>
+                                <li><a href="shop-details.html">Shop Details</a></li>
+                                <li><a href="cart.html">Cart</a></li>
+                                <li><a href="checkout.html">Checkout</a></li>
+                              </ul>
+                            </li>
+                            <li><a href="team.html">Our Team</a></li>
+                            <li><a href="error.html">404</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown"><a href="#">News</a>
+                          <ul>
+                            <li><a href="blog.html">Blog Grid</a></li>
+                            <li><a href="blog-2.html">Blog Standard</a></li>
+                            <li><a href="blog-details.html">Blog Details</a></li>
+                          </ul>
+                        </li>
+                        <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
                       </ul>
                     </div>
                   </nav>
@@ -343,22 +312,22 @@ const SensaiTemplate = () => {
 
           {/* Sticky Header */}
           <div className="sticky-header">
-          <div class="auto-container">
-                    <div class="outer-box">
-                        <div class="logo-box">
-                            <figure class="logo"><a href="index.html"><img src={logo3} alt="" /></a></figure>
-                        </div>
-                        <div class="menu-area">
-                            <nav class="main-menu clearfix">
-                      
-                            </nav>
-                        </div>
-                        <div class="menu-right-content">
-                            <div class="search-box-outer search-toggler mr_30"><i class="icon-1"></i></div>
-                            <div class="btn-box"><a href="index.html" class="theme-btn btn-one">Account</a></div>
-                        </div>
-                    </div>
+            <div class="auto-container">
+              <div class="outer-box">
+                <div class="logo-box">
+                  <figure class="logo"><a href="index.html"><img src={logo3} alt="" /></a></figure>
                 </div>
+                <div class="menu-area">
+                  <nav class="main-menu clearfix">
+
+                  </nav>
+                </div>
+                <div class="menu-right-content">
+                  <div class="search-box-outer search-toggler mr_30"><i class="icon-1"></i></div>
+                  <div class="btn-box"><a href="index.html" class="theme-btn btn-one">Account</a></div>
+                </div>
+              </div>
+            </div>
           </div>
         </header>
         {/* Mobile Menu */}
@@ -388,28 +357,28 @@ const SensaiTemplate = () => {
           </nav>
         </div>
         {/* Banner Style Seven */}
-        <section className="banner-style-seven centred" style={{minHeight: 'calc(100vh - 120px)'}}>
-      <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}></div>
-      <div className="auto-container">
-        <div className="inner-box">
-          <div className="content-box mb_110">
-            <h2>The new Decade of <br />
-            <Typewriter
-                  words={['AI Technology', 'AI Technology', 'AI Technology']}
-                  loop={true}
-                  cursor
-                  cursorStyle='|'
-                  typeSpeed={70}
-                  deleteSpeed={50}
-                  delaySpeed={3000}
-                />
-            </h2>
-            <p>Innovative AI solutions</p>
-            <a href="index-7.html" className="theme-btn btn-one">Try Sensai For Free</a>
+        <section className="banner-style-seven centred" style={{ minHeight: 'calc(100vh - 120px)' }}>
+          <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}></div>
+          <div className="auto-container">
+            <div className="inner-box">
+              <div className="content-box mb_110">
+                <h2>The new Decade of <br />
+                  <Typewriter
+                    words={['AI Technology', 'AI Technology', 'AI Technology']}
+                    loop={true}
+                    cursor
+                    cursorStyle='|'
+                    typeSpeed={70}
+                    deleteSpeed={50}
+                    delaySpeed={3000}
+                  />
+                </h2>
+                <p>Innovative AI solutions</p>
+                <a href="index-7.html" className="theme-btn btn-one">Try Sensai For Free</a>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
         {/* Clients Section */}
         <section className="clients-section home-7 pt_150 pb_150">
           <div className="auto-container">
@@ -422,50 +391,13 @@ const SensaiTemplate = () => {
             </div>
           </div>
         </section>
-        
+        {/* Feature Style Three */}
+        <MainIntro />
+        <AITopFeatures />
         <ServicesSection />
         <ServicesComparison />
-        {/* Feature Style Three */}
-        <section className="feature-style-three pb_120 centred">
-          <div className="auto-container">
-            <div className="sec-title mb_55">
-              <span className="sub-title">WHy Choose us</span>
-              <h2>AI Top Features</h2>
-            </div>
-            <div className="inner-container">
-              <div className="shape" style={{ backgroundImage: `url(${shape55})` }}></div>
-              <div className="row clearfix">
-                <div className="col-lg-4 col-md-6 col-sm-12 feature-block">
-                  <div className="feature-block-two">
-                    <div className="inner-box">
-                      <div className="icon-box"><i className="icon-16"></i></div>
-                      <h3><a href="index-5.html">AI Autocomplete</a></h3>
-                      <p>You can use Xdial free online ai video creator to make a video from scratch You can upload your video</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-6 col-sm-12 feature-block">
-                  <div className="feature-block-two">
-                    <div className="inner-box">
-                      <div className="icon-box"><i className="icon-17"></i></div>
-                      <h3><a href="index-5.html">In-text Citations</a></h3>
-                      <p>You can use Xdial free online ai video creator to make a video from scratch You can upload your video</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-4 col-md-6 col-sm-12 feature-block">
-                  <div className="feature-block-two">
-                    <div className="inner-box">
-                      <div className="icon-box"><i className="icon-18"></i></div>
-                      <h3><a href="index-5.html">Paraphrase Rewrite</a></h3>
-                      <p>You can use   free online ai video creator to make a video from scratch You can upload your video</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+
+
 
         {/* Integrations Style Five */}
         <section className="integrations-style-five">
@@ -744,197 +676,197 @@ const SensaiTemplate = () => {
             </div>
           </div>
         </section>
-    
+
         <section class="pricing-style-four pt_150 pb_120 centred">
-            <div class="pattern-layer">
-                <div class="pattern-1" style={{ backgroundImage: `url(${shape60})` }}></div>
-                <div class="pattern-2" style={{ backgroundImage: `url(${shape61})` }}></div>
-                <div class="pattern-3 float-bob-y" style={{ backgroundImage: `url(${shape62})` }}></div>
+          <div class="pattern-layer">
+            <div class="pattern-1" style={{ backgroundImage: `url(${shape60})` }}></div>
+            <div class="pattern-2" style={{ backgroundImage: `url(${shape61})` }}></div>
+            <div class="pattern-3 float-bob-y" style={{ backgroundImage: `url(${shape62})` }}></div>
+          </div>
+          <div class="auto-container">
+            <div class="sec-title mb_55">
+              <span class="sub-title">Pricing Plans</span>
+              <h2>Affordable Pricing</h2>
             </div>
-            <div class="auto-container">
-                <div class="sec-title mb_55">
-                    <span class="sub-title">Pricing Plans</span>
-                    <h2>Affordable Pricing</h2>
-                </div>
-                <div class="tabs-box">
-                    <div class="tab-btn-box p_relative mb_60">
-                        <ul class="tab-btns tab-buttons p_relative clearfix">
-                            <li class="tab-btn active-btn" data-tab="#tab-1">Monthly</li>
-                            <li class="tab-btn" data-tab="#tab-2">Yearly</li>
-                        </ul>
-                    </div>
-                    <div class="tabs-content">
-                        <div class="tab active-tab" id="tab-1">
-                            <div class="row clearfix">
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Personal Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$35<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two active-block">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Business Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$45<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-one">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Professional Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$55<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Team Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$65<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="tabs-box">
+              <div class="tab-btn-box p_relative mb_60">
+                <ul class="tab-btns tab-buttons p_relative clearfix">
+                  <li class="tab-btn active-btn" data-tab="#tab-1">Monthly</li>
+                  <li class="tab-btn" data-tab="#tab-2">Yearly</li>
+                </ul>
+              </div>
+              <div class="tabs-content">
+                <div class="tab active-tab" id="tab-1">
+                  <div class="row clearfix">
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Personal Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$35<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
                         </div>
-                        <div class="tab" id="tab-2">
-                            <div class="row clearfix">
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Personal Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$135<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two active-block">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Business Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$145<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-one">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Professional Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$155<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
-                                    <div class="pricing-block-two">
-                                        <div class="pricing-table">
-                                            <div class="table-header mb_40">
-                                                <h3>Team Plan</h3>
-                                                <p>For bloggers, freelancers and businesses</p>
-                                                <h2>$165<span> /Month</span></h2>
-                                                <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
-                                            </div>
-                                            <div class="table-content">
-                                                <ul class="feature-list clearfix">
-                                                    <li>Up to 10 Members</li>
-                                                    <li>Unlimited Usage</li>
-                                                    <li>Unlimited Drive Storage</li>
-                                                    <li>Concierge Help Center</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                      </div>
                     </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two active-block">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Business Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$45<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-one">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Professional Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$55<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Team Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$65<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <div class="tab" id="tab-2">
+                  <div class="row clearfix">
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Personal Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$135<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two active-block">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Business Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$145<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-one">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Professional Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$155<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-12 pricing-block">
+                      <div class="pricing-block-two">
+                        <div class="pricing-table">
+                          <div class="table-header mb_40">
+                            <h3>Team Plan</h3>
+                            <p>For bloggers, freelancers and businesses</p>
+                            <h2>$165<span> /Month</span></h2>
+                            <a href="index-3.html" class="theme-btn btn-three">Buy The Plan</a>
+                          </div>
+                          <div class="table-content">
+                            <ul class="feature-list clearfix">
+                              <li>Up to 10 Members</li>
+                              <li>Unlimited Usage</li>
+                              <li>Unlimited Drive Storage</li>
+                              <li>Concierge Help Center</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </section>
         {/* Testimonial Section */}
         <section className="testimonial-section centred pb_140">
@@ -1004,7 +936,7 @@ const SensaiTemplate = () => {
               <div className="pattern-layer">
                 <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
                 <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
-                <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})`}}></div>
+                <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
                 <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
               </div>
               <div className="inner-box">

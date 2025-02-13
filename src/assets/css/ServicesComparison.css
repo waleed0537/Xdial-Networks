@@ -1,22 +1,25 @@
-/* ServicesComparison.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
-
+/* Updated ServicesComparison styles with equal column widths */
 .services-comparison-container {
-  padding: 4rem 2rem;
+  padding: 2rem 6rem;
   display: flex;
   justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 150px;
 }
 
 .services-comparison-table {
-  background: #13182B;
-  border-radius: 16px;
+
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   border-collapse: collapse;
+  table-layout: fixed; /* Force equal column widths */
+ 
 }
 
 .services-comparison-table thead {
@@ -24,41 +27,39 @@
 }
 
 .services-comparison-table th {
-  padding: 1.5rem;
+  padding: 10px;
+  width: 20%; /* Equal width for all columns (100% / 5 columns) */
+  padding: 1rem 0.5rem;
   text-align: center;
   color: white;
   font-weight: 500;
-  font-size: 1.1rem;
-  position: relative;
-}
-
-.services-comparison-table th:not(:first-child) {
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.services-comparison-table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.3s ease;
-}
-
-.services-comparison-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: normal; /* Allow text wrapping */
+  vertical-align: middle;
+  line-height: 1.2;
+  height: 60px; /* Fixed height for header */
+  word-wrap: break-word;
 }
 
 .services-comparison-table td {
-  padding: 1.5rem;
+  padding: 1rem 1rem;
   text-align: center;
-  font-size: 1rem;
-  font-weight: 300;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  width: 20%; /* Equal width for all columns */
 }
 
 .services-comparison-table td:first-child {
   text-align: left;
-  font-weight: 400;
-  color: #A9B3C8;
-  padding-left: 2rem;
+  padding-left: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
+/* Feature icon styling */
 .feature-cell {
   position: relative;
 }
@@ -67,78 +68,63 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
   background: rgba(0, 201, 167, 0.1);
   transition: transform 0.2s ease;
 }
 
 .feature-icon.feature-available {
   color: #00C9A7;
-  border: 1.5px solid rgba(0, 201, 167, 0.3);
+  border: 1px solid rgba(0, 201, 167, 0.3);
 }
 
 .feature-icon.feature-available svg {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
 }
 
-.feature-icon.feature-unavailable {
-  color: #FF4D4D;
-  background: rgba(255, 77, 77, 0.1);
-  border: 1.5px solid rgba(255, 77, 77, 0.3);
-}
-
-/* Column styling */
-.column-futures { 
-  width: 30%;
-  padding-left: 2rem !important;
-}
-
-.column-idv,
-.column-apps,
-.column-confidentiality,
-.column-gadget {
-  width: 17.5%;
+/* Hover effects */
+.services-comparison-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 /* Responsive design */
+@media (max-width: 1200px) {
+  .services-comparison-container {
+    padding: 2rem 4rem;
+  }
+}
+
 @media (max-width: 768px) {
   .services-comparison-container {
-    padding: 2rem 1rem;
+    padding: 1.5rem 2rem;
   }
   
-  .services-comparison-table {
-    border-radius: 12px;
-  }
-  
-  .services-comparison-table th {
-    padding: 1rem;
-    font-size: 1rem;
-  }
-  
+  .services-comparison-table th,
   .services-comparison-table td {
-    padding: 1rem;
-    font-size: 0.9rem;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.8rem;
   }
   
-  .feature-icon {
-    width: 24px;
-    height: 24px;
+  .services-comparison-table td:first-child {
+    padding-left: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .services-comparison-table td:first-child {
-    padding-left: 1rem;
+  .services-comparison-container {
+    padding: 1rem;
   }
   
-  .column-futures {
-    width: 40%;
+  .services-comparison-table th {
+    font-size: 0.75rem;
+    padding: 0.5rem;
   }
   
   .services-comparison-table td {
-    padding: 0.75rem;
+    font-size: 0.75rem;
+    padding: 0.5rem;
   }
 }

@@ -1,0 +1,84 @@
+
+/* MainIntro.css */
+.main-intro-section {
+  padding: 6rem 2rem;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 150px;
+}
+
+.main-intro-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('../assets/images/shape/shape-54.png') no-repeat;
+  background-size: cover;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.main-intro-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-intro-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-intro-text {
+  max-width: 900px;
+  text-align: center;
+}
+
+.main-intro-text h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.main-intro-text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-intro-section {
+    padding: 4rem 1.5rem;
+  }
+
+  .main-intro-text h2 {
+    font-size: 2rem;
+  }
+
+  .main-intro-text p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-intro-section {
+    padding: 3rem 1rem;
+  }
+
+  .main-intro-text h2 {
+    font-size: 1.75rem;
+  }
+
+  .main-intro-text p {
+    font-size: 0.9rem;
+  }
+}

@@ -306,51 +306,82 @@
 }
 
 
-/** feature-style-three **/
-
-.feature-style-three{
+.feature-style-three {
   position: relative;
 }
 
-.feature-style-three .inner-container{
+/* Keep auto-container padding for title section only */
+.feature-style-three .sec-title {
+  padding: 0 15px;
+}
+
+/* Remove padding for inner-container */
+.feature-style-three .auto-container .inner-container {
+  margin: 0 -15px; /* Compensate for auto-container padding */
+  width: calc(100% + 30px); /* Ensure full width */
   position: relative;
   display: block;
-  background: rgba(255, 255, 255, 0.60);
-  box-shadow: 0px 16px 60px 0px #0000000D;
-  border: 1px solid #fff;
+  background: rgba(13, 27, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   overflow: hidden;
+  padding: 0;
 }
 
-.feature-style-three .inner-container .shape{
+.feature-style-three .inner-container .shape {
   position: absolute;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
   background-position: center;
+  background-size: cover; /* Makes the background image cover the full container */
   z-index: -1;
   filter: blur(10px);
+  border-radius: 20px; /* Match the container's border radius */
+  overflow: hidden;
+}
+.feature-style-three .inner-container .shape:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(13, 27, 42, 0.3), rgba(13, 27, 42, 0.3));
+  border-radius: 20px;
+} 
+
+/* Row and column adjustments */
+.feature-style-three .row {
+  margin: 0;
+  width: 100%;
 }
 
-.feature-block-two .inner-box{
+.feature-block {
+  padding: 0;
+}
+
+.feature-block-two {
+  margin: 0;
+}
+
+.feature-block-two .inner-box {
   position: relative;
   display: block;
-  padding: 60px 40px;
-}
-
-.feature-block-two .inner-box:before{
-  position: absolute;
-  content: '';
-  background: #DEE4E9;
-  width: 1px;
+  padding: 40px 30px;
+  margin: 0;
   height: 100%;
-  top: 0px;
-  right: -15px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.feature-block-two .inner-box .icon-box{
+/* Rest of the CSS remains the same */
+.feature-block:last-child .feature-block-two .inner-box {
+  border-right: none;
+}
+
+.feature-block-two .inner-box .icon-box {
   position: relative;
   display: inline-block;
   width: 80px;
@@ -359,54 +390,56 @@
   font-size: 30px;
   color: #fff;
   text-align: center;
-  border-radius: 50px;
-  background: -webkit-linear-gradient(135deg, #FFDB96, #FF4B4B);
+  border-radius: 20px;
   margin-bottom: 30px;
 }
 
-.feature-block:nth-child(2) .feature-block-two .inner-box .icon-box{
-  background: -webkit-linear-gradient(135deg, #45D8FF, #005BEA);
+.feature-block:nth-child(1) .feature-block-two .inner-box .icon-box {
+  background: linear-gradient(135deg, #FFDB96, #FF4B4B);
 }
 
-.feature-block:nth-child(3) .feature-block-two .inner-box .icon-box{
-  background: -webkit-linear-gradient(135deg, #96DEDA, #2EB17A);
+.feature-block:nth-child(2) .feature-block-two .inner-box .icon-box {
+  background: linear-gradient(135deg, #45D8FF, #005BEA);
 }
 
-.feature-block-two .inner-box h3{
+.feature-block:nth-child(3) .feature-block-two .inner-box .icon-box {
+  background: linear-gradient(135deg, #96DEDA, #2EB17A);
+}
+
+.feature-block:nth-child(4) .feature-block-two .inner-box .icon-box {
+  background: linear-gradient(135deg, #FFDB96, #FF4B4B);
+}
+
+.feature-block-two .inner-box h3 {
   display: block;
   font-size: 24px;
   line-height: 30px;
   font-weight: 600;
   margin-bottom: 12px;
+  color: #ffffff;
 }
 
-.feature-block-two .inner-box h3 a{
+.feature-block-two .inner-box h3 a {
   display: inline-block;
-  color: var(--title-color);
+  color: #ffffff;
+  text-decoration: none;
 }
 
-.feature-block-two .inner-box h3 a:hover{
-  color: var(--theme-color);
+.feature-block-two .inner-box p {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
 }
 
-.feature-style-three .pattern-layer .pattern-1{
-  position: absolute;
-  left: -100px;
-  top: -500px;
-  width: 1045px;
-  height: 1424px;
-  background-repeat: no-repeat;
-  z-index: -1;
-}
-
-.feature-style-three .pattern-layer .pattern-2{
-  position: absolute;
-  right: 0px;
-  top: -400px;
-  width: 864px;
-  height: 1424px;
-  background-repeat: no-repeat;
-  z-index: -1;
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .feature-block-two .inner-box {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .feature-block:last-child .feature-block-two .inner-box {
+    border-bottom: none;
+  }
 }
 
 
