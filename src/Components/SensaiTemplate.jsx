@@ -51,7 +51,7 @@ import shape61 from '../assets/images/shape/shape-61.png';
 import shape62 from '../assets/images/shape/shape-62.png';
 import shape63 from '../assets/images/shape/shape-63.png';
 import shape66 from '../assets/images/shape/shape-66.png';
-import xdiallogo from '../assets/images/xdiallogo.png';
+
 
 // Client logo imports
 import client29 from '../assets/images/clients/clients-29.png';
