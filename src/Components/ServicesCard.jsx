@@ -1,12 +1,16 @@
 import React from 'react';
 import { Shield, Zap, Award, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import '../assets/css/ServicesCard.css';
 
 const ServicesCard = () => {
+  const navigate = useNavigate();
+
   const services = [
     {
       icon: Shield,
       title: "Lite",
+      path: "/services/lite",
       description: [
         "Essential Call Screening",
         "Moderate Latency (Standard response time)",
@@ -20,6 +24,7 @@ const ServicesCard = () => {
     {
       icon: Zap,
       title: "Plus",
+      path: "/services/plus",
       description: [
         "Advanced Call Handling",
         "Low Latency (Faster response time)",
@@ -33,6 +38,7 @@ const ServicesCard = () => {
     {
       icon: Award,
       title: "Ultra",
+      path: "/services/ultra",
       description: [
         "Premium Call Intelligence",
         "Low Latency (Faster response time)",
@@ -47,6 +53,7 @@ const ServicesCard = () => {
     {
       icon: Settings,
       title: "Custom",
+      path: "/services/custom",
       description: [
         "Personalized Features based on your needs",
         "Adjustable Latency to match your workflow",
@@ -60,62 +67,47 @@ const ServicesCard = () => {
   ];
 
   return (
-    <div className="services-container">
-      <style>
-        {`
-          .icon-wrapper {
-            margin-bottom: 1.5rem;
-          }
-          
-          .feature-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-          }
-          
-          .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-          }
-          
-          .feature-check {
-            display: inline-block;
-            min-width: 20px;
-          }
-        `}
-      </style>
-
-      {services.map((service, index) => {
-        const Icon = service.icon;
-        return (
-          <div key={index} className="service-card">
-            <div className="icon-wrapper">
-              <Icon size={40} color="#45ACAB" />
-            </div>
-            <h3 className="service-title">{service.title}</h3>
-            <div className="service-description">
-              <ul className="feature-list">
+    <div className="services-section">
+      <span className="subtitle">OUR SERVICES</span>
+      <h2 className="section-title">What We Offer</h2>
+      <div className="services-container">
+        {services.map((service, index) => {
+          const Icon = service.icon;
+          return (
+            <div 
+              key={index} 
+              className="service-card"
+              onClick={() => navigate(service.path)}
+              role="button"
+              tabIndex={0}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  navigate(service.path);
+                }
+              }}
+            >
+              <Icon className="service-icon" />
+              <h3 className="service-title">{service.title}</h3>
+              <div className="service-details">
                 {service.description.map((item, itemIndex) => (
-                  <li key={itemIndex} className="feature-item">
+                  <div key={itemIndex} className="detail-item">
                     {item.includes('🎯') ? (
-                      <span>{item}</span>
+                      <span className="target-item">{item}</span>
                     ) : (
                       <>
-                        <span className="feature-check">✅</span>
+                        <span className="check">✓</span>
                         <span>{item}</span>
                       </>
                     )}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };
 
-export default ServicesCard;  
+export default ServicesCard;

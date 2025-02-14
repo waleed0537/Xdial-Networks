@@ -31,7 +31,7 @@ const AIBotService = () => {
                 <button className="get-started-btn">Get started</button>
             </div>
             <div className="hero-image">
-                <img src="src\assets\images\AIBotImage.jpg" alt="AI Bot and VoIP Illustration" />
+                <img src="src\assets\images\check1.png" alt="AI Bot and VoIP Illustration" />
             </div>
         </div>
     </div>

@@ -50,7 +50,7 @@ const AutoDialerService = () => {
                 <button className="get-started-btn">Get Started</button>
               </div>
               <div className="hero-image">
-                <img src="src\assets\images\autodialer.jpg" alt="Auto Dialer Solution Illustration" />
+                <img src="src\assets\images\autodialernobg.png" alt="Auto Dialer Solution Illustration" />
               </div>
             </div>
           </div>

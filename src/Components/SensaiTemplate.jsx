@@ -22,7 +22,7 @@ import '../assets/css/module-css/testimonial.css';
 import '../assets/css/module-css/cta.css';
 import '../assets/css/responsive.css';
 // Logo imports
-import logo from '../assets/images/logo.png';
+import logo from '../assets/images/logo.png'
 import { Typewriter } from 'react-simple-typewriter';
 
 
@@ -143,8 +143,6 @@ const SensaiTemplate = () => {
       }}>
         <div className="auto-container">
           <div className="sec-title mb_55 centred">
-            <span className="sub-title">Our Services</span>
-            <h2>What We Offer</h2>
           </div>
           <ServicesCard />
         </div>
@@ -159,7 +157,7 @@ const SensaiTemplate = () => {
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-          <title>XDial Netowrk - Innovative AI solutions</title>
+          <title>Sensai - HTML 5 Template Preview</title>
 
           {/* Fav Icon */}
           <link rel="icon" href="../assets/images/favicon-3.ico" type="image/x-icon" />
@@ -172,26 +170,7 @@ const SensaiTemplate = () => {
 
       <div className="dark-home dark-color-2 ltr" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {/* Preloader */}
-        {loading && (
-          <div className="loader-wrap">
-            <div className="preloader">
-              <div className="preloader-close" onClick={handlePreloaderClose}>close</div>
-              <div id="handle-preloader" className="handle-preloader">
-                <div className="animation-preloader">
-                  <div className="spinner"></div>
-                  <div className="txt-loading">
-                    <span data-text-preloader="s" className="letters-loading">s</span>
-                    <span data-text-preloader="e" className="letters-loading">e</span>
-                    <span data-text-preloader="n" className="letters-loading">n</span>
-                    <span data-text-preloader="s" className="letters-loading">s</span>
-                    <span data-text-preloader="a" className="letters-loading">a</span>
-                    <span data-text-preloader="i" className="letters-loading">i</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+     
 
         {/* Page Direction */}
 
@@ -199,7 +178,7 @@ const SensaiTemplate = () => {
         <div id="search-popup" className="search-popup">
           <div className="popup-inner">
             <div className="upper-box clearfix">
-              <figure className="logo-box pull-left"><a href="index.html"><img src={logo} alt="" /></a></figure>
+              <figure className="logo-box pull-left"><a href="index.html"><img src="" alt="" /></a></figure>
               <div className="close-search pull-right"><span className="icon-44"></span></div>
             </div>
             <div className="overlay-layer"></div>
@@ -955,24 +934,14 @@ const SensaiTemplate = () => {
               <div className="row clearfix">
                 <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
                   <div className="footer-widget logo-widget">
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-  <figure style={{ margin: 0 }}>
-    <a href="index.html">
-      <img src={logo} alt="Logo" style={{ width: "150px", height: "150px" }} />
-    </a>
-  </figure>
-
-  <p style={{ marginTop: "10px", fontSize: "14px", color: "#fff", maxWidth: "300px" }}>
-    Combined with a handy platform and top-notch support from our in-house production team
-  </p>
-
-  <ul style={{ listStyle: "none", display: "flex", gap: "15px", marginTop: "10px", padding: 0 }}>
-    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-facebook"></i></a></li>
-    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-twitter"></i></a></li>
-    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-linkedin"></i></a></li>
-    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-dribbble"></i></a></li>
-  </ul>
-</div>
+                    <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
+                    <p>Combined with a handy platform and top-notch support from our in-house production team</p>
+                    <ul className="social-links clearfix">
+                      <li><a href="index.html"><i className="fa-brands fa-facebook"></i></a></li>
+                      <li><a href="index.html"><i className="fa-brands fa-twitter"></i></a></li>
+                      <li><a href="index.html"><i className="fa-brands fa-linkedin"></i></a></li>
+                      <li><a href="index.html"><i className="fa-brands fa-dribbble"></i></a></li>
+                    </ul>
                   </div>
                 </div>
                 <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
@@ -1031,7 +1000,7 @@ const SensaiTemplate = () => {
           <div className="footer-bottom centred">
             <div className="auto-container">
               <div className="copyright">
-                <p>Copyright &copy; 2023 <a href="index.html">XDial</a>, Inc. All Rights Reserved</p>
+                <p>Copyright &copy; 2023 <a href="index.html">Sensai</a>, Inc. All Rights Reserved</p>
               </div>
             </div>
           </div>
