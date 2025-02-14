@@ -22,9 +22,7 @@ import '../assets/css/module-css/testimonial.css';
 import '../assets/css/module-css/cta.css';
 import '../assets/css/responsive.css';
 // Logo imports
-import logo2 from '../assets/images/logo-2.png';
-import logo3 from '../assets/images/logo-3.png';
-import logo4 from '../assets/images/logo-4.png';
+import logo from '../assets/images/logo.png';
 import { Typewriter } from 'react-simple-typewriter';
 
 
@@ -161,7 +159,7 @@ const SensaiTemplate = () => {
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-          <title>Sensai - HTML 5 Template Preview</title>
+          <title>XDial Netowrk - Innovative AI solutions</title>
 
           {/* Fav Icon */}
           <link rel="icon" href="../assets/images/favicon-3.ico" type="image/x-icon" />
@@ -201,7 +199,7 @@ const SensaiTemplate = () => {
         <div id="search-popup" className="search-popup">
           <div className="popup-inner">
             <div className="upper-box clearfix">
-              <figure className="logo-box pull-left"><a href="index.html"><img src="" alt="" /></a></figure>
+              <figure className="logo-box pull-left"><a href="index.html"><img src={logo} alt="" /></a></figure>
               <div className="close-search pull-right"><span className="icon-44"></span></div>
             </div>
             <div className="overlay-layer"></div>
@@ -227,7 +225,7 @@ const SensaiTemplate = () => {
             <div className="auto-container">
               <div className="outer-box">
                 <div className="logo-box">
-                  <figure className="logo"><a href="index.html"><img src={logo4} alt="" /></a></figure>
+                  <figure className="logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
                 </div>
                 <div className="menu-area">
                   {/* Mobile Navigation Toggler */}
@@ -315,7 +313,7 @@ const SensaiTemplate = () => {
             <div class="auto-container">
               <div class="outer-box">
                 <div class="logo-box">
-                  <figure class="logo"><a href="index.html"><img src={logo3} alt="" /></a></figure>
+                  <figure class="logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
                 </div>
                 <div class="menu-area">
                   <nav class="main-menu clearfix">
@@ -335,7 +333,7 @@ const SensaiTemplate = () => {
           <div className="menu-backdrop"></div>
           <div className="close-btn"><i className="fas fa-times"></i></div>
           <nav className="menu-box">
-            <div className="nav-logo"><a href="index.html"><img src={logo2} alt="" title="" /></a></div>
+            <div className="nav-logo"><a href="index.html"><img src={logo} alt="" title="" /></a></div>
             <div className="menu-outer">{/*Here Menu Will Come Automatically Via Javascript / Same Menu as in Header*/}</div>
             <div className="contact-info">
               <h4>Contact Info</h4>
@@ -957,14 +955,24 @@ const SensaiTemplate = () => {
               <div className="row clearfix">
                 <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
                   <div className="footer-widget logo-widget">
-                    <figure className="footer-logo"><a href="index.html"><img src={logo2} alt="" /></a></figure>
-                    <p>Combined with a handy platform and top-notch support from our in-house production team</p>
-                    <ul className="social-links clearfix">
-                      <li><a href="index.html"><i className="fa-brands fa-facebook"></i></a></li>
-                      <li><a href="index.html"><i className="fa-brands fa-twitter"></i></a></li>
-                      <li><a href="index.html"><i className="fa-brands fa-linkedin"></i></a></li>
-                      <li><a href="index.html"><i className="fa-brands fa-dribbble"></i></a></li>
-                    </ul>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+  <figure style={{ margin: 0 }}>
+    <a href="index.html">
+      <img src={logo} alt="Logo" style={{ width: "150px", height: "150px" }} />
+    </a>
+  </figure>
+
+  <p style={{ marginTop: "10px", fontSize: "14px", color: "#fff", maxWidth: "300px" }}>
+    Combined with a handy platform and top-notch support from our in-house production team
+  </p>
+
+  <ul style={{ listStyle: "none", display: "flex", gap: "15px", marginTop: "10px", padding: 0 }}>
+    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-facebook"></i></a></li>
+    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-twitter"></i></a></li>
+    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-linkedin"></i></a></li>
+    <li><a href="index.html" style={{ fontSize: "18px", color: "#fff", textDecoration: "none" }}><i className="fa-brands fa-dribbble"></i></a></li>
+  </ul>
+</div>
                   </div>
                 </div>
                 <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
@@ -1023,7 +1031,7 @@ const SensaiTemplate = () => {
           <div className="footer-bottom centred">
             <div className="auto-container">
               <div className="copyright">
-                <p>Copyright &copy; 2023 <a href="index.html">Sensai</a>, Inc. All Rights Reserved</p>
+                <p>Copyright &copy; 2023 <a href="index.html">XDial</a>, Inc. All Rights Reserved</p>
               </div>
             </div>
           </div>

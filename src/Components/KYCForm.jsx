@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import '../assets/css/KYCForm.css';
-
+import shape54 from '../assets/images/shape/shape-54.png';
 const KYCForm = () => {
     const sigPad = useRef();
     const [formData, setFormData] = useState({
@@ -177,7 +177,17 @@ const KYCForm = () => {
     const targetCountryOptions = ['USA', 'Canada', 'United Kingdom', 'Australia'];
 
     return (
+        <>
         <div className="contact-form-container">
+                <div
+              className="pattern-layer"
+              style={{
+                backgroundImage: `url(${shape54})`,
+                backgroundSize: "2000px 2000px", // Set width and height manually
+                backgroundRepeat: "no-repeat", // Prevent repeating if needed
+                marginTop:"0px"
+              }}
+            >
             <div className="contact-form-wrapper">
                 <h2 className="form-title">KYC Information Form</h2>
 
@@ -499,7 +509,9 @@ const KYCForm = () => {
                     </form>
                 )}
             </div>
+            </div>
         </div>
+        </>
     );
 };
 

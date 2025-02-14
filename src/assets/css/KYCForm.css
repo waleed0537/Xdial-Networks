@@ -1,6 +1,6 @@
 /* Container Styles */
 .contact-form-container {
-    padding: 40px 0;
+
     background-color: #0C1E2C;  /* Dark background color */
     min-height: 100vh;
     color: #ffffff;
@@ -10,7 +10,6 @@
     max-width: 1000px;
     margin: 0 auto;
     padding: 40px;
-    background: #0d1b2a;  /* Slightly lighter dark background */
     border-radius: 10px;
 }
 

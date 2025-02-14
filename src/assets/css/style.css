@@ -785,7 +785,9 @@ img {
 }
 
 .main-header .logo-box{
-  padding: 26px 0px;
+  height: 150px;
+  width: 150px;
+  padding: 0px 0px;
 }
 
 .main-header .menu-right-content{

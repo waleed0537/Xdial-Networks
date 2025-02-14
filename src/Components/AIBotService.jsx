@@ -9,9 +9,11 @@ import {
   Brain, 
   Shield 
 } from 'lucide-react';
+import shape54 from '../assets/images/shape/shape-54.png';
 const AIBotService = () => {
   return (
     <div className="security-service-container">
+      <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}>
       {/* Hero Section */}
       <section className="hero-section">
     <div className="hero-content">
@@ -126,7 +128,7 @@ const AIBotService = () => {
     </div>
   </div>
 </section>
-
+</div>
       {/* FAQ Section */}
       <section className="faq-section">
         <h2>Frequently Asked Questions</h2>
@@ -158,6 +160,7 @@ const AIBotService = () => {
           <button className="cta-button">Schedule a Demo</button>
         </div>
       </section>
+      
     </div>
   );
 };
