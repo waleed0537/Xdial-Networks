@@ -1,5 +1,5 @@
 .security-service-container {
-  background: #0C1E2C;
+  background: #08061b; /* Match the dark background from home page */
   color: #ffffff;
   min-height: 100vh;
 }
@@ -161,7 +161,6 @@
 
 .description-icon:hover {
   transform: translateY(-5px);
-  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
 }
 
 .description-icon:hover svg {

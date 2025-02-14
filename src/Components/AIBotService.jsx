@@ -12,7 +12,8 @@ import {
 import shape54 from '../assets/images/shape/shape-54.png';
 const AIBotService = () => {
   return (
-    <div className="security-service-container">
+    <>
+        <div className="security-service-container">
       <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}>
       {/* Hero Section */}
       <section className="hero-section">
@@ -162,6 +163,8 @@ const AIBotService = () => {
       </section>
       
     </div>
+    </>
+
   );
 };
 
