@@ -99,7 +99,18 @@ const SensaiTemplate = () => {
 
     return () => clearTimeout(timer);
   }, []);
-
+  useEffect(() => {
+    const duplicateSliderContent = () => {
+      const lists = document.querySelectorAll('.list-item');
+      lists.forEach(list => {
+        const items = Array.from(list.children);
+        const itemsToAdd = items.map(item => item.cloneNode(true));
+        itemsToAdd.forEach(item => list.appendChild(item));
+      });
+    };
+  
+    duplicateSliderContent();
+  }, []);
 
   useEffect(() => {
     // Load external scripts after component mounts
