@@ -81,9 +81,66 @@ import { Shield, Wallet, Users } from 'lucide-react'; // Import icons
 import AITopFeatures from './AITopFeatures';
 import AutoDialerService from './AutoDialerService';
 import MainIntro from './MainIntro';
-
+import MobileNavigation from './MobileNavigation';
+import Preloader from './Preloader';
 
 const SensaiTemplate = () => {
+  const backgroundImages = [
+    // Banner and pattern layers
+    shape54, // Used in banner-style-seven pattern-layer
+    shape55, // Used in AITopFeatures
+    shape56, // Used in working-style-three pattern-layer-2
+    shape57, // Used in cta-style-two pattern-layer
+    shape58, // Used in integrations-style-five pattern-layer
+    shape59, // Used in cta-style-two pattern-layer-2
+    shape60, // Used in pricing section pattern-1
+    shape61, // Used in pricing section pattern-2
+    shape62, // Used in pricing section pattern-3
+    shape63, // Used in testimonial section shape-2
+    shape66, // Used in cta-section pattern-1
+  
+    // Working section shapes
+    shape13, // Used in working-block-two shape
+    shape36, // Used in working-style-three shape-1
+    shape37, // Used in working-style-three shape-2
+    shape38, // Used in working-style-three shape-3
+  
+    // Testimonial and CTA shapes
+    shape45, // Used in testimonial-section shape-3
+    shape24, // Used in cta-section pattern-2
+    shape25, // Used in cta-section pattern-3
+    shape26, // Used in cta-section pattern-4
+  
+    // Resource images
+    video2, // Used in video-inner background
+    dashboard8, // Used in feature-style-five
+  
+    // Client logos
+    client29,
+    client30,
+    client31,
+    client32,
+    client33,
+  
+    // Icon images
+    icon10,
+    icon11,
+    icon12,
+    icon13,
+    icon14,
+    icon15,
+    icon16,
+    icon17,
+  
+    // Testimonial images
+    testimonial5,
+    testimonial6,
+    testimonial7,
+  
+    // Logo
+    logo
+  ];
+  
   const [loading, setLoading] = useState(true);
 
   // Handle preloader close button click
@@ -108,7 +165,7 @@ const SensaiTemplate = () => {
         itemsToAdd.forEach(item => list.appendChild(item));
       });
     };
-  
+
     duplicateSliderContent();
   }, []);
 
@@ -129,6 +186,8 @@ const SensaiTemplate = () => {
       '../assets/js/text_plugins.js',
       '../assets/js/script.js'
     ];
+    // In SensaiTemplate.jsx
+
 
     scripts.forEach(src => {
       const script = document.createElement('script');
@@ -168,7 +227,7 @@ const SensaiTemplate = () => {
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-          <title>Sensai - HTML 5 Template Preview</title>
+          <title>XDial Networks</title>
 
           {/* Fav Icon */}
           <link rel="icon" href="../assets/images/favicon-3.ico" type="image/x-icon" />
@@ -178,10 +237,10 @@ const SensaiTemplate = () => {
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         </Helmet>
       </HelmetProvider>
-
+      <Preloader images={backgroundImages}>
       <div className="dark-home dark-color-2 ltr" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         {/* Preloader */}
-     
+
 
         {/* Page Direction */}
 
@@ -219,11 +278,8 @@ const SensaiTemplate = () => {
                 </div>
                 <div className="menu-area">
                   {/* Mobile Navigation Toggler */}
-                  <div className="mobile-nav-toggler">
-                    <i className="icon-bar"></i>
-                    <i className="icon-bar"></i>
-                    <i className="icon-bar"></i>
-                  </div>
+                  {/* Replace your existing mobile-nav-toggler div with this: */}
+                  <MobileNavigation logo={logo} />
                   <nav className="main-menu navbar-expand-md navbar-light clearfix">
                     <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
                       <ul className="navigation clearfix">
@@ -319,31 +375,7 @@ const SensaiTemplate = () => {
           </div>
         </header>
         {/* Mobile Menu */}
-        <div className="mobile-menu">
-          <div className="menu-backdrop"></div>
-          <div className="close-btn"><i className="fas fa-times"></i></div>
-          <nav className="menu-box">
-            <div className="nav-logo"><a href="index.html"><img src={logo} alt="" title="" /></a></div>
-            <div className="menu-outer">{/*Here Menu Will Come Automatically Via Javascript / Same Menu as in Header*/}</div>
-            <div className="contact-info">
-              <h4>Contact Info</h4>
-              <ul>
-                <li>Chicago 12, Melborne City, USA</li>
-                <li><a href="tel:+8801682648101">+88 01682648101</a></li>
-                <li><a href="mailto:info@example.com">info@example.com</a></li>
-              </ul>
-            </div>
-            <div className="social-links">
-              <ul className="clearfix">
-                <li><a href="index.html"><span className="fab fa-twitter"></span></a></li>
-                <li><a href="index.html"><span className="fab fa-facebook-square"></span></a></li>
-                <li><a href="index.html"><span className="fab fa-pinterest-p"></span></a></li>
-                <li><a href="index.html"><span className="fab fa-instagram"></span></a></li>
-                <li><a href="index.html"><span className="fab fa-youtube"></span></a></li>
-              </ul>
-            </div>
-          </nav>
-        </div>
+      
         {/* Banner Style Seven */}
         <section className="banner-style-seven centred" style={{ minHeight: 'calc(100vh - 120px)' }}>
           <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}></div>
@@ -362,7 +394,7 @@ const SensaiTemplate = () => {
                   />
                 </h2>
                 <p>Innovative AI solutions</p>
-                <a href="index-7.html" className="theme-btn btn-one">Try Sensai For Free</a>
+                <a href="index-7.html" className="theme-btn btn-one">Try XDial For Free</a>
               </div>
             </div>
           </div>
@@ -1011,7 +1043,7 @@ const SensaiTemplate = () => {
           <div className="footer-bottom centred">
             <div className="auto-container">
               <div className="copyright">
-                <p>Copyright &copy; 2023 <a href="index.html">Sensai</a>, Inc. All Rights Reserved</p>
+                <p>Copyright &copy; 2023 <a href="index.html">XDial</a>, Inc. All Rights Reserved</p>
               </div>
             </div>
           </div>
@@ -1030,6 +1062,7 @@ const SensaiTemplate = () => {
         </div>
 
       </div>
+      </Preloader>
     </>
   );
 };
