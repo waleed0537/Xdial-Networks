@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import '../assets/css/Preloader.css';
 const Preloader = ({ images, children }) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -60,28 +60,27 @@ const Preloader = ({ images, children }) => {
 
   return (
     <>
-      {loading && (
-        <div className="loader-wrap" style={{
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 9999,
-          overflow: 'hidden'
-        }}>
-          <div className="preloader" style={{ overflow: 'hidden' }}>
-            <div className="preloader-close" onClick={() => setLoading(false)}>close</div>
-            <div id="handle-preloader" className="handle-preloader">
-              <div className="animation-preloader">
-                <div className="spinner"></div>
-                <div className="txt-loading">
-                  <span data-text-preloader="x" className="letters-loading">x</span>
-                  <span data-text-preloader="d" className="letters-loading">d</span>
-                  <span data-text-preloader="i" className="letters-loading">i</span>
-                  <span data-text-preloader="a" className="letters-loading">a</span>
-                  <span data-text-preloader="l" className="letters-loading">l</span>
-                </div>
+       {loading && (
+        <div className="loader-wrap">
+          <div className="preloader">
+            <div className="preloader-close" onClick={() => setLoading(false)}>
+              <span>×</span>
+            </div>
+            <div className="animation-preloader">
+              <div className="spinner">
+                <div className="double-bounce1"></div>
+                <div className="double-bounce2"></div>
+              </div>
+              <div className="txt-loading">
+                {['x', 'd', 'i', 'a', 'l'].map((letter, index) => (
+                  <span 
+                    key={index}
+                    className="letters-loading"
+                    style={{ animationDelay: `${index * 0.15}s` }}
+                  >
+                    {letter}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
