@@ -16,58 +16,71 @@ const PlusService = () => {
           </nav>
 
           <section className="service-hero">
-            <h1>Plus Service Plan</h1>
-            <p>Advanced call center solution with enhanced performance</p>
+            <h1>Plus AI Agent</h1>
+            <p>Advanced Call Handling with Smarter Filtering and Real-Time Monitoring</p>
           </section>
 
           <section className="service-features" id="features">
-            <h2>Advanced Features</h2>
+            <h2>Key Features</h2>
             <div className="features-grid">
               <div className="feature-item">
+                <Wifi className="feature-icon" />
+                <h3>Soft Phone-Based</h3>
+                <p>Port-enabled solution ensuring enhanced call handling and seamless connectivity</p>
+              </div>
+              <div className="feature-item">
                 <Zap className="feature-icon" />
-                <h3>Low Latency Response</h3>
-                <p>Lightning-fast call handling with optimized response times</p>
+                <h3>Low Latency</h3>
+                <p>Quick response time for a smoother, more efficient call experience</p>
               </div>
               <div className="feature-item">
                 <Cpu className="feature-icon" />
-                <h3>Smart Filtering</h3>
-                <p>Advanced AI-powered call filtering system</p>
+                <h3>Smarter Filtering</h3>
+                <p>Enhanced speed and improved word detection with a broader range of filtering questions</p>
               </div>
               <div className="feature-item">
                 <HeadsetIcon className="feature-icon" />
                 <h3>Live Monitoring</h3>
-                <p>Real-time call monitoring and analytics</p>
+                <p>Real-time tracking and intervention to improve call quality</p>
               </div>
               <div className="feature-item">
                 <BarChart2 className="feature-icon" />
-                <h3>94% Accuracy</h3>
-                <p>Enhanced accuracy for better call handling</p>
+                <h3>Sentiment Analysis</h3>
+                <p>Detects tone and emotions in conversations with 95% accuracy</p>
               </div>
             </div>
           </section>
 
           <section className="service-benefits" id="benefits">
-            <h2>Plan Benefits</h2>
+            <h2>Business Benefits</h2>
             <div className="benefits-list">
               <div className="benefit-item">
-                <h3>Enhanced Performance</h3>
-                <p>Superior call handling capabilities with advanced features</p>
+                <h3>Enhanced Call Intelligence</h3>
+                <p>More intelligent call screening with improved accuracy and real-time insights</p>
               </div>
               <div className="benefit-item">
-                <h3>Real-time Analytics</h3>
-                <p>Comprehensive monitoring and reporting tools</p>
+                <h3>Outbound Operations Optimization</h3>
+                <p>Designed for high-performance outbound call centers with flexible inbound customization</p>
               </div>
               <div className="benefit-item">
-                <h3>Seamless Integration</h3>
-                <p>Easy integration with existing systems and workflows</p>
+                <h3>Superior Communication Experience</h3>
+                <p>Faster response times and advanced sentiment detection for more effective interactions</p>
               </div>
             </div>
           </section>
 
           <section className="service-cta">
-            <h2>Upgrade Your Call Center</h2>
-            <p>Experience enhanced performance with our Plus plan</p>
-            <button className="cta-button">Get Started</button>
+            <h2>Ready to Elevate Your Call Operations?</h2>
+            <p>Experience smarter, faster, and more efficient call handling</p>
+            <button className="cta-button">Contact Sales</button>
+          </section>
+
+          <section className="sample-recordings" style={{color:"white"}}>
+            <h3>Sample Call Recordings</h3>
+            <p>______________________________________________</p>
+            <button className="cta-button coming-soon" disabled>
+              Coming Soon
+            </button>
           </section>
         </div>
       </div>

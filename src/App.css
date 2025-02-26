@@ -1,0 +1,28 @@
+/* Add this to your main CSS file */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+  }
+  
+  .boxed_wrapper {
+    overflow: hidden !important;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Fix for sliding sections */
+  .integrations-style-five .outer-container {
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  /* For any animated or moving elements that might cause overflow */
+  .pattern-layer, 
+  .shape, 
+  .shape-1, 
+  .shape-2, 
+  .shape-3 {
+    overflow: hidden;
+  }

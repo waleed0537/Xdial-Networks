@@ -14,18 +14,18 @@ const FeaturesSection = () => {
           <div className="inner-container">
             <div className="shape" style={{ backgroundImage: `url(${shape55})` }}></div>
             <div className="row clearfix">
-              <div className="col-lg-3 col-md-6 col-sm-12 feature-block">
+              
+            <div className="col-lg-3 col-md-6 col-sm-12 feature-block">
                 <div className="feature-block-two">
                   <div className="inner-box">
                     <div className="icon-box">
-                      <Headphones size={24} className="icon-headset" />
+                      <Bot size={24} className="icon-bot" />
                     </div>
-                    <h3><a href="#">Cloud Telephony</a></h3>
-                    <p>Increase agents efficiency, more talk time less wait time with our automated dialer solution.</p>
+                    <h3><a href="#">AI Agent</a></h3>
+                    <p>Intelligent automated responses and support using advanced AI technology to enhance customer service efficiency.</p>
                   </div>
                 </div>
               </div>
-              
               <div className="col-lg-3 col-md-6 col-sm-12 feature-block">
                 <div className="feature-block-two">
                   <div className="inner-box">
@@ -50,14 +50,15 @@ const FeaturesSection = () => {
                 </div>
               </div>
               
+              
               <div className="col-lg-3 col-md-6 col-sm-12 feature-block">
                 <div className="feature-block-two">
                   <div className="inner-box">
                     <div className="icon-box">
-                      <Bot size={24} className="icon-bot" />
+                      <Headphones size={24} className="icon-headset" />
                     </div>
-                    <h3><a href="#">AI Bot</a></h3>
-                    <p>Intelligent automated responses and support using advanced AI technology to enhance customer service efficiency.</p>
+                    <h3><a href="#">Cloud Telephony</a></h3>
+                    <p>Increase agents efficiency, more talk time less wait time with our automated dialer solution.</p>
                   </div>
                 </div>
               </div>

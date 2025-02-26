@@ -1,229 +1,252 @@
 /* ServiceDetail.css */
 .service-detail-container {
-    background: #08061b;
-    color: #ffffff;
-    min-height: 100vh;
-    position: relative;
-  }
-  
-  .service-detail-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  
-  .nav-menu {
-    display: flex;
-    justify-content: center;
-    gap: 4rem;
-    padding: 2rem 0;
-  }
-  
-  .nav-menu a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-    font-weight: 500;
-  }
-  
-  .nav-menu a:hover {
-    color: #45ACAB;
-  }
-  
-  .service-hero {
-    text-align: center;
-    padding: 4rem 0;
-  }
-  
-  .service-hero h1 {
-    font-size: 3.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
-    -webkit-background-clip: text;
-    color: white;
-    -webkit-text-fill-color: transparent;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    position: relative;
-    font-family: var(--title-font);
-    font-weight: 600;
-    /* color: var(--title-color); */
-    margin: 0px;
-    transition: all 500msease;
+  background: #08061b;
+  color: #ffffff;
+  min-height: 100vh;
+  position: relative;
 }
 
+.pattern-layer {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  z-index: 1;
+}
 
-  .service-hero p {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-  }
-  
-  .service-features,
-  .service-benefits {
-    padding: 4rem 0;
-  }
-  
-  .service-features h2,
-  .service-benefits h2 {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
-    color: #ffffff;
-  }
-  
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-  }
-  
-  .feature-item {
-    color: white;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 2rem;
-    transition: transform 0.3s ease;
-  }
-  
-  .feature-item:hover {
-    transform: translateY(-5px);
-    background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
-  }
-  
-  .feature-icon {
-    width: 40px;
-    height: 40px;
-    color: #45ACAB;
-    margin-bottom: 1.5rem;
-  }
-  
-  .feature-item:hover .feature-icon {
-    color: #ffffff;
-  }
-  
-  .feature-item h3 {
-    color: white;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .feature-item p {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
-  }
-  
-  .benefits-list {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .benefit-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    transition: transform 0.3s ease;
-  }
-  
-  .benefit-item:hover {
-    transform: translateY(-5px);
-    background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
-  }
-  
-  .benefit-item h3 {
-    color: white;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .benefit-item p {
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.6;
-  }
-  
-  .service-cta {
-    text-align: center;
-    padding: 4rem 0;
-  }
-  
-  .service-cta h2 {
-    color: white;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .service-cta p {
-    font-size: 1.2rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 2rem;
-  }
-  
-  .cta-button {
-    background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
-    border: none;
-    padding: 1rem 2.5rem;
-    border-radius: 4px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
-  
-  .cta-button:hover {
-    transform: translateY(-2px);
-  }
-  
-  @media (max-width: 768px) {
-    .nav-menu {
+.service-detail-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.nav-menu {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  padding: 2rem 0;
+}
+
+.nav-menu a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-menu a:hover {
+  color: #45ACAB;
+}
+
+.service-hero {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.service-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+  -webkit-background-clip: text;
+  color: white;
+  -webkit-text-fill-color: transparent;
+}
+
+.service-hero p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.service-features,
+.service-benefits {
+  padding: 4rem 0;
+}
+
+.service-features h2,
+.service-benefits h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #ffffff;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-item {
+  color: white;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  color: #45ACAB;
+  margin: 0 auto 1.5rem;
+}
+
+.feature-item:hover .feature-icon {
+  color: #ffffff;
+}
+
+.feature-item h3 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-item p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.benefits-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.benefit-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.benefit-item:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+}
+
+.benefit-item h3 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.benefit-item p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+}
+
+.service-cta {
+  text-align: center;
+  padding: 4rem 0;
+  background: rgba(69, 172, 171, 0.1);
+}
+
+.service-cta h2 {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.service-cta p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+.cta-button {
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+  border: none;
+  margin-top: 1rem;
+  padding: 1rem 2.5rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+}
+
+.sample-recordings {
+  text-align: center;
+  padding: 2rem 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.coming-soon {
+  background: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.coming-soon:hover {
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
       gap: 2rem;
       flex-wrap: wrap;
       justify-content: center;
-    }
-  
-    .service-hero h1 {
-      font-size: 2.5rem;
-    }
-  
-    .service-hero p {
-      font-size: 1.1rem;
-    }
-  
-    .features-grid {
-      grid-template-columns: 1fr;
-    }
-  
-    .service-features h2,
-    .service-benefits h2,
-    .service-cta h2 {
-      font-size: 2rem;
-    }
   }
-  
-  @media (max-width: 480px) {
-    .service-detail-content {
+
+  .service-hero h1 {
+      font-size: 2.5rem;
+  }
+
+  .service-hero p {
+      font-size: 1.1rem;
+  }
+
+  .features-grid,
+  .benefits-list {
+      grid-template-columns: 1fr;
+  }
+
+  .service-features h2,
+  .service-benefits h2,
+  .service-cta h2 {
+      font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-detail-content {
       padding: 1rem;
-    }
-  
-    .nav-menu {
+  }
+
+  .nav-menu {
       gap: 1rem;
       padding: 1rem 0;
-    }
-  
-    .nav-menu a {
-      font-size: 1rem;
-    }
-  
-    .service-hero h1 {
-      font-size: 2rem;
-    }
-  
-    .feature-item,
-    .benefit-item {
-      padding: 1.5rem;
-    }
   }
+
+  .nav-menu a {
+      font-size: 1rem;
+  }
+
+  .service-hero h1 {
+      font-size: 2rem;
+  }
+
+  .feature-item,
+  .benefit-item {
+      padding: 1.5rem;
+  }
+}

@@ -7,6 +7,7 @@ import LiteService from './Components/ServiceDetailPages/LiteService';
 import PlusService from './Components/ServiceDetailPages/PlusService';
 import UltraService from './Components/ServiceDetailPages/UltraService';
 import CustomService from './Components/ServiceDetailPages/CustomService';
+import './App.css';
 
 function App() {
   return (

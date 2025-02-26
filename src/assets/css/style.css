@@ -185,7 +185,7 @@ textarea:focus{
 p{
   position: relative;
   font-family: var(--text-font);
-  color: var(--text-color);
+  /* color: var(--text-color); */
   font-weight: 400;
   margin: 0px;
   transition: all 500ms ease;
@@ -195,7 +195,7 @@ h1,h2,h3,h4,h5,h6{
   position:relative;
   font-family: var(--title-font);
   font-weight: 600;
-  color: var(--title-color);
+  /* color: var(--title-color); */
   margin: 0px;
   transition: all 500ms ease;
 }

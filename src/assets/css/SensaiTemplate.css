@@ -35,6 +35,27 @@
   .feature-style-three {
     padding: 4rem 0 !important;
   }
+  /* Add this to your CSS file or in a style tag */
+.main-header .logo-box {
+  padding: 15px 0;
+  display: flex;
+  align-items: center;
+  height: auto;
+}
+
+.main-header .outer-box {
+  align-items: center;
+}
+
+.sticky-header .logo-box {
+  padding: 10px 0;
+}
+
+/* Adjust the logo size if needed */
+.main-header .logo-box img {
+  max-height: 50px;
+  width: auto;
+}
   
   .feature-style-three .inner-container {
     max-width: 1140px;

@@ -238,7 +238,14 @@ const SensaiTemplate = () => {
         </Helmet>
       </HelmetProvider>
       <Preloader images={backgroundImages}>
-      <div className="dark-home dark-color-2 ltr" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="dark-home dark-color-2 ltr" style={{ 
+  minHeight: '100vh', 
+  display: 'flex', 
+  flexDirection: 'column', 
+  overflow: 'hidden',
+  width: '100%',
+  position: 'relative' 
+}}>
         {/* Preloader */}
 
 
@@ -274,7 +281,7 @@ const SensaiTemplate = () => {
             <div className="auto-container">
               <div className="outer-box">
                 <div className="logo-box">
-                  <figure className="logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
+                  <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"50px" }}/></a></figure>
                 </div>
                 <div className="menu-area">
                   {/* Mobile Navigation Toggler */}
@@ -297,7 +304,7 @@ const SensaiTemplate = () => {
                         <li><a href="about.html">About</a></li>
                         <li class="dropdown"><a href="#">Services</a>
                           <ul>
-                            <li class="dropdown"><a href="#">Our Services</a>
+                            <li class="dropdown"><a href="#">Out Bound</a>
                               <ul>
                                 <li><Link to="/ai-bot-voip">AI Bot & VoIP</Link></li>
                                 <li><Link to="/auto-dialer-service">Auto Dialer</Link></li>
@@ -400,7 +407,7 @@ const SensaiTemplate = () => {
           </div>
         </section>
         {/* Clients Section */}
-        <section className="clients-section home-7 pt_150 pb_150">
+        {/* <section className="clients-section home-7 pt_150 pb_150">
           <div className="auto-container">
             <div className="clients-logo-list">
               <figure className="clients-logo"><a href="index.html"><img src={client29} alt="" /></a></figure>
@@ -410,7 +417,7 @@ const SensaiTemplate = () => {
               <figure className="clients-logo"><a href="index.html"><img src={client33} alt="" /></a></figure>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* Feature Style Three */}
         <MainIntro />
         <AITopFeatures />
@@ -680,22 +687,22 @@ const SensaiTemplate = () => {
 
         {/* CTA Style Two */}
         <section className="cta-style-two centred">
-          <div className="pattern-layer-2" style={{ backgroundImage: `url(${shape59})` }}></div>
-          <div className="auto-container">
-            <div className="inner-container">
-              <div className="pattern-layer" style={{ backgroundImage: `url(${shape57})` }}></div>
-              <div className="sec-title light mb_25">
+    <div className="pattern-layer-2" style={{ backgroundImage: `url(${shape59})` }}></div>
+    <div className="auto-container">
+        <div className="inner-container">
+            <div className="pattern-layer" style={{ backgroundImage: `url(${shape57})` }}></div>
+            <div className="sec-title light mb_25">
                 <span className="sub-title-three">Get a Demo</span>
-                <h2>Turn conversations into <span>sales</span> <br />opportunities</h2>
-              </div>
-              <p>Convert word into an Sales in more second</p>
-              <div className="btn-box">
+                <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span>sales</span> <br />opportunities</h2>
+            </div>
+            <p style={{ position: 'relative', zIndex: 2, color: '#fff', margin: '15px 0' }}>Convert words into sales in mere seconds</p>
+            <div className="btn-box">
                 <a href="index-6.html" className="theme-btn btn-one mr_20">Schedule a Demo</a>
                 <a href="index-6.html" className="theme-btn btn-two">Try Pro Version</a>
-              </div>
             </div>
-          </div>
-        </section>
+        </div>
+    </div>
+</section>
 
         <section class="pricing-style-four pt_150 pb_120 centred">
           <div class="pattern-layer">
