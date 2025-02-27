@@ -388,8 +388,9 @@ const SensaiTemplate = () => {
           
           {/* Rest of your components */}
           <MainIntro />
-          <AITopFeatures />
+          
           <ServicesSection />
+          <AITopFeatures />
           <ServicesComparison />
 
 

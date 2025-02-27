@@ -292,25 +292,117 @@
 }
 
 /* Special handling for very small mobile screens */
-@media (max-width: 480px) {
+/* Mobile Scrolling Enhancements */
+@media (max-width: 768px) {
+  .improved-comparison-container {
+    padding: 1rem;
+  }
+
   .improved-comparison-table-wrapper {
+    /* Ensure full-width scrolling */
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
+    
+    /* Enhanced scrolling experience */
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    margin: 0 -0.75rem;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    overscroll-behavior-x: contain; /* Prevent bounce effect */
   }
-  
+
   .improved-comparison-table {
-    min-width: 450px; /* Ensure minimum width for smallest screens */
+    /* Ensure minimum width for scrolling */
+    min-width: 500px;
+    
+    /* Prevent table from shrinking */
+    table-layout: fixed;
   }
-  
-  /* Add visual indicator that the table is scrollable */
-  .improved-comparison-container:after {
-    content: '← Scroll →';
+
+  /* Add visual scroll indicators */
+  .improved-comparison-table-wrapper {
+    position: relative;
+  }
+
+  .improved-comparison-table-wrapper::before,
+  .improved-comparison-table-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .improved-comparison-table-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, transparent 100%);
+  }
+
+  .improved-comparison-table-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.1) 0%, transparent 100%);
+  }
+
+  /* Scroll hint */
+  .improved-comparison-container::after {
+    content: '← Scroll horizontally →';
     display: block;
     text-align: center;
     padding: 0.5rem;
     color: rgba(255, 255, 255, 0.5);
     font-size: 0.8rem;
     margin-top: 0.5rem;
+    font-style: italic;
   }
+}
+
+/* Very small screens additional tweaks */
+@media (max-width: 480px) {
+  .improved-comparison-table-wrapper {
+    margin: 0 -0.5rem;
+    width: calc(100% + 1rem);
+  }
+
+  .improved-comparison-table {
+    min-width: 450px;
+  }
+
+  /* Tighter spacing for small screens */
+  .improved-comparison-table th,
+  .improved-comparison-table td {
+    padding: 0.5rem;
+  }
+
+  .feature-header, 
+  .feature-name {
+    font-size: 0.8rem;
+    padding-left: 0.5rem;
+  }
+
+  .provider-name {
+    font-size: 0.9rem;
+  }
+
+  .provider-description {
+    font-size: 0.7rem;
+  }
+}
+
+/* Ensure horizontal scroll works on all browsers */
+.improved-comparison-table-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.improved-comparison-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.improved-comparison-table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.improved-comparison-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 3px;
 }
