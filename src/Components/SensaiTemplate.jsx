@@ -86,10 +86,26 @@ import MobileNavigation from './MobileNavigation';
 import Preloader from './Preloader';
 
 const SensaiTemplate = () => {
-  // Define all images to preload
+  // Define critical images to preload first - these are essential for initial view
+  const criticalImages = [
+    // Banner background (most important)
+    shape54,
+    // Logo
+    logo,
+    // Important background patterns
+    shape55, 
+    shape58,
+    // Hero section images
+    shape56
+  ];
+  
+  // Define all other images to preload
   const preloadImages = [
+    // Critical images first (for priority)
+    ...criticalImages,
+    
     // Banner and pattern layers
-    shape54, shape55, shape56, shape57, shape58, shape59, shape60, 
+    shape57, shape59, shape60, 
     shape61, shape62, shape63, shape66, 
     
     // Working section shapes
@@ -108,10 +124,7 @@ const SensaiTemplate = () => {
     icon10, icon11, icon12, icon13, icon14, icon15, icon16, icon17,
     
     // Testimonial images
-    testimonial5, testimonial6, testimonial7,
-    
-    // Logo
-    logo
+    testimonial5, testimonial6, testimonial7
   ];
 
   useEffect(() => {
@@ -345,7 +358,16 @@ const SensaiTemplate = () => {
           
           {/* Banner Style Seven */}
           <section className="banner-style-seven centred" style={{ minHeight: 'calc(100vh - 120px)' }}>
-            <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}></div>
+            <div 
+              className="pattern-layer" 
+              style={{ 
+                backgroundImage: `url(${shape54})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center center'
+              }}
+              // Add data attribute to help preloader identify background images
+              data-critical="true"
+            ></div>
             <div className="auto-container">
               <div className="inner-box">
                 <div className="content-box mb_110">
