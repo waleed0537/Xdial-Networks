@@ -1,13 +1,14 @@
 import '../../assets/css/ServiceDetails.css';
-
-
+import shape54 from '../../assets/images/shape/shape-54.png';
+import { Settings,Wrench, Users, Sliders } from 'lucide-react';
+import { Link } from 'react-router-dom';
 const CustomService = () => {
     return (
       <div className="service-detail-container">
         <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}>
           <div className="service-detail-content">
             <nav className="nav-menu">
-              <a href="/">Home</a>
+            <li><Link to="/" className="nav-link">Home</Link></li>
               <a href="#features">Features</a>
               <a href="#benefits">Benefits</a>
               <a href="#contact">Contact</a>
@@ -27,7 +28,7 @@ const CustomService = () => {
                   <p>Fully customizable settings and workflows</p>
                 </div>
                 <div className="feature-item">
-                  <Tool className="feature-icon" />
+                  <Wrench className="feature-icon" />
                   <h3>Custom Integration</h3>
                   <p>Seamless integration with your existing tools</p>
                 </div>
@@ -67,6 +68,13 @@ const CustomService = () => {
               <p>Let's create the perfect plan for your business</p>
               <button className="cta-button">Schedule Consultation</button>
             </section>
+            <section className="sample-recordings" style={{color:"white"}}>
+            <h3>Sample Call Recordings</h3>
+            <p>______________________________________________</p>
+            <button className="cta-button coming-soon" disabled>
+              Coming Soon
+            </button>
+          </section>
           </div>
         </div>
       </div>

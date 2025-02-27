@@ -23,11 +23,7 @@ const UltraService = () => {
           <section className="service-features" id="features">
             <h2>Key Features</h2>
             <div className="features-grid">
-              <div className="feature-item">
-                <Brain className="feature-icon" />
-                <h3>Enterprise-Grade AI</h3>
-                <p>Real-time AI decision-making to optimize call handling</p>
-              </div>
+            
               <div className="feature-item">
                 <Globe className="feature-icon" />
                 <h3>Ultra-Fast Response Time</h3>

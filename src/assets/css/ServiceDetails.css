@@ -37,7 +37,7 @@
 }
 
 .nav-menu a:hover {
-  color: #45ACAB;
+  color: #73C052;
 }
 
 .service-hero {
@@ -49,7 +49,7 @@
   font-size: 3.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+  background: linear-gradient(90deg, #6828FF, #56BEF5, #27DF8C);
   -webkit-background-clip: text;
   color: white;
   -webkit-text-fill-color: transparent;
@@ -152,7 +152,13 @@
 .service-cta {
   text-align: center;
   padding: 4rem 0;
-  background: rgba(69, 172, 171, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+  text-align: center
+  
 }
 
 .service-cta h2 {
@@ -186,7 +192,7 @@
 
 .sample-recordings {
   text-align: center;
-  padding: 2rem 0;
+  padding: 2.5rem 0;
   color: rgba(255, 255, 255, 0.7);
 }
 

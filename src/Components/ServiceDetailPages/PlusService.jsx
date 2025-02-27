@@ -23,11 +23,7 @@ const PlusService = () => {
           <section className="service-features" id="features">
             <h2>Key Features</h2>
             <div className="features-grid">
-              <div className="feature-item">
-                <Wifi className="feature-icon" />
-                <h3>Soft Phone-Based</h3>
-                <p>Port-enabled solution ensuring enhanced call handling and seamless connectivity</p>
-              </div>
+              
               <div className="feature-item">
                 <Zap className="feature-icon" />
                 <h3>Low Latency</h3>

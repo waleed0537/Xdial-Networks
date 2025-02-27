@@ -23,11 +23,7 @@ const LiteAIAgent = () => {
           <section className="service-features" id="features">
             <h2>Key Features</h2>
             <div className="features-grid">
-              <div className="feature-item">
-                <Camera className="feature-icon" />
-                <h3>WebRTC-Based</h3>
-                <p>Seamless and efficient web-based call handling technology</p>
-              </div>
+              
               <div className="feature-item">
                 <Shield className="feature-icon" />
                 <h3>Essential Call Screening</h3>
@@ -48,11 +44,7 @@ const LiteAIAgent = () => {
                 <h3>Recorded Call Playback</h3>
                 <p>Enable comprehensive call monitoring and performance analysis</p>
               </div>
-              <div className="feature-item">
-                <BarChart2 className="feature-icon" />
-                <h3>Portal Reporting</h3>
-                <p>Gain insights into call activity and refine strategic approaches</p>
-              </div>
+          
             </div>
           </section>
 

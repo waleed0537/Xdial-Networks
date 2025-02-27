@@ -281,7 +281,7 @@ const SensaiTemplate = () => {
             <div className="auto-container">
               <div className="outer-box">
                 <div className="logo-box">
-                  <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"50px" }}/></a></figure>
+                  <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"22px" }}/></a></figure>
                 </div>
                 <div className="menu-area">
                   {/* Mobile Navigation Toggler */}
@@ -290,15 +290,15 @@ const SensaiTemplate = () => {
                   <nav className="main-menu navbar-expand-md navbar-light clearfix">
                     <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
                       <ul className="navigation clearfix">
-                        <li className="current dropdown"><a href="index-7.html">Home</a>
+                        <li className="current dropdown"><a href="/">Home</a>
                           <ul>
-                            <li><a href="index.html">Image Generate</a></li>
-                            <li><a href="index-2.html">Image Generator Dark</a></li>
-                            <li><a href="index-3.html">AI Writer</a></li>
-                            <li><a href="index-4.html">AI Audio</a></li>
-                            <li><a href="index-5.html">AI Video</a></li>
-                            <li><a href="index-6.html">AI Chatbot</a></li>
-                            <li><a href="index-7.html">AI SAAS</a></li>
+                            <li><a href="/">Image Generate</a></li>
+                            <li><a href="/">Image Generator Dark</a></li>
+                            <li><a href="/">AI Writer</a></li>
+                            <li><a href="/">AI Audio</a></li>
+                            <li><a href="/">AI Video</a></li>
+                            <li><a href="/">AI Chatbot</a></li>
+                            <li><a href="/">AI SAAS</a></li>
                           </ul>
                         </li>
                         <li><a href="about.html">About</a></li>
@@ -984,7 +984,7 @@ const SensaiTemplate = () => {
               <div className="row clearfix">
                 <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
                   <div className="footer-widget logo-widget">
-                    <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
+                    <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" style={{paddingTop:"0px" ,height:"100px"}} /></a></figure>
                     <p>Combined with a handy platform and top-notch support from our in-house production team</p>
                     <ul className="social-links clearfix">
                       <li><a href="index.html"><i className="fa-brands fa-facebook"></i></a></li>
