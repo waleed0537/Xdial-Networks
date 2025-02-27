@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { Link } from 'react-router-dom';
 const MobileNavigation = ({ logo }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdowns, setActiveDropdowns] = useState(new Set());
@@ -33,7 +33,7 @@ const MobileNavigation = ({ logo }) => {
   const handleDropdownClick = (e, dropdownId) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     setActiveDropdowns(prev => {
       const newSet = new Set(prev);
       if (newSet.has(dropdownId)) {
@@ -78,23 +78,27 @@ const MobileNavigation = ({ logo }) => {
                   Home
                 </a>
                 <ul style={{ display: activeDropdowns.has('home') ? 'block' : 'none' }}>
-                  <li><a href="/image-generate" onClick={(e) => handleNavClick(e, '/image-generate')}>Image Generate</a></li>
-                  <li><a href="/ai-writer" onClick={(e) => handleNavClick(e, '/ai-writer')}>AI Writer</a></li>
-                  <li><a href="/ai-audio" onClick={(e) => handleNavClick(e, '/ai-audio')}>AI Audio</a></li>
-                  <li><a href="/ai-video" onClick={(e) => handleNavClick(e, '/ai-video')}>AI Video</a></li>
-                  <li><a href="/ai-chatbot" onClick={(e) => handleNavClick(e, '/ai-chatbot')}>AI Chatbot</a></li>
                 </ul>
               </li>
               <li>
-                <a href="/about" onClick={(e) => handleNavClick(e, '/about')}>About</a>
+                <a href="/about" onClick={(e) => handleNavClick(e, '/')}>About</a>
               </li>
               <li className="dropdown">
                 <a href="#" onClick={(e) => handleDropdownClick(e, 'services')}>
                   Services
                 </a>
                 <ul style={{ display: activeDropdowns.has('services') ? 'block' : 'none' }}>
-                  <li><a href="/ai-bot-voip" onClick={(e) => handleNavClick(e, '/ai-bot-voip')}>AI Bot & VoIP</a></li>
-                  <li><a href="/auto-dialer-service" onClick={(e) => handleNavClick(e, '/auto-dialer-service')}>Auto Dialer</a></li>
+                  <li className="dropdown">
+                    <a href="#" onClick={(e) => handleDropdownClick(e, 'aiAgents')}>AI Agents</a>
+                    <ul style={{ display: activeDropdowns.has('aiAgents') ? 'block' : 'none' }}>
+                      <li><Link to="/services/lite" onClick={(e) => handleNavClick(e, '/services/lite')}>Lite</Link></li>
+                      <li><Link to="/services/plus" onClick={(e) => handleNavClick(e, '/services/plus')}>Plus</Link></li>
+                      <li><Link to="/services/ultra" onClick={(e) => handleNavClick(e, '/services/ultra')}>Ultra</Link></li>
+                      <li><Link to="/services/custom" onClick={(e) => handleNavClick(e, '/services/custom')}>Custom</Link></li>
+                    </ul>
+                  </li>
+                  <li><a href="#" onClick={(e) => handleNavClick(e, '/services/auto-dialer')}>Auto Dialer</a></li>
+                  <li><a href="#" onClick={(e) => handleNavClick(e, '/services/voip')}>VoIP</a></li>
                 </ul>
               </li>
               <li>

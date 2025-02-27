@@ -93,36 +93,36 @@ const SensaiTemplate = () => {
     // Logo
     logo,
     // Important background patterns
-    shape55, 
+    shape55,
     shape58,
     // Hero section images
     shape56
   ];
-  
+
   // Define all other images to preload
   const preloadImages = [
     // Critical images first (for priority)
     ...criticalImages,
-    
+
     // Banner and pattern layers
-    shape57, shape59, shape60, 
-    shape61, shape62, shape63, shape66, 
-    
+    shape57, shape59, shape60,
+    shape61, shape62, shape63, shape66,
+
     // Working section shapes
-    shape13, shape36, shape37, shape38, 
-    
+    shape13, shape36, shape37, shape38,
+
     // Testimonial and CTA shapes
-    shape45, shape24, shape25, shape26, 
-    
+    shape45, shape24, shape25, shape26,
+
     // Resource images
     video2, dashboard8,
-    
+
     // Client logos
     client29, client30, client31, client32, client33,
-    
+
     // Icon images
     icon10, icon11, icon12, icon13, icon14, icon15, icon16, icon17,
-    
+
     // Testimonial images
     testimonial5, testimonial6, testimonial7
   ];
@@ -189,7 +189,7 @@ const SensaiTemplate = () => {
         padding: '0px 0',
       }}>
         <div className="auto-container">
-          
+
           <ServicesCard />
         </div>
       </section>
@@ -213,16 +213,16 @@ const SensaiTemplate = () => {
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         </Helmet>
       </HelmetProvider>
-      
+
       {/* Use the improved preloader with all images to preload */}
       <Preloader images={preloadImages}>
-        <div className="dark-home dark-color-2 ltr" style={{ 
-          minHeight: '100vh', 
-          display: 'flex', 
-          flexDirection: 'column', 
+        <div className="dark-home dark-color-2 ltr" style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
           overflow: 'hidden',
           width: '100%',
-          position: 'relative' 
+          position: 'relative'
         }}>
           {/* Search Popup */}
           <div id="search-popup" className="search-popup">
@@ -251,57 +251,67 @@ const SensaiTemplate = () => {
           <header className="main-header header-style-seven">
             {/* Header Lower */}
             <div className="header-lower">
-              <div className="auto-container">
-                <div className="outer-box">
-                  <div className="logo-box">
-                    <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"24px" }}/></a></figure>
-                  </div>
-                  <div className="menu-area">
-                    {/* Mobile Navigation Toggler */}
-                    <MobileNavigation logo={logo} />
-                    <nav className="main-menu navbar-expand-md navbar-light clearfix">
-                      <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
-                        <ul className="navigation clearfix">
-                          <li className="current dropdown"><a href="/">Home</a>
-                            
-                          </li>
-                          <li><a href="about.html">About</a></li>
-                          <li className="dropdown"><a href="#">Services</a>
-                            <ul>
-                              <li className="dropdown"><a href="#">AI Agents</a>
-                                <ul>
-                                  <li><Link to="/services/lite">Lite</Link></li>
-                                  <li><Link to="/services/plus">Plus</Link></li>
-                                  <li><Link to="/services/ultra">Ultra</Link></li>
-                                  <li><Link to="/services/custom">Custom</Link></li>
-                                </ul>
-                              </li>
-                            </ul>
-                          </li>
-                          <li className="dropdown"><a href="#">News</a>
-                            <ul>
-                             
-                            </ul>
-                          </li>
-                          <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
-                        </ul>
-                      </div>
-                    </nav>
-                  </div>
-                  <div className="menu-right-content">
-                    <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
-                    <div className="btn-box"><a href="index.html" className="theme-btn btn-one">Account</a></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+  <div className="auto-container">
+    <div className="outer-box">
+      <div className="logo-box">
+        <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop: "24px" }} /></a></figure>
+      </div>
+      <div className="menu-area">
+        {/* Mobile Navigation Toggler */}
+        <MobileNavigation logo={logo} />
+        <nav className="main-menu navbar-expand-md navbar-light clearfix">
+          <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
+            <ul className="navigation clearfix">
+              <li className="current dropdown"><a href="/">Home</a>
+
+              </li>
+              <li><a href="/">About</a></li>
+              <li className="dropdown" style={{ position: "relative" }}><a href="#">Services</a>
+                <ul style={{ marginTop: "0", padding: "8px 0" }}>
+                  <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">AI Agents</a>
+                    <ul style={{
+                      position: "absolute",
+                      left: "100%",
+                      top: "0",
+                      marginTop: "0",
+                      marginLeft: "10px", /* Added spacing between parent menu and submenu */
+                      padding: "8px 0",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" /* Optional: adds a subtle shadow to better distinguish the menu */
+                    }}>
+                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/lite" style={{ padding: "6px 40px" }}>Lite</Link></li>
+                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/plus" style={{ padding: "6px 40px" }}>Plus</Link></li>
+                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/ultra" style={{ padding: "6px 40px" }}>Ultra</Link></li>
+                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/custom" style={{ padding: "6px 40px" }}>Custom</Link></li>
+                    </ul>
+                  </li>
+                  <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">Auto Dialer</a></li>
+                  <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">VoIP</a></li>
+                  
+                </ul>
+              </li>
+              <li className="dropdown" style={{ position: "relative" }}><a href="#">News</a>
+                <ul style={{ marginTop: "0", padding: "8px 0" }}>
+                </ul>
+              </li>
+              <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div className="menu-right-content">
+        <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
+        <div className="btn-box"><a href="/" className="theme-btn btn-one">Account</a></div>
+      </div>
+    </div>
+  </div>
+</div>
 
             {/* Sticky Header */}
             <div className="sticky-header">
               <div className="auto-container">
                 <div className="outer-box">
                   <div className="logo-box">
-                    <figure className="logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
+                    <figure className="logo"><a href="/"><img src={logo} alt="" /></a></figure>
                   </div>
                   <div className="menu-area">
                     <nav className="main-menu clearfix">
@@ -309,18 +319,18 @@ const SensaiTemplate = () => {
                   </div>
                   <div className="menu-right-content">
                     <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
-                    <div className="btn-box"><a href="index.html" className="theme-btn btn-one">Account</a></div>
+                    <div className="btn-box"><a href="/" className="theme-btn btn-one">Account</a></div>
                   </div>
                 </div>
               </div>
             </div>
           </header>
-          
+
           {/* Banner Style Seven */}
           <section className="banner-style-seven centred" style={{ minHeight: 'calc(100vh - 120px)' }}>
-            <div 
-              className="pattern-layer" 
-              style={{ 
+            <div
+              className="pattern-layer"
+              style={{
                 backgroundImage: `url(${shape54})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center center'
@@ -348,17 +358,17 @@ const SensaiTemplate = () => {
               </div>
             </div>
           </section>
-          
+
           {/* Rest of your components */}
           <MainIntro />
-          
+
           <ServicesSection />
           <AITopFeatures />
           <ServicesComparison />
 
 
-        {/* Integrations Style Five */}
-        {/* <section className="integrations-style-five">
+          {/* Integrations Style Five */}
+          {/* <section className="integrations-style-five">
           <div className="pattern-layer" style={{ backgroundImage: `url(${shape58})` }}></div>
           <div className="outer-container">
             <ul className="list-item mb_25">
@@ -512,8 +522,8 @@ const SensaiTemplate = () => {
           </div>
         </section> */}
 
-        {/* Working Style Three */}
-        {/* <section className="working-style-three centred pb_120">
+          {/* Working Style Three */}
+          {/* <section className="working-style-three centred pb_120">
           <div className="pattern-layer-2" style={{ backgroundImage: `url(${shape56})` }}></div>
           <div className="auto-container">
             <div className="sec-title mb_55">
@@ -566,76 +576,76 @@ const SensaiTemplate = () => {
           </div>
         </section> */}
 
-        {/* Feature Style Five */}
-        <section className="feature-style-five">
-          <div className="auto-container">
-            <div className="inner-container pt_150 pb_150">
-              <div className="row align-items-center">
-                <div className="col-lg-6 col-md-12 col-sm-12 content-column">
-                  <div className="content_block_seven">
-                    <div className="content-box mr_60">
-                      <div className="sec-title mb_35">
-                        <span className="sub-title">Top Feature</span>
-                        <h2>Empowering companies stand the customer</h2>
-                      </div>
-                      <div className="inner-box">
-                        <div className="row clearfix">
-                          <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                            <div className="single-item mb_40">
-                              <div className="icon-box"><i className="icon-25"></i></div>
-                              <h3>Manage Content</h3>
-                              <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
+          {/* Feature Style Five */}
+          <section className="feature-style-five">
+            <div className="auto-container">
+              <div className="inner-container pt_150 pb_150">
+                <div className="row align-items-center">
+                  <div className="col-lg-6 col-md-12 col-sm-12 content-column">
+                    <div className="content_block_seven">
+                      <div className="content-box mr_60">
+                        <div className="sec-title mb_35">
+                          <span className="sub-title">Top Feature</span>
+                          <h2>Empowering companies stand the customer</h2>
+                        </div>
+                        <div className="inner-box">
+                          <div className="row clearfix">
+                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                              <div className="single-item mb_40">
+                                <div className="icon-box"><i className="icon-25"></i></div>
+                                <h3>Manage Content</h3>
+                                <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
+                              </div>
                             </div>
-                          </div>
-                          <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                            <div className="single-item">
-                              <div className="icon-box"><i className="icon-27"></i></div>
-                              <h3>Coach Reps</h3>
-                              <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
+                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                              <div className="single-item">
+                                <div className="icon-box"><i className="icon-27"></i></div>
+                                <h3>Coach Reps</h3>
+                                <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
+                              </div>
                             </div>
-                          </div>
-                          <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                            <div className="single-item">
-                              <div className="icon-box"><i className="icon-28"></i></div>
-                              <h3>Connect Users</h3>
-                              <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
+                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                              <div className="single-item">
+                                <div className="icon-box"><i className="icon-28"></i></div>
+                                <h3>Connect Users</h3>
+                                <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-lg-6 col-md-12 col-sm-12 image-column">
-                  <div className="image-box ml_40">
-                    <figure className="image"><img src={dashboard8} alt="" /></figure>
+                  <div className="col-lg-6 col-md-12 col-sm-12 image-column">
+                    <div className="image-box ml_40">
+                      <figure className="image"><img src={dashboard8} alt="" /></figure>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* CTA Style Two */}
-        <section className="cta-style-two centred">
-    <div className="pattern-layer-2" style={{ backgroundImage: `url(${shape59})` }}></div>
-    <div className="auto-container">
-        <div className="inner-container">
-            <div className="pattern-layer" style={{ backgroundImage: `url(${shape57})` }}></div>
-            <div className="sec-title light mb_25">
-                <span className="sub-title-three">Get a Demo</span>
-                <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span>sales</span> <br />opportunities</h2>
+          {/* CTA Style Two */}
+          <section className="cta-style-two centred">
+            <div className="pattern-layer-2" style={{ backgroundImage: `url(${shape59})` }}></div>
+            <div className="auto-container">
+              <div className="inner-container">
+                <div className="pattern-layer" style={{ backgroundImage: `url(${shape57})` }}></div>
+                <div className="sec-title light mb_25">
+                  <span className="sub-title-three">Get a Demo</span>
+                  <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span>sales</span> <br />opportunities</h2>
+                </div>
+                <p style={{ position: 'relative', zIndex: 2, color: '#fff', margin: '15px 0' }}>Convert words into sales in mere seconds</p>
+                <div className="btn-box">
+                  <a href="index-6.html" className="theme-btn btn-one mr_20">Schedule a Demo</a>
+                  <a href="index-6.html" className="theme-btn btn-two">Try Pro Version</a>
+                </div>
+              </div>
             </div>
-            <p style={{ position: 'relative', zIndex: 2, color: '#fff', margin: '15px 0' }}>Convert words into sales in mere seconds</p>
-            <div className="btn-box">
-                <a href="index-6.html" className="theme-btn btn-one mr_20">Schedule a Demo</a>
-                <a href="index-6.html" className="theme-btn btn-two">Try Pro Version</a>
-            </div>
-        </div>
-    </div>
-</section>
+          </section>
 
-        {/* <section class="pricing-style-four pt_150 pb_120 centred">
+          {/* <section class="pricing-style-four pt_150 pb_120 centred">
           <div class="pattern-layer">
             <div class="pattern-1" style={{ backgroundImage: `url(${shape60})` }}></div>
             <div class="pattern-2" style={{ backgroundImage: `url(${shape61})` }}></div>
@@ -826,180 +836,180 @@ const SensaiTemplate = () => {
             </div>
           </div>
         </section> */}
-        {/* Testimonial Section */}
-        <section className="testimonial-section centred pb_140">
-          <div className="shape">
-            <div className="shape-3" style={{ backgroundImage: `url(${shape45})`,marginTop:"70px" }}></div>
-            <div className="shape-2" style={{ backgroundImage: `url(${shape63})` }}></div>
-          </div>
-          <div className="auto-container">
-            <div className="sec-title mb_55">
-              <span className="sub-title">Testimonials</span>
-              <h2>Love from Users</h2>
+          {/* Testimonial Section */}
+          <section className="testimonial-section centred pb_140">
+            <div className="shape">
+              <div className="shape-3" style={{ backgroundImage: `url(${shape45})`, marginTop: "70px" }}></div>
+              <div className="shape-2" style={{ backgroundImage: `url(${shape63})` }}></div>
             </div>
-            <div className="three-item-carousel owl-carousel owl-theme owl-nav-none dots-style-one">
-              <div className="testimonial-block-one">
-                <div className="inner-box">
-                  <figure className="thumb-box"><img src={testimonial5} alt="" /></figure>
-                  <h4>Atalia Helena</h4>
-                  <span className="designation">UI Designer</span>
-                  <ul className="rating">
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                  </ul>
-                  <p>"Fames gravid nulam lectus vivera placert utricies. Lorem ipsum dolor sit amet more vel turpis penabus. Fusce eleifend loremo suscipit teach or moeto"</p>
-                </div>
+            <div className="auto-container">
+              <div className="sec-title mb_55">
+                <span className="sub-title">Testimonials</span>
+                <h2>Love from Users</h2>
               </div>
-              <div className="testimonial-block-one">
-                <div className="inner-box">
-                  <figure className="thumb-box"><img src={testimonial6} alt="" /></figure>
-                  <h4>William Brandon</h4>
-                  <span className="designation">App Developer</span>
-                  <ul className="rating">
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                  </ul>
-                  <p>"Fames gravid nulam lectus vivera placert utricies. Lorem ipsum dolor sit amet more vel turpis penabus. Fusce eleifend loremo suscipit teach or moeto"</p>
-                </div>
-              </div>
-              <div className="testimonial-block-one">
-                <div className="inner-box">
-                  <figure className="thumb-box"><img src={testimonial7} alt="" /></figure>
-                  <h4>Daniel Macron</h4>
-                  <span className="designation">App Developer</span>
-                  <ul className="rating">
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                    <li><i className="icon-19"></i></li>
-                  </ul>
-                  <p>"Fames gravid nulam lectus vivera placert utricies. Lorem ipsum dolor sit amet more vel turpis penabus. Fusce eleifend loremo suscipit teach or moeto"</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="cta-section">
-          <div className="auto-container">
-            <div className="inner-container">
-              <div className="pattern-layer">
-                <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
-                <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
-                <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
-                <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
-              </div>
-              <div className="inner-box">
-                <h2>The #1 rated AI Audio software <br />on the planet</h2>
-                <div className="btn-box">
-                  <a href="index-4.html" className="theme-btn btn-two mr_20">Generate Now</a>
-                  <a href="contact.html" className="theme-btn btn-one">Need Support</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Main Footer */}
-        <footer className="main-footer">
-          <div className="auto-container">
-            <div className="widget-section">
-              <div className="row clearfix">
-                <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
-                  <div className="footer-widget logo-widget">
-                    <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" style={{paddingTop:"0px" ,height:"100px"}} /></a></figure>
-                    <p>Combined with a handy platform and top-notch support from our in-house production team</p>
-                    <ul className="social-links clearfix">
-                      <li><a href="index.html"><i className="fa-brands fa-facebook"></i></a></li>
-                      <li><a href="index.html"><i className="fa-brands fa-twitter"></i></a></li>
-                      <li><a href="index.html"><i className="fa-brands fa-linkedin"></i></a></li>
-                      <li><a href="index.html"><i className="fa-brands fa-dribbble"></i></a></li>
+              <div className="three-item-carousel owl-carousel owl-theme owl-nav-none dots-style-one">
+                <div className="testimonial-block-one">
+                  <div className="inner-box">
+                    <figure className="thumb-box"><img src={testimonial5} alt="" /></figure>
+                    <h4>Atalia Helena</h4>
+                    <span className="designation">UI Designer</span>
+                    <ul className="rating">
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
                     </ul>
+                    <p>"Fames gravid nulam lectus vivera placert utricies. Lorem ipsum dolor sit amet more vel turpis penabus. Fusce eleifend loremo suscipit teach or moeto"</p>
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
-                  <div className="footer-widget links-widget ml_60">
-                    <div className="widget-title">
-                      <h3>Resources</h3>
-                    </div>
-                    <div className="widget-content">
-                      <ul className="links-list clearfix">
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="shop.html">Affiliates</a></li>
-                        <li><a href="contact.html">Help</a></li>
-                      </ul>
-                    </div>
+                <div className="testimonial-block-one">
+                  <div className="inner-box">
+                    <figure className="thumb-box"><img src={testimonial6} alt="" /></figure>
+                    <h4>William Brandon</h4>
+                    <span className="designation">App Developer</span>
+                    <ul className="rating">
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                    </ul>
+                    <p>"Fames gravid nulam lectus vivera placert utricies. Lorem ipsum dolor sit amet more vel turpis penabus. Fusce eleifend loremo suscipit teach or moeto"</p>
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
-                  <div className="footer-widget links-widget">
-                    <div className="widget-title">
-                      <h3>Primary Pages</h3>
-                    </div>
-                    <div className="widget-content">
-                      <ul className="links-list clearfix">
-                        <li><a href="index.html">Privacy</a></li>
-                        <li><a href="index.html">Press</a></li>
-                        <li><a href="index.html">Terms & Conditions</a></li>
-                        <li><a href="index.html">Refund Policy</a></li>
-                        <li><a href="index.html">Sitemap</a></li>
-                      </ul>
-                    </div>
+                <div className="testimonial-block-one">
+                  <div className="inner-box">
+                    <figure className="thumb-box"><img src={testimonial7} alt="" /></figure>
+                    <h4>Daniel Macron</h4>
+                    <span className="designation">App Developer</span>
+                    <ul className="rating">
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                      <li><i className="icon-19"></i></li>
+                    </ul>
+                    <p>"Fames gravid nulam lectus vivera placert utricies. Lorem ipsum dolor sit amet more vel turpis penabus. Fusce eleifend loremo suscipit teach or moeto"</p>
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
-                  <div className="footer-widget subscribe-widget">
-                    <div className="widget-title">
-                      <h3>Subscribe Newsletter</h3>
-                    </div>
-                    <div className="widget-content">
+              </div>
+            </div>
+          </section>
+
+          {/* CTA Section */}
+          <section className="cta-section">
+            <div className="auto-container">
+              <div className="inner-container">
+                <div className="pattern-layer">
+                  <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
+                  <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
+                  <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
+                  <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
+                </div>
+                <div className="inner-box">
+                  <h2>The #1 rated AI Audio software <br />on the planet</h2>
+                  <div className="btn-box">
+                    <a href="index-4.html" className="theme-btn btn-two mr_20">Generate Now</a>
+                    <a href="contact.html" className="theme-btn btn-one">Need Support</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Main Footer */}
+          <footer className="main-footer">
+            <div className="auto-container">
+              <div className="widget-section">
+                <div className="row clearfix">
+                  <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
+                    <div className="footer-widget logo-widget">
+                      <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop: "0px", height: "100px" }} /></a></figure>
                       <p>Combined with a handy platform and top-notch support from our in-house production team</p>
-                      <div className="form-inner">
-                        <form method="post" action="contact.html">
-                          <div className="form-group">
-                            <input type="email" name="email" placeholder="Email Address" required />
-                            <button type="submit" className="theme-btn btn-one">Subscribe</button>
-                          </div>
-                        </form>
+                      <ul className="social-links clearfix">
+                        <li><a href="index.html"><i className="fa-brands fa-facebook"></i></a></li>
+                        <li><a href="index.html"><i className="fa-brands fa-twitter"></i></a></li>
+                        <li><a href="index.html"><i className="fa-brands fa-linkedin"></i></a></li>
+                        <li><a href="index.html"><i className="fa-brands fa-dribbble"></i></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
+                    <div className="footer-widget links-widget ml_60">
+                      <div className="widget-title">
+                        <h3>Resources</h3>
+                      </div>
+                      <div className="widget-content">
+                        <ul className="links-list clearfix">
+                          <li><a href="about.html">About</a></li>
+                          <li><a href="contact.html">Contact</a></li>
+                          <li><a href="blog.html">Blog</a></li>
+                          <li><a href="shop.html">Affiliates</a></li>
+                          <li><a href="contact.html">Help</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
+                    <div className="footer-widget links-widget">
+                      <div className="widget-title">
+                        <h3>Primary Pages</h3>
+                      </div>
+                      <div className="widget-content">
+                        <ul className="links-list clearfix">
+                          <li><a href="index.html">Privacy</a></li>
+                          <li><a href="index.html">Press</a></li>
+                          <li><a href="index.html">Terms & Conditions</a></li>
+                          <li><a href="index.html">Refund Policy</a></li>
+                          <li><a href="index.html">Sitemap</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
+                    <div className="footer-widget subscribe-widget">
+                      <div className="widget-title">
+                        <h3>Subscribe Newsletter</h3>
+                      </div>
+                      <div className="widget-content">
+                        <p>Combined with a handy platform and top-notch support from our in-house production team</p>
+                        <div className="form-inner">
+                          <form method="post" action="contact.html">
+                            <div className="form-group">
+                              <input type="email" name="email" placeholder="Email Address" required />
+                              <button type="submit" className="theme-btn btn-one">Subscribe</button>
+                            </div>
+                          </form>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="footer-bottom centred">
-            <div className="auto-container">
-              <div className="copyright">
-                <p>Copyright &copy; 2023 <a href="index.html">XDial</a>, Inc. All Rights Reserved</p>
+            <div className="footer-bottom centred">
+              <div className="auto-container">
+                <div className="copyright">
+                  <p>Copyright &copy; 2023 <a href="index.html">XDial</a>, Inc. All Rights Reserved</p>
+                </div>
               </div>
             </div>
-          </div>
-        </footer>
+          </footer>
 
-        {/* Scroll to top */}
-        <div className="scroll-to-top">
-          <div>
-            <div className="scroll-top-inner">
-              <div className="scroll-bar">
-                <div className="bar-inner"></div>
+          {/* Scroll to top */}
+          <div className="scroll-to-top">
+            <div>
+              <div className="scroll-top-inner">
+                <div className="scroll-bar">
+                  <div className="bar-inner"></div>
+                </div>
+                <div className="scroll-bar-text">Go To Top</div>
               </div>
-              <div className="scroll-bar-text">Go To Top</div>
             </div>
           </div>
+
         </div>
-
-      </div>
       </Preloader>
     </>
   );
