@@ -7,7 +7,7 @@ const FeaturesSection = () => {
       <section className="feature-style-three pb_120 centred">
         <div className="auto-container">
           <div className="sec-title mb_55">
-            <span className="sub-title">Our Solutions</span>
+          
             <h2>Comprehensive Call Center Solutions</h2>
             <p>We offer holistic solutions that you need to optimize your call center's performance and productivity.</p>
           </div>

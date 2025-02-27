@@ -5,50 +5,50 @@ import '../assets/css/ServicesComparison.css';
 const ServicesComparison = () => {
   // Features that will be compared
   const features = [
-    'Quick Deployment',
-    'Unified Platform',
-    'Privacy Protection',
-    'Premium Support',
-    'Call Analytics'
+    'AI Call Screening',
+    'Voicemail Detection',
+    'Real-Time Monitoring',
+    'Sentiment Analysis',
+    'Scalable Solution',
+    'Adaptive Learning'
   ];
 
-  // Service providers to compare
+  // Service tiers to compare
   const providers = [
     {
-      name: 'XDial Networks',
-      description: 'Complete VoIP & AI solution',
-      price: '$49/mo',
-      link: '#',
-      features: [true, true, true, true, true]
+      name: 'Lite AI Agent',
+      description: 'Essential call handling solution',
+      link: '#lite',
+      features: [true, true, false, false, false, false, true, false]
     },
     {
-      name: 'Civic',
-      description: 'Generic VoIP provider',
-      price: '$65/mo',
-      link: '#',
-      features: [true, true, false, true, true]
+      name: 'Plus AI Agent',
+      description: 'Advanced call operations',
+
+      link: '#plus',
+      features: [true, true, true, true, true, true, true, false]
     },
     {
-      name: 'Vilid.global',
-      description: 'Standard call center solution',
-      price: '$59/mo',
-      link: '#',
-      features: [false, true, true, true, false]
+      name: 'Ultra AI Agent',
+      description: 'Enterprise-grade AI solution',
+      
+      link: '#ultra',
+      features: [true, true, true, true, true, true, true, true]
     },
     {
-      name: 'Hypr',
-      description: 'Basic dialer solution',
-      price: '$29/mo',
-      link: '#',
-      features: [true, false, false, false, true]
+      name: 'Custom Plan',
+      description: 'Tailored business solution',
+
+      link: '#custom',
+      features: [true, true, true, true, true, true, true, true]
     }
   ];
 
   return (
     <div className="improved-comparison-container">
       <div className="improved-comparison-heading">
-        <h2>How We Compare</h2>
-        <p>See why leading call centers choose XDial Networks over competitors</p>
+        <h2>Our Service Tiers</h2>
+        <p>Choose the perfect AI call handling solution for your business needs</p>
       </div>
       
       <div className="improved-comparison-table-wrapper">
@@ -91,7 +91,7 @@ const ServicesComparison = () => {
               {providers.map((provider, index) => (
                 <td key={index}>
                   <a href={provider.link} className={`table-cta-button ${index === 0 ? 'primary' : 'secondary'}`}>
-                    {index === 0 ? 'Get Started' : 'Learn More'}
+                    {index === 3 ? 'Contact Sales' : 'Get Started'}
                   </a>
                 </td>
               ))}
@@ -103,4 +103,4 @@ const ServicesComparison = () => {
   );
 };
 
-export default ServicesComparison;
+export default ServicesComparison;  
