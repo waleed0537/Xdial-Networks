@@ -1,9 +1,10 @@
 /* ServicesCard.css */
 .services-section {
   color: #ffffff;
-  padding: 4rem 2rem;
+  padding: 1rem 2rem;
   text-align: center;
   font-family: 'Inter', sans-serif;
+  margin-bottom: 50px;
 }
 
 .services-subtitle {

@@ -186,7 +186,7 @@ const SensaiTemplate = () => {
   const ServicesSection = () => {
     return (
       <section className="services-section" style={{
-        padding: '80px 0',
+        padding: '0px 0',
       }}>
         <div className="auto-container">
           
@@ -254,7 +254,7 @@ const SensaiTemplate = () => {
               <div className="auto-container">
                 <div className="outer-box">
                   <div className="logo-box">
-                    <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"22px" }}/></a></figure>
+                    <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"24px" }}/></a></figure>
                   </div>
                   <div className="menu-area">
                     {/* Mobile Navigation Toggler */}
@@ -263,61 +263,24 @@ const SensaiTemplate = () => {
                       <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
                         <ul className="navigation clearfix">
                           <li className="current dropdown"><a href="/">Home</a>
-                            <ul>
-                              <li><a href="/">Image Generate</a></li>
-                              <li><a href="/">Image Generator Dark</a></li>
-                              <li><a href="/">AI Writer</a></li>
-                              <li><a href="/">AI Audio</a></li>
-                              <li><a href="/">AI Video</a></li>
-                              <li><a href="/">AI Chatbot</a></li>
-                              <li><a href="/">AI SAAS</a></li>
-                            </ul>
+                            
                           </li>
                           <li><a href="about.html">About</a></li>
                           <li className="dropdown"><a href="#">Services</a>
                             <ul>
-                              <li className="dropdown"><a href="#">Out Bound</a>
+                              <li className="dropdown"><a href="#">AI Agents</a>
                                 <ul>
-                                  <li><Link to="/ai-bot-voip">AI Bot & VoIP</Link></li>
-                                  <li><Link to="/auto-dialer-service">Auto Dialer</Link></li>
+                                  <li><Link to="/services/lite">Lite</Link></li>
+                                  <li><Link to="/services/plus">Plus</Link></li>
+                                  <li><Link to="/services/ultra">Ultra</Link></li>
+                                  <li><Link to="/services/custom">Custom</Link></li>
                                 </ul>
                               </li>
-                              <li className="dropdown"><a href="#">FAQ's</a>
-                                <ul>
-                                  <li><a href="faq.html">FAQ's One</a></li>
-                                  <li><a href="faq-2.html">FAQ's Two</a></li>
-                                </ul>
-                              </li>
-                              <li className="dropdown"><a href="#">Pricing</a>
-                                <ul>
-                                  <li><a href="pricing.html">Pricing One</a></li>
-                                  <li><a href="pricing-2.html">Pricing Two</a></li>
-                                </ul>
-                              </li>
-                              <li className="dropdown"><a href="#">Testimonials</a>
-                                <ul>
-                                  <li><a href="testimonial.html">Testimonials One</a></li>
-                                  <li><a href="testimonial-2.html">Testimonials Two</a></li>
-                                  <li><a href="testimonial-3.html">Testimonials Three</a></li>
-                                </ul>
-                              </li>
-                              <li className="dropdown"><a href="#">Shop</a>
-                                <ul>
-                                  <li><a href="shop.html">Our Shop</a></li>
-                                  <li><a href="shop-details.html">Shop Details</a></li>
-                                  <li><a href="cart.html">Cart</a></li>
-                                  <li><a href="checkout.html">Checkout</a></li>
-                                </ul>
-                              </li>
-                              <li><a href="team.html">Our Team</a></li>
-                              <li><a href="error.html">404</a></li>
                             </ul>
                           </li>
                           <li className="dropdown"><a href="#">News</a>
                             <ul>
-                              <li><a href="blog.html">Blog Grid</a></li>
-                              <li><a href="blog-2.html">Blog Standard</a></li>
-                              <li><a href="blog-details.html">Blog Details</a></li>
+                             
                             </ul>
                           </li>
                           <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
@@ -395,7 +358,7 @@ const SensaiTemplate = () => {
 
 
         {/* Integrations Style Five */}
-        <section className="integrations-style-five">
+        {/* <section className="integrations-style-five">
           <div className="pattern-layer" style={{ backgroundImage: `url(${shape58})` }}></div>
           <div className="outer-container">
             <ul className="list-item mb_25">
@@ -547,10 +510,10 @@ const SensaiTemplate = () => {
               </li>
             </ul>
           </div>
-        </section>
+        </section> */}
 
         {/* Working Style Three */}
-        <section className="working-style-three centred pb_120">
+        {/* <section className="working-style-three centred pb_120">
           <div className="pattern-layer-2" style={{ backgroundImage: `url(${shape56})` }}></div>
           <div className="auto-container">
             <div className="sec-title mb_55">
@@ -601,7 +564,7 @@ const SensaiTemplate = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Feature Style Five */}
         <section className="feature-style-five">
@@ -672,7 +635,7 @@ const SensaiTemplate = () => {
     </div>
 </section>
 
-        <section class="pricing-style-four pt_150 pb_120 centred">
+        {/* <section class="pricing-style-four pt_150 pb_120 centred">
           <div class="pattern-layer">
             <div class="pattern-1" style={{ backgroundImage: `url(${shape60})` }}></div>
             <div class="pattern-2" style={{ backgroundImage: `url(${shape61})` }}></div>
@@ -862,11 +825,11 @@ const SensaiTemplate = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         {/* Testimonial Section */}
         <section className="testimonial-section centred pb_140">
           <div className="shape">
-            <div className="shape-3" style={{ backgroundImage: `url(${shape45})` }}></div>
+            <div className="shape-3" style={{ backgroundImage: `url(${shape45})`,marginTop:"70px" }}></div>
             <div className="shape-2" style={{ backgroundImage: `url(${shape63})` }}></div>
           </div>
           <div className="auto-container">

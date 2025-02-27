@@ -2230,7 +2230,7 @@ button.ltr {
   position: relative;
   max-width: 1390px;
   width: 100%;
-  margin: 0 auto;
+  margin: 0 0;
   background: #fff;
   border-radius: 70px;
 }
