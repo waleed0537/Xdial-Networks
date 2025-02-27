@@ -1,56 +1,104 @@
 import React from 'react';
-import '../assets/css/ServicesComparison.css'
-const ServicesComparison = () => {
-  const CheckIcon = () => (
-    <svg 
-      viewBox="0 0 24 24" 
-      fill="currentColor" 
-      style={{ width: '12px', height: '12px' }}
-    >
-      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-    </svg>
-  );
+import { Check } from 'lucide-react';
+import '../assets/css/ServicesComparison.css';
 
-  const headers = [
-    'FUTURES',
-    'IDV',
-    'APPS',
-    'CONFIDENTIALITY',
-    'WITHOUT GADGET'
+const ServicesComparison = () => {
+  // Features that will be compared
+  const features = [
+    'Quick Deployment',
+    'Unified Platform',
+    'Privacy Protection',
+    'Premium Support',
+    'Call Analytics'
   ];
 
-  const rows = [
-    'coindox',
-    'Civic',
-    'Vilid.global',
-    'Hypr'
+  // Service providers to compare
+  const providers = [
+    {
+      name: 'XDial Networks',
+      description: 'Complete VoIP & AI solution',
+      price: '$49/mo',
+      link: '#',
+      features: [true, true, true, true, true]
+    },
+    {
+      name: 'Civic',
+      description: 'Generic VoIP provider',
+      price: '$65/mo',
+      link: '#',
+      features: [true, true, false, true, true]
+    },
+    {
+      name: 'Vilid.global',
+      description: 'Standard call center solution',
+      price: '$59/mo',
+      link: '#',
+      features: [false, true, true, true, false]
+    },
+    {
+      name: 'Hypr',
+      description: 'Basic dialer solution',
+      price: '$29/mo',
+      link: '#',
+      features: [true, false, false, false, true]
+    }
   ];
 
   return (
-    <div className="services-comparison-container">
-      <table className="services-comparison-table">
-        <thead>
-          <tr>
-            {headers.map((header, index) => (
-              <th key={index}>{header}</th>
+    <div className="improved-comparison-container">
+      <div className="improved-comparison-heading">
+        <h2>How We Compare</h2>
+        <p>See why leading call centers choose XDial Networks over competitors</p>
+      </div>
+      
+      <div className="improved-comparison-table-wrapper">
+        <table className="improved-comparison-table">
+          <thead>
+            <tr>
+              <th className="feature-header">Features</th>
+              {providers.map((provider, index) => (
+                <th key={index} className="provider-header">
+                  <div className="provider-name">{provider.name}</div>
+                  <div className="provider-description">{provider.description}</div>
+                  <div className="provider-price">{provider.price}</div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {features.map((feature, featureIndex) => (
+              <tr key={featureIndex}>
+                <td className="feature-name">{feature}</td>
+                {providers.map((provider, providerIndex) => (
+                  <td key={providerIndex} className="feature-cell">
+                    {provider.features[featureIndex] ? (
+                      <div className="feature-available">
+                        <Check size={18} strokeWidth={3} />
+                      </div>
+                    ) : (
+                      <div className="feature-unavailable">
+                        <span>—</span>
+                      </div>
+                    )}
+                  </td>
+                ))}
+              </tr>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((name) => (
-            <tr key={name}>
-              <td>{name}</td>
-              {[...Array(4)].map((_, index) => (
-                <td key={index} className="feature-cell">
-                  <span className="feature-icon feature-available">
-                    <CheckIcon />
-                  </span>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              {providers.map((provider, index) => (
+                <td key={index}>
+                  <a href={provider.link} className={`table-cta-button ${index === 0 ? 'primary' : 'secondary'}`}>
+                    {index === 0 ? 'Get Started' : 'Learn More'}
+                  </a>
                 </td>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </tfoot>
+        </table>
+      </div>
     </div>
   );
 };

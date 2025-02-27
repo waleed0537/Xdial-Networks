@@ -1,130 +1,214 @@
-/* Updated ServicesComparison styles with equal column widths */
-.services-comparison-container {
-  padding: 2rem 6rem;
-  display: flex;
-  justify-content: center;
+/* ImprovedServicesComparison.css */
+.improved-comparison-container {
+  padding: 3rem 0;
   max-width: 1200px;
+  margin: 0 auto 120px auto;
+}
+
+.improved-comparison-heading {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.improved-comparison-heading h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #45ACAB;
+  display: inline-block;
+}
+
+.improved-comparison-heading p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 600px;
   margin: 0 auto;
-  margin-bottom: 150px;
 }
 
-.services-comparison-table {
-
+.improved-comparison-table-wrapper {
+  overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+  padding: 1px;
+  background: rgba(9, 12, 24, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.improved-comparison-table {
   width: 100%;
-  max-width: 1000px;
-  border-collapse: collapse;
-  table-layout: fixed; /* Force equal column widths */
- 
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
 }
 
-.services-comparison-table thead {
-  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
-}
-
-.services-comparison-table th {
-  padding: 10px;
-  width: 20%; /* Equal width for all columns (100% / 5 columns) */
-  padding: 1rem 0.5rem;
+.improved-comparison-table th,
+.improved-comparison-table td {
+  padding: 1.5rem 1rem;
   text-align: center;
-  color: white;
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: normal; /* Allow text wrapping */
-  vertical-align: middle;
-  line-height: 1.2;
-  height: 60px; /* Fixed height for header */
-  word-wrap: break-word;
-}
-
-.services-comparison-table td {
-  padding: 1rem 1rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  width: 20%; /* Equal width for all columns */
+  background-color: rgba(9, 12, 24, 0.6);
 }
 
-.services-comparison-table td:first-child {
+.improved-comparison-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Header styles */
+.feature-header {
   text-align: left;
-  padding-left: 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-left: 2rem;
+  width: 20%;
 }
 
-/* Feature icon styling */
-.feature-cell {
+.provider-header {
   position: relative;
+  font-weight: 600;
+  width: 20%;
 }
 
-.feature-icon {
-  display: inline-flex;
+.recommended-tier {
+  background-color: rgba(69, 172, 171, 0.1) !important;
+}
+
+.recommended-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #45ACAB;
+  color: white;
+  padding: 0.2rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.provider-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.provider-description {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.provider-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #45ACAB;
+}
+
+.recommended-column {
+  background-color: rgba(69, 172, 171, 0.05) !important;
+}
+
+/* Feature cell styling */
+.feature-name {
+  text-align: left;
+  font-weight: 400;
+  padding-left: 2rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.feature-cell {
+  font-size: 1rem;
+}
+
+.feature-available {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  color: #45ACAB;
+}
+
+.feature-unavailable {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1.25rem;
+}
+
+/* Footer and CTA buttons */
+.improved-comparison-table tfoot td {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: none;
+}
+
+.table-cta-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
   border-radius: 4px;
-  background: rgba(0, 201, 167, 0.1);
-  transition: transform 0.2s ease;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 120px;
 }
 
-.feature-icon.feature-available {
-  color: #00C9A7;
-  border: 1px solid rgba(0, 201, 167, 0.3);
+.table-cta-button.primary {
+  background: #45ACAB;
+  color: white;
 }
 
-.feature-icon.feature-available svg {
-  width: 12px;
-  height: 12px;
+.table-cta-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(69, 172, 171, 0.3);
 }
 
-/* Hover effects */
-.services-comparison-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+.table-cta-button.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive design */
-@media (max-width: 1200px) {
-  .services-comparison-container {
-    padding: 2rem 4rem;
+.table-cta-button.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .improved-comparison-container {
+    padding: 2rem 1rem;
+  }
+  
+  .provider-name {
+    font-size: 1.1rem;
+  }
+  
+  .provider-description {
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 768px) {
-  .services-comparison-container {
-    padding: 1.5rem 2rem;
+  .improved-comparison-heading h2 {
+    font-size: 2rem;
   }
   
-  .services-comparison-table th,
-  .services-comparison-table td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.8rem;
-  }
-  
-  .services-comparison-table td:first-child {
+  .feature-header, .feature-name {
     padding-left: 1rem;
+    width: 25%;
+  }
+  
+  .improved-comparison-table th,
+  .improved-comparison-table td {
+    padding: 1rem 0.75rem;
   }
 }
 
-@media (max-width: 480px) {
-  .services-comparison-container {
-    padding: 1rem;
+@media (max-width: 576px) {
+  .improved-comparison-container {
+    margin: 0 auto 80px auto;
   }
   
-  .services-comparison-table th {
-    font-size: 0.75rem;
-    padding: 0.5rem;
-  }
-  
-  .services-comparison-table td {
-    font-size: 0.75rem;
-    padding: 0.5rem;
+  .improved-comparison-heading p {
+    font-size: 1rem;
   }
 }

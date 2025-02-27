@@ -189,10 +189,7 @@ const SensaiTemplate = () => {
         padding: '80px 0',
       }}>
         <div className="auto-container">
-          <div className="sec-title mb_55 centred">
-            <span className="sub-title">Our Services</span>
-            <h2>What We Offer</h2>
-          </div>
+          
           <ServicesCard />
         </div>
       </section>
