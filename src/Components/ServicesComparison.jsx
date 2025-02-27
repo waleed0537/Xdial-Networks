@@ -86,16 +86,7 @@ const ServicesComparison = () => {
             ))}
           </tbody>
           <tfoot>
-            <tr>
-              <td></td>
-              {providers.map((provider, index) => (
-                <td key={index}>
-                  <a href={provider.link} className={`table-cta-button ${index === 0 ? 'primary' : 'secondary'}`}>
-                    {index === 3 ? 'Contact Sales' : 'Get Started'}
-                  </a>
-                </td>
-              ))}
-            </tr>
+           
           </tfoot>
         </table>
       </div>
