@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/css/Preloader.css';
+
 const Preloader = ({ images, children }) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -10,39 +11,46 @@ const Preloader = ({ images, children }) => {
       let loadedCount = 0;
       const totalImages = images.length;
       
-      images.forEach(src => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => {
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            setImagesLoaded(true);
-          }
-        };
-        img.onerror = () => {
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            setImagesLoaded(true);
-          }
-        };
+      const imagePromises = images.map(src => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = () => resolve(src);
+          img.onerror = () => {
+            console.warn(`Failed to load image: ${src}`);
+            resolve(src); // Resolve anyway to prevent blocking
+          };
+        });
       });
+      
+      Promise.all(imagePromises)
+        .then(() => {
+          setImagesLoaded(true);
+        })
+        .catch(error => {
+          console.error('Error preloading images:', error);
+          setImagesLoaded(true); // Continue anyway
+        });
     } else {
       setImagesLoaded(true);
     }
 
-    // Fallback timer - hide loader after 3.5 seconds regardless
+    // Fallback timer - hide loader after 6 seconds regardless
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 3500);
+    }, 6000);
 
     return () => clearTimeout(timer);
   }, [images]);
 
   useEffect(() => {
     if (imagesLoaded) {
-      setTimeout(() => {
+      // Add a small delay to ensure smooth transition
+      const timer = setTimeout(() => {
         setLoading(false);
       }, 1000);
+      
+      return () => clearTimeout(timer);
     }
   }, [imagesLoaded]);
 
@@ -60,7 +68,7 @@ const Preloader = ({ images, children }) => {
 
   return (
     <>
-       {loading && (
+      {loading && (
         <div className="loader-wrap">
           <div className="preloader">
             <div className="preloader-close" onClick={() => setLoading(false)}>
@@ -71,24 +79,12 @@ const Preloader = ({ images, children }) => {
                 <div className="double-bounce1"></div>
                 <div className="double-bounce2"></div>
               </div>
-              <div className="txt-loading">
-                {['x', 'd', 'i', 'a', 'l'].map((letter, index) => (
-                  <span 
-                    key={index}
-                    className="letters-loading"
-                    style={{ animationDelay: `${index * 0.15}s` }}
-                  >
-                    {letter}
-                  </span>
-                ))}
-              </div>
+              {/* Removed the text loading section that had "xdial" text */}
             </div>
           </div>
         </div>
       )}
-      <div style={{ overflow: 'hidden', width: '100%' }}>
-        {children}
-      </div>
+      {children}
     </>
   );
 };

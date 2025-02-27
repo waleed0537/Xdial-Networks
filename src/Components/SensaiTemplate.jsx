@@ -21,10 +21,12 @@ import '../assets/css/module-css/pricing.css';
 import '../assets/css/module-css/testimonial.css';
 import '../assets/css/module-css/cta.css';
 import '../assets/css/responsive.css';
+// Import our new preloader CSS
+import '../assets/css/Preloader.css';
+
 // Logo imports
 import logo from '../assets/images/logo.png'
 import { Typewriter } from 'react-simple-typewriter';
-
 
 // Favicon import
 import favicon3 from '../assets/images/favicon-3.ico';
@@ -49,7 +51,6 @@ import shape61 from '../assets/images/shape/shape-61.png';
 import shape62 from '../assets/images/shape/shape-62.png';
 import shape63 from '../assets/images/shape/shape-63.png';
 import shape66 from '../assets/images/shape/shape-66.png';
-
 
 // Client logo imports
 import client29 from '../assets/images/clients/clients-29.png';
@@ -85,77 +86,34 @@ import MobileNavigation from './MobileNavigation';
 import Preloader from './Preloader';
 
 const SensaiTemplate = () => {
-  const backgroundImages = [
+  // Define all images to preload
+  const preloadImages = [
     // Banner and pattern layers
-    shape54, // Used in banner-style-seven pattern-layer
-    shape55, // Used in AITopFeatures
-    shape56, // Used in working-style-three pattern-layer-2
-    shape57, // Used in cta-style-two pattern-layer
-    shape58, // Used in integrations-style-five pattern-layer
-    shape59, // Used in cta-style-two pattern-layer-2
-    shape60, // Used in pricing section pattern-1
-    shape61, // Used in pricing section pattern-2
-    shape62, // Used in pricing section pattern-3
-    shape63, // Used in testimonial section shape-2
-    shape66, // Used in cta-section pattern-1
-  
+    shape54, shape55, shape56, shape57, shape58, shape59, shape60, 
+    shape61, shape62, shape63, shape66, 
+    
     // Working section shapes
-    shape13, // Used in working-block-two shape
-    shape36, // Used in working-style-three shape-1
-    shape37, // Used in working-style-three shape-2
-    shape38, // Used in working-style-three shape-3
-  
+    shape13, shape36, shape37, shape38, 
+    
     // Testimonial and CTA shapes
-    shape45, // Used in testimonial-section shape-3
-    shape24, // Used in cta-section pattern-2
-    shape25, // Used in cta-section pattern-3
-    shape26, // Used in cta-section pattern-4
-  
+    shape45, shape24, shape25, shape26, 
+    
     // Resource images
-    video2, // Used in video-inner background
-    dashboard8, // Used in feature-style-five
-  
+    video2, dashboard8,
+    
     // Client logos
-    client29,
-    client30,
-    client31,
-    client32,
-    client33,
-  
+    client29, client30, client31, client32, client33,
+    
     // Icon images
-    icon10,
-    icon11,
-    icon12,
-    icon13,
-    icon14,
-    icon15,
-    icon16,
-    icon17,
-  
+    icon10, icon11, icon12, icon13, icon14, icon15, icon16, icon17,
+    
     // Testimonial images
-    testimonial5,
-    testimonial6,
-    testimonial7,
-  
+    testimonial5, testimonial6, testimonial7,
+    
     // Logo
     logo
   ];
-  
-  const [loading, setLoading] = useState(true);
 
-  // Handle preloader close button click
-  const handlePreloaderClose = () => {
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    // Automatically hide preloader after 2.5 seconds
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2500);
-
-    return () => clearTimeout(timer);
-  }, []);
   useEffect(() => {
     const duplicateSliderContent = () => {
       const lists = document.querySelectorAll('.list-item');
@@ -166,7 +124,12 @@ const SensaiTemplate = () => {
       });
     };
 
-    duplicateSliderContent();
+    // Run this after component mounts and DOM is ready
+    const timer = setTimeout(() => {
+      duplicateSliderContent();
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -186,26 +149,27 @@ const SensaiTemplate = () => {
       '../assets/js/text_plugins.js',
       '../assets/js/script.js'
     ];
-    // In SensaiTemplate.jsx
 
+    const loadedScripts = [];
 
     scripts.forEach(src => {
       const script = document.createElement('script');
       script.src = src;
       script.async = true;
       document.body.appendChild(script);
+      loadedScripts.push(script);
     });
 
     // Cleanup function to remove scripts when component unmounts
     return () => {
-      scripts.forEach(src => {
-        const script = document.querySelector(`script[src="${src}"]`);
-        if (script) {
-          document.body.removeChild(script);
+      loadedScripts.forEach(script => {
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
         }
       });
     };
   }, []);
+
   const ServicesSection = () => {
     return (
       <section className="services-section" style={{
@@ -213,6 +177,8 @@ const SensaiTemplate = () => {
       }}>
         <div className="auto-container">
           <div className="sec-title mb_55 centred">
+            <span className="sub-title">Our Services</span>
+            <h2>What We Offer</h2>
           </div>
           <ServicesCard />
         </div>
@@ -237,193 +203,175 @@ const SensaiTemplate = () => {
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
         </Helmet>
       </HelmetProvider>
-      <Preloader images={backgroundImages}>
-      <div className="dark-home dark-color-2 ltr" style={{ 
-  minHeight: '100vh', 
-  display: 'flex', 
-  flexDirection: 'column', 
-  overflow: 'hidden',
-  width: '100%',
-  position: 'relative' 
-}}>
-        {/* Preloader */}
-
-
-        {/* Page Direction */}
-
-        {/* Search Popup */}
-        <div id="search-popup" className="search-popup">
-          <div className="popup-inner">
-            <div className="upper-box clearfix">
-              <figure className="logo-box pull-left"><a href="index.html"><img src="" alt="" /></a></figure>
-              <div className="close-search pull-right"><span className="icon-44"></span></div>
-            </div>
-            <div className="overlay-layer"></div>
-            <div className="auto-container">
-              <div className="search-form">
-                <form method="post" action="index.html">
-                  <div className="form-group">
-                    <fieldset>
-                      <input type="search" className="form-control" name="search-input" value="" placeholder="Type your keyword and hit" required />
-                      <button type="submit"><i className="icon-1"></i></button>
-                    </fieldset>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Header */}
-        <header className="main-header header-style-seven">
-          {/* Header Lower */}
-          <div className="header-lower">
-            <div className="auto-container">
-              <div className="outer-box">
-                <div className="logo-box">
-                  <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"22px" }}/></a></figure>
-                </div>
-                <div className="menu-area">
-                  {/* Mobile Navigation Toggler */}
-                  {/* Replace your existing mobile-nav-toggler div with this: */}
-                  <MobileNavigation logo={logo} />
-                  <nav className="main-menu navbar-expand-md navbar-light clearfix">
-                    <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
-                      <ul className="navigation clearfix">
-                        <li className="current dropdown"><a href="/">Home</a>
-                          <ul>
-                            <li><a href="/">Image Generate</a></li>
-                            <li><a href="/">Image Generator Dark</a></li>
-                            <li><a href="/">AI Writer</a></li>
-                            <li><a href="/">AI Audio</a></li>
-                            <li><a href="/">AI Video</a></li>
-                            <li><a href="/">AI Chatbot</a></li>
-                            <li><a href="/">AI SAAS</a></li>
-                          </ul>
-                        </li>
-                        <li><a href="about.html">About</a></li>
-                        <li class="dropdown"><a href="#">Services</a>
-                          <ul>
-                            <li class="dropdown"><a href="#">Out Bound</a>
-                              <ul>
-                                <li><Link to="/ai-bot-voip">AI Bot & VoIP</Link></li>
-                                <li><Link to="/auto-dialer-service">Auto Dialer</Link></li>
-                              </ul>
-                            </li>
-                            <li class="dropdown"><a href="#">FAQ’s</a>
-                              <ul>
-                                <li><a href="faq.html">FAQ’s One</a></li>
-                                <li><a href="faq-2.html">FAQ’s Two</a></li>
-                              </ul>
-                            </li>
-                            <li class="dropdown"><a href="#">Pricing</a>
-                              <ul>
-                                <li><a href="pricing.html">Pricing One</a></li>
-                                <li><a href="pricing-2.html">Pricing Two</a></li>
-                              </ul>
-                            </li>
-                            <li class="dropdown"><a href="#">Testimonials</a>
-                              <ul>
-                                <li><a href="testimonial.html">Testimonials One</a></li>
-                                <li><a href="testimonial-2.html">Testimonials Two</a></li>
-                                <li><a href="testimonial-3.html">Testimonials Three</a></li>
-                              </ul>
-                            </li>
-                            <li class="dropdown"><a href="#">Shop</a>
-                              <ul>
-                                <li><a href="shop.html">Our Shop</a></li>
-                                <li><a href="shop-details.html">Shop Details</a></li>
-                                <li><a href="cart.html">Cart</a></li>
-                                <li><a href="checkout.html">Checkout</a></li>
-                              </ul>
-                            </li>
-                            <li><a href="team.html">Our Team</a></li>
-                            <li><a href="error.html">404</a></li>
-                          </ul>
-                        </li>
-                        <li class="dropdown"><a href="#">News</a>
-                          <ul>
-                            <li><a href="blog.html">Blog Grid</a></li>
-                            <li><a href="blog-2.html">Blog Standard</a></li>
-                            <li><a href="blog-details.html">Blog Details</a></li>
-                          </ul>
-                        </li>
-                        <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
-                      </ul>
-                    </div>
-                  </nav>
-                </div>
-                <div className="menu-right-content">
-                  <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
-                  <div className="btn-box"><a href="index.html" className="theme-btn btn-one">Account</a></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Sticky Header */}
-          <div className="sticky-header">
-            <div class="auto-container">
-              <div class="outer-box">
-                <div class="logo-box">
-                  <figure class="logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
-                </div>
-                <div class="menu-area">
-                  <nav class="main-menu clearfix">
-
-                  </nav>
-                </div>
-                <div class="menu-right-content">
-                  <div class="search-box-outer search-toggler mr_30"><i class="icon-1"></i></div>
-                  <div class="btn-box"><a href="index.html" class="theme-btn btn-one">Account</a></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
-        {/* Mobile Menu */}
       
-        {/* Banner Style Seven */}
-        <section className="banner-style-seven centred" style={{ minHeight: 'calc(100vh - 120px)' }}>
-          <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}></div>
-          <div className="auto-container">
-            <div className="inner-box">
-              <div className="content-box mb_110">
-                <h2>The new Decade of <br />
-                  <Typewriter
-                    words={['AI Technology', 'AI Technology', 'AI Technology']}
-                    loop={true}
-                    cursor
-                    cursorStyle='|'
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={3000}
-                  />
-                </h2>
-                <p>Innovative AI solutions</p>
-                <a href="index-7.html" className="theme-btn btn-one">Try XDial For Free</a>
+      {/* Use the improved preloader with all images to preload */}
+      <Preloader images={preloadImages}>
+        <div className="dark-home dark-color-2 ltr" style={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: 'hidden',
+          width: '100%',
+          position: 'relative' 
+        }}>
+          {/* Search Popup */}
+          <div id="search-popup" className="search-popup">
+            <div className="popup-inner">
+              <div className="upper-box clearfix">
+                <figure className="logo-box pull-left"><a href="index.html"><img src="" alt="" /></a></figure>
+                <div className="close-search pull-right"><span className="icon-44"></span></div>
+              </div>
+              <div className="overlay-layer"></div>
+              <div className="auto-container">
+                <div className="search-form">
+                  <form method="post" action="index.html">
+                    <div className="form-group">
+                      <fieldset>
+                        <input type="search" className="form-control" name="search-input" value="" placeholder="Type your keyword and hit" required />
+                        <button type="submit"><i className="icon-1"></i></button>
+                      </fieldset>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        </section>
-        {/* Clients Section */}
-        {/* <section className="clients-section home-7 pt_150 pb_150">
-          <div className="auto-container">
-            <div className="clients-logo-list">
-              <figure className="clients-logo"><a href="index.html"><img src={client29} alt="" /></a></figure>
-              <figure className="clients-logo"><a href="index.html"><img src={client30} alt="" /></a></figure>
-              <figure className="clients-logo"><a href="index.html"><img src={client31} alt="" /></a></figure>
-              <figure className="clients-logo"><a href="index.html"><img src={client32} alt="" /></a></figure>
-              <figure className="clients-logo"><a href="index.html"><img src={client33} alt="" /></a></figure>
-            </div>
-          </div>
-        </section> */}
-        {/* Feature Style Three */}
-        <MainIntro />
-        <AITopFeatures />
-        <ServicesSection />
-        <ServicesComparison />
 
+          {/* Main Header */}
+          <header className="main-header header-style-seven">
+            {/* Header Lower */}
+            <div className="header-lower">
+              <div className="auto-container">
+                <div className="outer-box">
+                  <div className="logo-box">
+                    <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop:"22px" }}/></a></figure>
+                  </div>
+                  <div className="menu-area">
+                    {/* Mobile Navigation Toggler */}
+                    <MobileNavigation logo={logo} />
+                    <nav className="main-menu navbar-expand-md navbar-light clearfix">
+                      <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
+                        <ul className="navigation clearfix">
+                          <li className="current dropdown"><a href="/">Home</a>
+                            <ul>
+                              <li><a href="/">Image Generate</a></li>
+                              <li><a href="/">Image Generator Dark</a></li>
+                              <li><a href="/">AI Writer</a></li>
+                              <li><a href="/">AI Audio</a></li>
+                              <li><a href="/">AI Video</a></li>
+                              <li><a href="/">AI Chatbot</a></li>
+                              <li><a href="/">AI SAAS</a></li>
+                            </ul>
+                          </li>
+                          <li><a href="about.html">About</a></li>
+                          <li className="dropdown"><a href="#">Services</a>
+                            <ul>
+                              <li className="dropdown"><a href="#">Out Bound</a>
+                                <ul>
+                                  <li><Link to="/ai-bot-voip">AI Bot & VoIP</Link></li>
+                                  <li><Link to="/auto-dialer-service">Auto Dialer</Link></li>
+                                </ul>
+                              </li>
+                              <li className="dropdown"><a href="#">FAQ's</a>
+                                <ul>
+                                  <li><a href="faq.html">FAQ's One</a></li>
+                                  <li><a href="faq-2.html">FAQ's Two</a></li>
+                                </ul>
+                              </li>
+                              <li className="dropdown"><a href="#">Pricing</a>
+                                <ul>
+                                  <li><a href="pricing.html">Pricing One</a></li>
+                                  <li><a href="pricing-2.html">Pricing Two</a></li>
+                                </ul>
+                              </li>
+                              <li className="dropdown"><a href="#">Testimonials</a>
+                                <ul>
+                                  <li><a href="testimonial.html">Testimonials One</a></li>
+                                  <li><a href="testimonial-2.html">Testimonials Two</a></li>
+                                  <li><a href="testimonial-3.html">Testimonials Three</a></li>
+                                </ul>
+                              </li>
+                              <li className="dropdown"><a href="#">Shop</a>
+                                <ul>
+                                  <li><a href="shop.html">Our Shop</a></li>
+                                  <li><a href="shop-details.html">Shop Details</a></li>
+                                  <li><a href="cart.html">Cart</a></li>
+                                  <li><a href="checkout.html">Checkout</a></li>
+                                </ul>
+                              </li>
+                              <li><a href="team.html">Our Team</a></li>
+                              <li><a href="error.html">404</a></li>
+                            </ul>
+                          </li>
+                          <li className="dropdown"><a href="#">News</a>
+                            <ul>
+                              <li><a href="blog.html">Blog Grid</a></li>
+                              <li><a href="blog-2.html">Blog Standard</a></li>
+                              <li><a href="blog-details.html">Blog Details</a></li>
+                            </ul>
+                          </li>
+                          <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
+                        </ul>
+                      </div>
+                    </nav>
+                  </div>
+                  <div className="menu-right-content">
+                    <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
+                    <div className="btn-box"><a href="index.html" className="theme-btn btn-one">Account</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sticky Header */}
+            <div className="sticky-header">
+              <div className="auto-container">
+                <div className="outer-box">
+                  <div className="logo-box">
+                    <figure className="logo"><a href="index.html"><img src={logo} alt="" /></a></figure>
+                  </div>
+                  <div className="menu-area">
+                    <nav className="main-menu clearfix">
+                    </nav>
+                  </div>
+                  <div className="menu-right-content">
+                    <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
+                    <div className="btn-box"><a href="index.html" className="theme-btn btn-one">Account</a></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+          
+          {/* Banner Style Seven */}
+          <section className="banner-style-seven centred" style={{ minHeight: 'calc(100vh - 120px)' }}>
+            <div className="pattern-layer" style={{ backgroundImage: `url(${shape54})` }}></div>
+            <div className="auto-container">
+              <div className="inner-box">
+                <div className="content-box mb_110">
+                  <h2>The new Decade of <br />
+                    <Typewriter
+                      words={['AI Technology', 'AI Technology', 'AI Technology']}
+                      loop={true}
+                      cursor
+                      cursorStyle='|'
+                      typeSpeed={70}
+                      deleteSpeed={50}
+                      delaySpeed={3000}
+                    />
+                  </h2>
+                  <p>Innovative AI solutions</p>
+                  <a href="index-7.html" className="theme-btn btn-one">Try XDial For Free</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          {/* Rest of your components */}
+          <MainIntro />
+          <AITopFeatures />
+          <ServicesSection />
+          <ServicesComparison />
 
 
         {/* Integrations Style Five */}
