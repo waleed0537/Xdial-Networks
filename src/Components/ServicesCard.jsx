@@ -78,13 +78,7 @@ const ServicesCard = () => {
         </p>
       </div>
 
-      <div className="services-container" style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        gap: "20px",
-        overflowX: "auto"
-      }}>
+      <div className="services-container">
         {services.map((service, index) => {
           const Icon = service.icon;
           return (
@@ -92,14 +86,8 @@ const ServicesCard = () => {
               to={service.route} 
               key={index} 
               className="service-card-link"
-              style={{ 
-                flex: "1 1 0",
-                minWidth: "250px",
-                maxWidth: "300px",
-                textDecoration: "none"
-              }}
             >
-              <div className="service-card" style={{ height: "100%" }}>
+              <div className="service-card">
                 <Icon 
                   className="service-icon" 
                   color={service.iconColor} 
