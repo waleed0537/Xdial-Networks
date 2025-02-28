@@ -46,7 +46,7 @@ const CustomService = () => {
             </section>
             {/* Add this section below the features grid */}
 <section className="service-description" id="description">
-  <div className="description-content">
+  <div className="description-content1">
     <h2 className="section-subtitle">Bespoke AI Integration</h2>
     <div className="highlighted-text">
       The <strong>xCustom AI Agent</strong> offers 

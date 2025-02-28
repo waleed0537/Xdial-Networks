@@ -55,53 +55,46 @@ const PlusService = () => {
 
           {/* Enhanced Description Section */}
           <section className="service-description" id="description">
-            <div className="description-content">
-              <h2 className="section-subtitle">Advanced Call Intelligence</h2>
-              <div className="highlighted-text">
-                The <strong>xPlus AI Agent</strong> delivers 
-                <span className="text-gradient"> enterprise-grade call management</span>, 
-                combining real-time analytics with enhanced operational control.
-              </div>
-              
-              <div className="description-grid">
-                <div className="description-point">
-                  <div className="point-header">
-                    <span className="point-icon">✓</span>
-                    <h3>Core Innovation</h3>
-                  </div>
-                  <p>
-                    Built on Soft Phone Base technology, features 
-                    <strong> 1.8s average response time</strong> and 
-                    <strong> 95% accuracy</strong> in both word detection and sentiment analysis. 
-                    Handles <strong>500+ concurrent calls</strong> with real-time supervisor dashboards.
-                  </p>
-                </div>
+  <div className="description-content1">
+    <h2 className="section-subtitle">Overview</h2>
+    <div className="highlighted-text">
+      The <strong>Plus AI Agent</strong> is an 
+      <span className="text-gradient"> advanced call handling solution</span> designed for businesses that require faster response times, smarter filtering, and real-time monitoring.
+    </div>
+    
+    <div className="description-grid">
+      <div className="description-point">
+        <div className="point-header">
+          <span className="point-icon">✓</span>
+          <h3>Features</h3>
+        </div>
+        <p>
+          <strong>Soft Phone-Based</strong> with port-enabled technology ensuring enhanced call handling and seamless connectivity. Provides <strong>advanced call handling</strong> with faster response time than Lite, ensuring better call flow and efficiency.
+        </p>
+      </div>
 
-                <div className="description-point">
-                  <div className="point-header">
-                    <span className="point-icon">✓</span>
-                    <h3>Performance Edge</h3>
-                  </div>
-                  <p>
-                    Reduces false positives by 60% compared to basic systems, with 
-                    <strong> live intervention capabilities</strong> that improve conversion rates 
-                    by up to 35%. Features dynamic filtering with 
-                    <strong> 40+ question variations</strong>.
-                  </p>
-                </div>
-              </div>
+      <div className="description-point">
+        <div className="point-header">
+          <span className="point-icon">✓</span>
+          <h3>Benefits</h3>
+        </div>
+        <p>
+          Features <strong>sentiment analysis</strong> with 95% accuracy in word and sentiment detection, <strong>live monitoring</strong> for real-time tracking and intervention, and <strong>smarter filtering</strong> with enhanced speed, improved word detection, and a broader range of filtering questions.
+        </p>
+      </div>
+    </div>
 
-              <div className="use-cases">
-                <h4>Ideal For:</h4>
-                <div className="case-tags">
-                  <span className="tag">Enterprise Campaigns</span>
-                  <span className="tag">Technical Support</span>
-                  <span className="tag">Customer Retention</span>
-                  <span className="tag">Sales Optimization</span>
-                </div>
-              </div>
-            </div>
-          </section>
+    <div className="use-cases">
+      <h4>Perfect For:</h4>
+      <div className="case-tags">
+        <span className="tag">Outbound Call Centers</span>
+        <span className="tag">High-Performance Operations</span>
+        <span className="tag">Real-Time Insights</span>
+        <span className="tag">Intelligent Call Screening</span>
+      </div>
+    </div>
+  </div>
+</section>
           
           <section className="service-cta">
             <h2>Ready to Elevate Your Call Operations?</h2>

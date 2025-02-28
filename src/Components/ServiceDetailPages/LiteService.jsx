@@ -48,39 +48,39 @@ const LiteAIAgent = () => {
           {/* New section with descriptive paragraph */}
          {/* In LiteService.jsx */}
 
-<section className="service-description" id="description">
-  <div className="description-content">
-    <h2 className="section-subtitle">AI-Powered Efficiency</h2>
+         <section className="service-description" id="description">
+  <div className="description-content1">
+    <h2 className="section-subtitle">Overview</h2>
     <div className="highlighted-text">
-      The <strong>xLite AI Agent</strong> is your entry-level solution for 
-      <span className="text-gradient"> intelligent call management</span>, combining essential features with cost-effectiveness.
+      The <strong>Lite AI Agent</strong> is a 
+      <span className="text-gradient"> cost-effective and efficient call handling solution</span>, designed for businesses that require essential call screening while optimizing VoIP usage.
     </div>
     
     <div className="description-grid">
       <div className="description-point">
         <div className="point-header">
           <span className="point-icon">✓</span>
-          <h3>Core Functionality</h3>
+          <h3>Features</h3>
         </div>
-        <p>Designed for businesses requiring <strong>essential call screening</strong> and <strong>VoIP optimization</strong>, our xLite package handles <strong>200+ concurrent calls</strong> with 85% efficiency in lead qualification.</p>
+        <p><strong>WebRTC-based</strong> with <strong>essential call screening</strong> for processing large call volumes, filtering out qualified customers, and reducing VoIP costs. Offers <strong>moderate latency</strong> and <strong>basic call filtering</strong> for initial call screening.</p>
       </div>
 
       <div className="description-point">
         <div className="point-header">
           <span className="point-icon">✓</span>
-          <h3>Technical Edge</h3>
+          <h3>Benefits</h3>
         </div>
-        <p>Features <strong>8-second voicemail detection</strong> (95% accuracy) and <strong>2.1s average response time</strong>, reducing wasted call minutes by up to 40% compared to basic IVR systems.</p>
-      </div>
+        <p>Detects <strong>98%</strong> of answering machines even before the call reaches our bot, saving valuable resources and optimizing efficiency.</p>
+        </div>
     </div>
 
     <div className="use-cases">
       <h4>Perfect For:</h4>
       <div className="case-tags">
-        <span className="tag">Outbound Campaigns</span>
+        <span className="tag">Outbound Call Centers</span>
+        <span className="tag">Large Call Volumes</span>
         <span className="tag">Lead Qualification</span>
-        <span className="tag">Appointment Reminders</span>
-        <span className="tag">Small Call Centers</span>
+        <span className="tag">VoIP Cost Reduction</span>
       </div>
     </div>
   </div>

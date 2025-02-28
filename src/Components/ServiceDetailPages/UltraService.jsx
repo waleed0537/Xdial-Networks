@@ -47,53 +47,46 @@ const UltraService = () => {
 
           {/* Enhanced Description Section */}
           <section className="service-description" id="description">
-            <div className="description-content">
-              <h2 className="section-subtitle">Enterprise AI Excellence</h2>
-              <div className="highlighted-text">
-                The <strong>xUltra AI Agent</strong> delivers 
-                <span className="text-gradient"> military-grade call intelligence</span>, 
-                combining real-time analytics with predictive conversation modeling.
-              </div>
-              
-              <div className="description-grid">
-                <div className="description-point">
-                  <div className="point-header">
-                    <span className="point-icon">✓</span>
-                    <h3>Core Technology</h3>
-                  </div>
-                  <p>
-                    Features <strong>0.8s average response time</strong> and 
-                    <strong> 98% accuracy</strong> in natural language processing. 
-                    Handles <strong>1000+ concurrent calls</strong> with real-time 
-                    AI optimization and automated quality control.
-                  </p>
-                </div>
+  <div className="description-content1">
+    <h2 className="section-subtitle">Overview</h2>
+    <div className="highlighted-text">
+      The <strong>Ultra AI Agent</strong> is a 
+      <span className="text-gradient"> high-performance AI-powered call handling solution</span> designed for businesses that require real-time decision-making, advanced speech recognition, and deeper conversation analysis.
+    </div>
+    
+    <div className="description-grid">
+      <div className="description-point">
+        <div className="point-header">
+          <span className="point-icon">✓</span>
+          <h3>Features</h3>
+        </div>
+        <p>
+          <strong>Enterprise-Grade AI</strong> using real-time AI decision-making to optimize call handling. Features <strong>ultra-fast response time</strong> with near-instant responses for a seamless conversation experience and <strong>advanced sentiment & speech analysis</strong> with higher accuracy in detecting emotions, intent, and contextual meaning.
+        </p>
+      </div>
 
-                <div className="description-point">
-                  <div className="point-header">
-                    <span className="point-icon">✓</span>
-                    <h3>Performance Metrics</h3>
-                  </div>
-                  <p>
-                    Reduces operational costs by 45% through <strong>predictive call routing</strong> 
-                    and improves conversion rates by 50% with 
-                    <strong> real-time strategy adjustments</strong>. Features 
-                    <strong> 200+ adaptive conversation patterns</strong>.
-                  </p>
-                </div>
-              </div>
+      <div className="description-point">
+        <div className="point-header">
+          <span className="point-icon">✓</span>
+          <h3>Benefits</h3>
+        </div>
+        <p>
+          Includes <strong>real-time AI call monitoring</strong> with live tracking and automated insights, <strong>AI-powered adaptive learning</strong> that continuously improves through machine learning-driven enhancements, and the <strong>smartest filtering</strong> with customizable, complex question flows for deeper qualification.
+        </p>
+      </div>
+    </div>
 
-              <div className="use-cases">
-                <h4>Premium Applications:</h4>
-                <div className="case-tags">
-                  <span className="tag">Enterprise Solutions</span>
-                  <span className="tag">Financial Services</span>
-                  <span className="tag">Healthcare Support</span>
-                  <span className="tag">Government Operations</span>
-                </div>
-              </div>
-            </div>
-          </section>
+    <div className="use-cases">
+      <h4>Perfect For:</h4>
+      <div className="case-tags">
+        <span className="tag">Large-Scale Operations</span>
+        <span className="tag">Enterprises</span>
+        <span className="tag">Inbound & Outbound Call Centers</span>
+        <span className="tag">AI-Driven Automation</span>
+      </div>
+    </div>
+  </div>
+</section>
 
           <section className="service-cta">
             <h2>Maximize Your Call Operations</h2>
