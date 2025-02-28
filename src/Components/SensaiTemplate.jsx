@@ -261,7 +261,8 @@ const SensaiTemplate = () => {
         <MobileNavigation logo={logo} />
         <nav className="main-menu navbar-expand-md navbar-light clearfix">
           <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
-            <ul className="navigation clearfix">
+          <ul className="navigation clearfix" style={{ display: "flex", gap: "40px" }}>
+
               <li className="current dropdown"><a href="/">Home</a>
 
               </li>
@@ -278,22 +279,28 @@ const SensaiTemplate = () => {
                       padding: "8px 0",
                       boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" /* Optional: adds a subtle shadow to better distinguish the menu */
                     }}>
-                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/lite" style={{ padding: "6px 40px" }}>Lite</Link></li>
-                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/plus" style={{ padding: "6px 40px" }}>Plus</Link></li>
-                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/ultra" style={{ padding: "6px 40px" }}>Ultra</Link></li>
-                      <li style={{ margin: "0", padding: "0" }}><Link to="/services/custom" style={{ padding: "6px 40px" }}>Custom</Link></li>
+                      <li style={{ margin: "0", padding: "0" }}>
+  <Link to="/services/lite" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xLite</Link>
+</li>
+<li style={{ margin: "0", padding: "0" }}>
+  <Link to="/services/plus" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xPlus</Link>
+</li>
+<li style={{ margin: "0", padding: "0" }}>
+  <Link to="/services/ultra" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xUltra</Link>
+</li>
+<li style={{ margin: "0", padding: "0" }}>
+  <Link to="/services/custom" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xCustom</Link>
+</li>
+
                     </ul>
                   </li>
-                  <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">Auto Dialer</a></li>
-                  <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">VoIP</a></li>
+                  <li  style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">Auto Dialer</a></li>
+                  <li  style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">VoIP</a></li>
                   
                 </ul>
               </li>
-              <li className="dropdown" style={{ position: "relative" }}><a href="#">News</a>
-                <ul style={{ marginTop: "0", padding: "8px 0" }}>
-                </ul>
-              </li>
-              <li><Link to="/contact-form" className="nav-link">Contact Form</Link></li>
+             
+              {/* <li><Link to="/kyc-form" className="nav-link">Contact Form</Link></li> */}
             </ul>
           </div>
         </nav>

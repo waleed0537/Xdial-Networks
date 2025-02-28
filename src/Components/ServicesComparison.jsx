@@ -16,27 +16,27 @@ const ServicesComparison = () => {
   // Service tiers to compare
   const providers = [
     {
-      name: 'Lite AI Agent',
+      name: 'xLite',
       description: 'Essential call handling solution',
       link: '#lite',
       features: [true, true, false, false, false, false, true, false]
     },
     {
-      name: 'Plus AI Agent',
+      name: 'xPlus',
       description: 'Advanced call operations',
 
       link: '#plus',
       features: [true, true, true, true, true, true, true, false]
     },
     {
-      name: 'Ultra AI Agent',
+      name: 'xUltra',
       description: 'Enterprise-grade AI solution',
       
       link: '#ultra',
       features: [true, true, true, true, true, true, true, true]
     },
     {
-      name: 'Custom Plan',
+      name: 'xCustom',
       description: 'Tailored business solution',
 
       link: '#custom',

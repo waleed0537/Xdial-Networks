@@ -101,19 +101,19 @@ const MobileNavigation = ({ logo }) => {
                   <li><a href="#" onClick={(e) => handleNavClick(e, '/services/voip')}>VoIP</a></li>
                 </ul>
               </li>
-              <li>
-                <a href="/contact-form" onClick={(e) => handleNavClick(e, '/contact-form')}>Contact Form</a>
-              </li>
+              {/* <li>
+                <a href="/kyc-form" onClick={(e) => handleNavClick(e, '/contact-form')}>Contact Form</a>
+              </li> */}
             </ul>
           </div>
-          <div className="contact-info">
+          {/* <div className="contact-info">
             <h4>Contact Info</h4>
             <ul>
               <li>Chicago 12, Melborne City, USA</li>
               <li><a href="tel:+8801682648101">+88 01682648101</a></li>
               <li><a href="mailto:info@example.com">info@example.com</a></li>
             </ul>
-          </div>
+          </div> */}
           <div className="social-links">
             <ul className="clearfix">
               <li><a href="#"><span className="fab fa-twitter"></span></a></li>

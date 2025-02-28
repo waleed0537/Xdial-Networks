@@ -7,7 +7,7 @@ const ServicesCard = () => {
   const services = [
     {
       icon: Shield,
-      title: "Lite",
+      title: "xLite",
       route: "/services/lite",
       iconColor: "#44BCCC",
       description: [
@@ -22,7 +22,7 @@ const ServicesCard = () => {
     },
     {
       icon: Zap,
-      title: "Plus",
+      title: "xPlus",
       route: "/services/plus",
       iconColor: "#44BCCC",
       description: [
@@ -38,7 +38,7 @@ const ServicesCard = () => {
     },
     {
       icon: Globe,
-      title: "Ultra",
+      title: "xUltra",
       route: "/services/ultra",
       iconColor: "#44BCCC",
       description: [
@@ -53,7 +53,7 @@ const ServicesCard = () => {
     },
     {
       icon: Cpu,
-      title: "Custom",
+      title: "xCustom",
       route: "/services/custom",
       iconColor: "#44BCCC",
       description: [
