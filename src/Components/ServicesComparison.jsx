@@ -3,52 +3,51 @@ import { Check } from 'lucide-react';
 import '../assets/css/ServicesComparison.css';
 
 const ServicesComparison = () => {
-  // Features that will be compared
+  // Features that will be compared - prioritizing the most important differentiators
+  // Common features at top, differentiating features below
   const features = [
-    'AI Call Screening',
+    'Inbound & Outbound Support',
     'Voicemail Detection',
-    'Real-Time Monitoring',
+    'Call Screening Capability',
+    'Low Latency Response',
+    'Live Call Monitoring',
     'Sentiment Analysis',
-    'Scalable Solution',
-    'Adaptive Learning'
+    'AI-driven Custom Rules'
   ];
 
-  // Service tiers to compare
+  // Service tiers mapped from ServicesCard data with simplified feature matrix
   const providers = [
     {
       name: 'xLite',
-      description: 'Essential call handling solution',
-      link: '#lite',
-      features: [true, true, false, false, false, false, true, false]
+      description: 'Essential Call Screening',
+      link: '/services/lite',
+      features: [true, true, true, false, false, false, false]
     },
     {
       name: 'xPlus',
-      description: 'Advanced call operations',
-
-      link: '#plus',
-      features: [true, true, true, true, true, true, true, false]
+      description: 'Advanced Call Handling',
+      link: '/services/plus',
+      features: [true, true, true, true, true, true, false]
     },
     {
       name: 'xUltra',
-      description: 'Enterprise-grade AI solution',
-      
-      link: '#ultra',
-      features: [true, true, true, true, true, true, true, true]
+      description: 'Premium Call Intelligence',
+      link: '/services/ultra',
+      features: [true, true, true, true, false, false, false]
     },
     {
       name: 'xCustom',
-      description: 'Tailored business solution',
-
-      link: '#custom',
-      features: [true, true, true, true, true, true, true, true]
+      description: 'Personalized Solution',
+      link: '/services/custom',
+      features: [true, true, true, true, false, false, true]
     }
   ];
 
   return (
     <div className="improved-comparison-container">
       <div className="improved-comparison-heading">
-        <h2>Our Service Tiers</h2>
-        <p>Choose the perfect AI call handling solution for your business needs</p>
+        <h2>AI Agent Feature Comparison</h2>
+        <p>Compare our AI agent tiers to find the perfect solution for your business needs</p>
       </div>
       
       <div className="improved-comparison-table-wrapper">
@@ -60,7 +59,6 @@ const ServicesComparison = () => {
                 <th key={index} className="provider-header">
                   <div className="provider-name">{provider.name}</div>
                   <div className="provider-description">{provider.description}</div>
-                  <div className="provider-price">{provider.price}</div>
                 </th>
               ))}
             </tr>
@@ -85,13 +83,10 @@ const ServicesComparison = () => {
               </tr>
             ))}
           </tbody>
-          <tfoot>
-           
-          </tfoot>
         </table>
       </div>
     </div>
   );
 };
 
-export default ServicesComparison;  
+export default ServicesComparison;
