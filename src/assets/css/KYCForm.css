@@ -317,7 +317,6 @@
 
 /* Enhance textarea for message field */
 .contact-form-wrapper .form-textarea {
-  font-family: 'Inter', sans-serif;
   transition: all 0.3s ease;
 }
 

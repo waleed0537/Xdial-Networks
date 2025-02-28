@@ -52,6 +52,56 @@ const PlusService = () => {
               </div>
             </div>
           </section>
+
+          {/* Enhanced Description Section */}
+          <section className="service-description" id="description">
+            <div className="description-content">
+              <h2 className="section-subtitle">Advanced Call Intelligence</h2>
+              <div className="highlighted-text">
+                The <strong>xPlus AI Agent</strong> delivers 
+                <span className="text-gradient"> enterprise-grade call management</span>, 
+                combining real-time analytics with enhanced operational control.
+              </div>
+              
+              <div className="description-grid">
+                <div className="description-point">
+                  <div className="point-header">
+                    <span className="point-icon">✓</span>
+                    <h3>Core Innovation</h3>
+                  </div>
+                  <p>
+                    Built on Soft Phone Base technology, features 
+                    <strong> 1.8s average response time</strong> and 
+                    <strong> 95% accuracy</strong> in both word detection and sentiment analysis. 
+                    Handles <strong>500+ concurrent calls</strong> with real-time supervisor dashboards.
+                  </p>
+                </div>
+
+                <div className="description-point">
+                  <div className="point-header">
+                    <span className="point-icon">✓</span>
+                    <h3>Performance Edge</h3>
+                  </div>
+                  <p>
+                    Reduces false positives by 60% compared to basic systems, with 
+                    <strong> live intervention capabilities</strong> that improve conversion rates 
+                    by up to 35%. Features dynamic filtering with 
+                    <strong> 40+ question variations</strong>.
+                  </p>
+                </div>
+              </div>
+
+              <div className="use-cases">
+                <h4>Ideal For:</h4>
+                <div className="case-tags">
+                  <span className="tag">Enterprise Campaigns</span>
+                  <span className="tag">Technical Support</span>
+                  <span className="tag">Customer Retention</span>
+                  <span className="tag">Sales Optimization</span>
+                </div>
+              </div>
+            </div>
+          </section>
           
           <section className="service-cta">
             <h2>Ready to Elevate Your Call Operations?</h2>
@@ -62,7 +112,6 @@ const PlusService = () => {
             >
               Contact Sales
             </button>
-           
           </section>
           
           <section className="sample-recordings" style={{color:"white"}}>

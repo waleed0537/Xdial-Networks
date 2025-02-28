@@ -256,3 +256,110 @@
       padding: 1.5rem;
   }
 }
+/* Service Description Styles */
+.service-description {
+  padding: 4rem 0;
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 4rem 0;
+}
+
+.description-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #45ACAB;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.highlighted-text {
+  font-size: 1.4rem;
+  text-align: center;
+  line-height: 1.6;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(69, 172, 171, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(69, 172, 171, 0.3);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #45ACAB, #56BEF5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.description-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.description-point {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.point-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.point-icon {
+  color: #45ACAB;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.use-cases {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.use-cases h4 {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+}
+
+.case-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.tag {
+  background: rgba(69, 172, 171, 0.15);
+  color: #45ACAB;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(69, 172, 171, 0.3);
+}
+
+@media (max-width: 768px) {
+  .highlighted-text {
+    font-size: 1.2rem;
+    padding: 1rem;
+  }
+  
+  .description-grid {
+    grid-template-columns: 1fr;
+  }
+}
