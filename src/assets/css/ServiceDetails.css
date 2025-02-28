@@ -350,7 +350,7 @@
   padding: 0.5rem 1.2rem;
   border-radius: 20px;
   font-size: 0.9rem;
-  border: 1px solid rgba(69, 172, 171, 0.3);
+
 }
 
 @media (max-width: 768px) {
@@ -360,6 +360,81 @@
   }
   
   .description-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* Auto Dialer Specific Styles */
+.dialer-types {
+  margin: 4rem 0;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.types-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #45ACAB;
+}
+
+.types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.type-card {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.type-card:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+}
+
+.type-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 1rem;
+  color: #45ACAB;
+}
+
+.type-card:hover .type-icon {
+  color: #fff;
+}
+
+/* TPS/DNC Special Card */
+
+.feature-item:nth-child(2):hover .feature-icon {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .types-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .types-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* VoIP Specific Styles */
+.voip-solutions {
+  margin: 4rem 0;
+  padding: 2rem;
+
+  border-radius: 12px;
+}
+
+/* Financial Feature Emphasis */
+
+@media (max-width: 768px) {
+  .voip-solutions .types-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -8,6 +8,8 @@ import PlusService from './Components/ServiceDetailPages/PlusService';
 import UltraService from './Components/ServiceDetailPages/UltraService';
 import CustomService from './Components/ServiceDetailPages/CustomService';
 import ContactForm from './Components/ContactForm';
+import AutoDialer from './Components/AutoDialer';
+import VoIPSolutions from './Components/VoIPSolutions';
 import './App.css';
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
         <Route path="/services/ultra" element={<UltraService />} />
         <Route path="/services/custom" element={<CustomService />} />
         <Route path="/contact-form" element={<ContactForm />} />
+        <Route path="/auto-dialer" element={<AutoDialer />} />
+        <Route path="/voip-solutions" element={<VoIPSolutions />} />
       </Routes>
     </Router>
   );

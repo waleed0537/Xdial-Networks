@@ -97,8 +97,8 @@ const MobileNavigation = ({ logo }) => {
                       <li><Link to="/services/custom" onClick={(e) => handleNavClick(e, '/services/custom')}>Custom</Link></li>
                     </ul>
                   </li>
-                  <li><a href="#" onClick={(e) => handleNavClick(e, '/services/auto-dialer')}>Auto Dialer</a></li>
-                  <li><a href="#" onClick={(e) => handleNavClick(e, '/services/voip')}>VoIP</a></li>
+                  <li><a href="#" onClick={(e) => handleNavClick(e, '/auto-dialer')}>Auto Dialer</a></li>
+                  <li><a href="#" onClick={(e) => handleNavClick(e, '/voip-solutions')}>VoIP</a></li>
                 </ul>
               </li>
               <li>

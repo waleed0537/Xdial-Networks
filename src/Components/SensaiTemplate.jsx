@@ -290,8 +290,8 @@ const SensaiTemplate = () => {
                                   </li>
                                 </ul>
                               </li>
-                              <li style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">Auto Dialer</a></li>
-                              <li style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">VoIP</a></li>
+                              <li style={{ position: "relative", margin: "0", padding: "0" }}><a href="/auto-dialer">Auto Dialer</a></li>
+                              <li style={{ position: "relative", margin: "0", padding: "0" }}><a href="/voip-solutions">VoIP</a></li>
                             </ul>
                           </li>
                         </ul>
@@ -351,7 +351,7 @@ const SensaiTemplate = () => {
                       delaySpeed={3000}
                     />
                   </h2>
-                  <p>Innovative AI solutions</p>
+                  <p>Enhance every call with human-like AI Agents</p>
                   <a href="/" style={{ background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)' }} className="theme-btn btn-one">Try XDial For Free</a>
                 </div>
               </div>
