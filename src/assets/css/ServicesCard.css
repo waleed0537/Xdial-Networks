@@ -22,7 +22,22 @@
   font-weight: 700;
   color: #ffffff;
 }
+.view-details-button {
+  margin-top: 19px;
+  padding: 8px 16px;
+  background-color: #44BCCC;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 300;
+  font-size: medium;
+  transition: background-color 0.3s ease;
+}
 
+.view-details-button:hover {
+  background-color: #3AA8B8;
+}
 .services-description {
   max-width: 800px;
   margin: 0 auto 3rem;

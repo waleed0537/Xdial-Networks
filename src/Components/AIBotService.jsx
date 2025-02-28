@@ -22,7 +22,7 @@ const AIBotService = () => {
             <a href="#services">Services</a>
             <a href="#about">About</a>
             <a href="#agent-program">Agent Program</a>
-            <a href="#contact">Contact Us</a>
+            <a href="/contact-form">Contact Us</a>
         </nav>
         
         <div className="hero-main-content">
@@ -158,7 +158,7 @@ const AIBotService = () => {
         <div className="cta-content">
           <h2>Ready to Transform Your Customer Service?</h2>
           <p>Join thousands of businesses using our AI Bot & VoIP solution to deliver exceptional customer experiences.</p>
-          <button className="cta-button">Schedule a Demo</button>
+          <button className="cta-button" style={{background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)'}}>Schedule a Demo</button>
         </div>
       </section>
       

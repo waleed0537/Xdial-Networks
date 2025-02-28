@@ -12,7 +12,7 @@ const LiteAIAgent = () => {
           <li><Link to="/" className="nav-link">Home</Link></li>
             <a href="#features">Features</a>
             <a href="#benefits">Benefits</a>
-            <a href="#contact">Contact</a>
+            <a href="/contact-form">Contact</a>
           </nav>
 
           <section className="service-hero">
@@ -53,7 +53,10 @@ const LiteAIAgent = () => {
           <section className="service-cta">
             <h2>Ready to Enhance Your Call Center?</h2>
             <p>Discover how Lite AI Agent can transform your call operations</p>
-            <button className="cta-button">Contact Sales</button>
+            <button className="cta-button" onClick={() => window.location.href = "/contact-form"}>
+  Contact Sales
+</button>
+
           </section>
 
           <section className="sample-recordings">

@@ -11,7 +11,7 @@ const CustomService = () => {
             <li><Link to="/" className="nav-link">Home</Link></li>
               <a href="#features">Features</a>
               <a href="#benefits">Benefits</a>
-              <a href="#contact">Contact</a>
+              <a href="/contact-form">Contact</a>
             </nav>
   
             <section className="service-hero">
@@ -50,7 +50,10 @@ const CustomService = () => {
             <section className="service-cta">
               <h2>Build Your Custom Solution</h2>
               <p>Let's create the perfect plan for your business</p>
-              <button className="cta-button">Schedule Consultation</button>
+              <button className="cta-button" onClick={() => window.location.href = "/contact-form"}>
+  Schedule Consultaion
+</button>
+
             </section>
             <section className="sample-recordings" style={{color:"white"}}>
             <h3>Sample Call Recordings</h3>

@@ -40,7 +40,7 @@ const AutoDialerService = () => {
               <a href="#services">Services</a>
               <a href="#about">About</a>
               <a href="#agent-program">Agent Program</a>
-              <a href="#contact">Contact Us</a>
+              <a href="/contact-form">Contact Us</a>
             </nav>
 
             <div className="hero-main-content">
@@ -213,7 +213,7 @@ const AutoDialerService = () => {
         <div className="cta-content">
           <h2>Ready to Transform Your Call Center?</h2>
           <p>Upgrade to a tailor-made VICIdial solution crafted for maximum efficiency and reliability.</p>
-          <button className="cta-button">Schedule a Demo</button>
+          <button className="cta-button" style={{background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)'}}>Schedule a Demo</button>
         </div>
       </section>
 

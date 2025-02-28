@@ -256,7 +256,7 @@ const SensaiTemplate = () => {
                   <div className="logo-box">
                     <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop: "24px" }} /></a></figure>
                   </div>
-                  <div className="menu-area" style={{  marginLeft: "-100px" }}>
+                  <div className="menu-area" style={{ marginLeft: "-100px" }}>
                     {/* Mobile Navigation Toggler */}
                     <MobileNavigation logo={logo} />
                     <nav className="main-menu navbar-expand-md navbar-light clearfix" style={{ display: "flex", justifyContent: "flex-start", marginLeft: "10px" }}>
@@ -352,7 +352,7 @@ const SensaiTemplate = () => {
                     />
                   </h2>
                   <p>Innovative AI solutions</p>
-                  <a href="index-7.html" className="theme-btn btn-one">Try XDial For Free</a>
+                  <a href="/" style={{ background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)' }} className="theme-btn btn-one">Try XDial For Free</a>
                 </div>
               </div>
             </div>
@@ -577,53 +577,60 @@ const SensaiTemplate = () => {
 
           {/* Feature Style Five */}
           <section className="feature-style-five">
-  <div className="auto-container">
-    <div className="inner-container pt_150 pb_150">
-      <div className="row align-items-center">
-        <div className="col-lg-6 col-md-12 col-sm-12 content-column">
-          <div className="content_block_seven">
-            <div className="content-box mr_60">
-              <div className="sec-title mb_35">
-                <span className="sub-title">Top Feature</span>
-                <h2>Empowering Companies to Connect, Manage, and Grow</h2>
-              </div>
-              <div className="inner-box">
-                <div className="row clearfix">
-                  <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                    <div className="single-item mb_40">
-                      <div className="icon-box"><i className="icon-25"></i></div>
-                      <h3>Manage Content</h3>
-                      <p>Effortlessly organize, edit, and deliver engaging content that captivates your audience.</p>
+            <div className="auto-container">
+              <div className="inner-container pt_150 pb_150">
+                <div className="row align-items-center">
+                  <div className="col-lg-6 col-md-12 col-sm-12 content-column">
+                    <div className="content_block_seven">
+                      <div className="content-box mr_60">
+                        <div className="sec-title mb_35">
+                        <span className='sub-title' style={{ 
+  background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)', 
+  WebkitBackgroundClip: 'text', 
+  WebkitTextFillColor: 'transparent' 
+}}>
+  Top Features
+</span>
+
+                          <h2>Empowering Companies to Connect, Manage, and Grow</h2>
+                        </div>
+                        <div className="inner-box">
+                          <div className="row clearfix">
+                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                              <div className="single-item mb_40">
+                                <div className="icon-box"><i className="icon-25"></i></div>
+                                <h3>Manage Content</h3>
+                                <p>Effortlessly organize, edit, and deliver engaging content that captivates your audience.</p>
+                              </div>
+                            </div>
+                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                              <div className="single-item">
+                                <div className="icon-box"><i className="icon-27"></i></div>
+                                <h3>Coach Reps</h3>
+                                <p>Empower your sales and support teams with real-time insights, training, and feedback.</p>
+                              </div>
+                            </div>
+                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                              <div className="single-item">
+                                <div className="icon-box"><i className="icon-28"></i></div>
+                                <h3>Connect Users</h3>
+                                <p>Build strong relationships by seamlessly connecting users with your platform and services.</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                    <div className="single-item">
-                      <div className="icon-box"><i className="icon-27"></i></div>
-                      <h3>Coach Reps</h3>
-                      <p>Empower your sales and support teams with real-time insights, training, and feedback.</p>
-                    </div>
-                  </div>
-                  <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                    <div className="single-item">
-                      <div className="icon-box"><i className="icon-28"></i></div>
-                      <h3>Connect Users</h3>
-                      <p>Build strong relationships by seamlessly connecting users with your platform and services.</p>
+                  <div className="col-lg-6 col-md-12 col-sm-12 image-column">
+                    <div className="image-box ml_40">
+                      <figure className="image"><img src={dashboard8} alt="Feature Overview" /></figure>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="col-lg-6 col-md-12 col-sm-12 image-column">
-          <div className="image-box ml_40">
-            <figure className="image"><img src={dashboard8} alt="Feature Overview" /></figure>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+          </section>
 
 
           {/* CTA Style Two */}
@@ -634,11 +641,18 @@ const SensaiTemplate = () => {
                 <div className="pattern-layer" style={{ backgroundImage: `url(${shape57})` }}></div>
                 <div className="sec-title light mb_25">
                   <span className="sub-title-three">Get a Demo</span>
-                  <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span>sales</span></h2>
+                  <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span style={{
+                    background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
+                    sales
+                  </span>
+                  </h2>
                 </div>
                 <p style={{ position: 'relative', zIndex: 2, color: '#fff', margin: '15px 0' }}>Convert words into sales in mere seconds</p>
                 <div className="btn-box">
-                  <a href="/" className="theme-btn btn-one mr_20">Schedule a Demo</a>
+                  <a href="/" style={{ background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)' }} className="theme-btn btn-one mr_20">Schedule a Demo</a>
 
                 </div>
               </div>
@@ -899,28 +913,28 @@ const SensaiTemplate = () => {
 
           {/* CTA Section */}
           <section className="cta-section" style={{ marginTop: "80px", paddingTop: "60px" }}>
-  <div className="auto-container">
-    <div className="inner-container">
-      <div className="pattern-layer">
-        <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
-        <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
-        <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
-        <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
-      </div>
-      <div className="inner-box">
-        <h2>
-          #1 Rated AI Audio Software
-          <span style={{ display: "block", marginTop: "10px", fontSize: "18px", fontWeight: "normal", color: "#fff" }}>
-            Enhance your workflow with cutting-edge AI-driven audio solutions
-          </span>
-        </h2>
-        <div className="btn-box">
-          <a href="/kyc-form" className="theme-btn btn-one">Need Support</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+            <div className="auto-container">
+              <div className="inner-container">
+                <div className="pattern-layer">
+                  <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
+                  <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
+                  <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
+                  <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
+                </div>
+                <div className="inner-box">
+                  <h2>
+                    #1 Rated AI Audio Software
+                    <span style={{ display: "block", marginTop: "10px", fontSize: "18px", fontWeight: "normal", color: "#fff" }}>
+                      Enhance your workflow with cutting-edge AI-driven audio solutions
+                    </span>
+                  </h2>
+                  <div className="btn-box">
+                    <a href="/contact-form" style={{ background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)' }} className="theme-btn btn-one">Need Support</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
 
 
@@ -954,9 +968,9 @@ const SensaiTemplate = () => {
                           paddingLeft: "0"
                         }}>
                           <li style={{ width: "100%", textAlign: "left" }}><a href="/">About</a></li>
-                          <li style={{ width: "100%", textAlign: "left" }}><a href="/">Contact</a></li>
+                          <li style={{ width: "100%", textAlign: "left" }}><a href="/contact-form">Contact</a></li>
                           <li style={{ width: "100%", textAlign: "left" }}><a href="/">Affiliates</a></li>
-                          <li style={{ width: "100%", textAlign: "left" }}><a href="/">Help</a></li>
+                          <li style={{ width: "100%", textAlign: "left" }}><a href="/contact-form">Help</a></li>
                         </ul>
                       </div>
                     </div>
@@ -972,10 +986,10 @@ const SensaiTemplate = () => {
                       <div className="widget-content">
                         <p>Combined with a handy platform and top-notch support from our in-house production team</p>
                         <div className="form-inner">
-                          <form method="post" action="contact.html">
+                          <form method="post" action="/">
                             <div className="form-group">
                               <input type="email" name="email" placeholder="Email Address" required />
-                              <button type="submit" className="theme-btn btn-one">Subscribe</button>
+                              <button type="submit" style={{ background: 'linear-gradient(90deg, #45ACAB 0%, #4788AC 100%)' }} className="theme-btn btn-one">Subscribe</button>
                             </div>
                           </form>
                         </div>
@@ -988,7 +1002,14 @@ const SensaiTemplate = () => {
             <div className="footer-bottom centred">
               <div className="auto-container">
                 <div className="copyright">
-                  <p>Copyright &copy; 2023 <a href="index.html">XDial</a>, Inc. All Rights Reserved</p>
+                  <p>Copyright &copy; 2023 <a href='/' style={{ 
+  background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)', 
+  WebkitBackgroundClip: 'text', 
+  WebkitTextFillColor: 'transparent' 
+}}>
+  xDial
+</a>
+, Inc. All Rights Reserved</p>
                 </div>
               </div>
             </div>

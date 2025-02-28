@@ -1,34 +1,65 @@
-/* ImprovedServicesComparison.css */
+/* ServicesComparison.css - glassy style matching service cards */
 .improved-comparison-container {
   padding: 3rem 0;
   max-width: 1200px;
   margin: 0 auto 120px auto;
+  color: #ffffff;
+}
+.improved-comparison-container * {
+  color: #ffffff !important;
 }
 
+.no-underline {
+  text-decoration: none !important;
+}
+
+.feature-custom {
+  color: #ffffff !important;
+  font-weight: 500;
+  position: relative;
+}
+
+.feature-custom:after {
+  display: none !important;
+}
 .improved-comparison-heading {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
 }
 
 .improved-comparison-heading h2 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #45ACAB;
+  font-weight: 700;
+  color: #ffffff;
+  position: relative;
   display: inline-block;
 }
 
 .improved-comparison-heading p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.7);
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  color: #ffffff;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  opacity: 0.8;
 }
 
+/* Glass effect for table wrapper - matching service cards */
 .improved-comparison-table-wrapper {
   overflow-x: auto;
   border-radius: 12px;
-  padding: 1px;
+  background-color: rgba(31, 41, 55, 0.7); /* #1f2937 with transparency */
+  border: 1px solid #374151;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.improved-comparison-table-wrapper:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(16, 185, 129, 0.3); /* #10b981 with transparency */
 }
 
 .improved-comparison-table {
@@ -40,150 +71,176 @@
 
 .improved-comparison-table th,
 .improved-comparison-table td {
-  padding: 1.5rem 1rem;
+  padding: 1.2rem 1rem;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5); /* #374151 with transparency */
+  transition: all 0.3s ease;
 }
 
 .improved-comparison-table tr:last-child td {
   border-bottom: none;
 }
 
+/* Row hover effect */
+.improved-comparison-table tbody tr:hover {
+  background-color: rgba(44, 62, 80, 0.3); /* #2c3e50 with transparency */
+}
+
 /* Header styles */
 .feature-header {
   text-align: left;
   font-size: 1rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
+  color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
   padding-left: 2rem;
   width: 20%;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  background-color: rgba(31, 41, 55, 0.9);
 }
 
 .provider-header {
   position: relative;
   font-weight: 600;
   width: 20%;
-}
-
-.recommended-tier {
-  background-color: rgba(69, 172, 171, 0.1) !important;
-}
-
-.recommended-badge {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #45ACAB;
-  color: white;
-  padding: 0.2rem 1rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  background-color: rgba(31, 41, 55, 0.9);
 }
 
 .provider-name {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: #fff;
+  color: #ffffff;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .provider-description {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 0.5rem;
-}
-
-.provider-price {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #45ACAB;
-}
-
-.recommended-column {
-  background-color: rgba(69, 172, 171, 0.05) !important;
+  font-size: 0.875rem;
+  color: #ffffff;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
 }
 
 /* Feature cell styling */
 .feature-name {
   text-align: left;
-  font-weight: 400;
+  font-weight: 600;
   padding-left: 2rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: #ffffff;
+  font-size: 0.875rem;
+  background-color: rgba(31, 41, 55, 0.7);
+  opacity: 0.9;
 }
 
 .feature-cell {
-  font-size: 1rem;
-}
-
-.feature-available {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #45ACAB;
-}
-
-.check-icon {
-  /* SVG icon sizing - allows for responsive adjustments */
-  width: 20px;
-  height: 20px;
-}
-
-.feature-unavailable {
-  color: rgba(255, 255, 255, 0.3);
-  font-size: 1.25rem;
-}
-
-/* Footer and CTA buttons */
-.improved-comparison-table tfoot td {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: none;
-}
-
-.table-cta-button {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: 500;
+  font-size: 0.875rem;
   transition: all 0.3s ease;
-  min-width: 120px;
+  position: relative;
+  background-color: rgba(31, 41, 55, 0.5);
+  opacity: 0.8;
 }
 
-.table-cta-button.primary {
-  background: #45ACAB;
-  color: white;
-}
-
-.table-cta-button.primary:hover {
+/* Glass card effect on hover */
+.feature-cell:hover {
+  background-color: rgba(44, 62, 80, 0.7);
+  opacity: 1;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(69, 172, 171, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.table-cta-button.secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Value styling - glassy effect */
+.feature-value {
+  color: #ffffff;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 4px 10px;
+  border-radius: 4px;
 }
 
-.table-cta-button.secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
+/* Special styling for different values */
+.feature-yes {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.feature-na {
+  opacity: 0.6;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.feature-custom {
+  color: #44BCCC;
+  font-weight: 500;
+  position: relative;
+}
+
+.feature-custom:after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background-color: #44BCCC;
+  border-radius: 1px;
+  opacity: 0.7;
+}
+
+.feature-text {
+  font-weight: 400;
+}
+
+/* Custom styling for cells based on content */
+.custom-feature {
+  background-color: rgba(68, 188, 204, 0.1);
+  position: relative;
+}
+
+.custom-feature:hover {
+  background-color: rgba(68, 188, 204, 0.15);
+}
+
+.custom-feature::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(68, 188, 204, 0), rgba(68, 188, 204, 0.5), rgba(68, 188, 204, 0));
+}
+
+/* Button at the bottom of each column - similar to service cards */
+.comparison-button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #44BCCC;
   color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 300;
+  font-size: medium;
+  transition: background-color 0.3s ease;
+}
+
+.comparison-button:hover {
+  background-color: #3AA8B8;
 }
 
 /* Responsive styles */
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   .improved-comparison-container {
     padding: 2rem 1rem;
   }
   
   .provider-name {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
   
   .provider-description {
@@ -191,7 +248,7 @@
   }
   
   .improved-comparison-table {
-    table-layout: auto; /* Allow table to adjust based on content */
+    table-layout: auto;
   }
 }
 
@@ -202,7 +259,7 @@
   
   .feature-header, .feature-name {
     padding-left: 1rem;
-    width: auto; /* Allow width to adjust */
+    width: auto;
     min-width: 140px;
   }
   
@@ -212,7 +269,7 @@
   }
   
   .provider-header {
-    width: auto; /* Allow width to adjust */
+    width: auto;
     min-width: 110px;
   }
   
@@ -220,130 +277,37 @@
     font-size: 1rem;
   }
   
-  .provider-price {
-    font-size: 1rem;
-  }
-  
-  .recommended-badge {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.75rem;
-  }
-  
-  .table-cta-button {
-    min-width: 100px;
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
+  .feature-name {
+    font-size: 0.875rem;
   }
 }
 
-@media (max-width: 576px) {
-  .improved-comparison-container {
-    margin: 0 auto 80px auto;
-    padding: 1.5rem 0.5rem;
-  }
-  
-  .improved-comparison-heading p {
-    font-size: 1rem;
-  }
-  
-  .improved-comparison-table-wrapper {
-    margin: 0 -0.5rem; /* Allow table to extend slightly beyond container on very small screens */
-  }
-  
-  .improved-comparison-table th,
-  .improved-comparison-table td {
-    padding: 0.75rem 0.5rem;
-  }
-  
-  .feature-header, .feature-name {
-    padding-left: 0.75rem;
-    min-width: 120px;
-    font-size: 0.9rem;
-  }
-  
-  .provider-name {
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
-  }
-  
-  .provider-description {
-    font-size: 0.7rem;
-    margin-bottom: 0.3rem;
-  }
-  
-  .provider-price {
-    font-size: 0.9rem;
-  }
-  
-  .feature-available svg {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .feature-unavailable {
-    font-size: 1rem;
-  }
-  
-  .table-cta-button {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.75rem;
-    min-width: 90px;
-  }
-}
-
-/* Special handling for very small mobile screens */
 /* Mobile Scrolling Enhancements */
 @media (max-width: 768px) {
   .improved-comparison-container {
     padding: 1rem;
+    overflow: hidden;
   }
 
   .improved-comparison-table-wrapper {
-    /* Ensure full-width scrolling */
     margin: 0 -1rem;
     width: calc(100% + 2rem);
-    
-    /* Enhanced scrolling experience */
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    overscroll-behavior-x: contain; /* Prevent bounce effect */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    padding-bottom: 10px;
   }
 
   .improved-comparison-table {
-    /* Ensure minimum width for scrolling */
-    min-width: 500px;
-    
-    /* Prevent table from shrinking */
+    min-width: 600px;
     table-layout: fixed;
   }
 
-  /* Add visual scroll indicators */
-  .improved-comparison-table-wrapper {
-    position: relative;
+  .improved-comparison-table th,
+  .improved-comparison-table td {
+    white-space: nowrap;
   }
 
-  .improved-comparison-table-wrapper::before,
-  .improved-comparison-table-wrapper::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 20px;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .improved-comparison-table-wrapper::before {
-    left: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, transparent 100%);
-  }
-
-  .improved-comparison-table-wrapper::after {
-    right: 0;
-    background: linear-gradient(to left, rgba(0,0,0,0.1) 0%, transparent 100%);
-  }
-
-  /* Scroll hint */
   .improved-comparison-container::after {
     content: '← Scroll horizontally →';
     display: block;
@@ -353,38 +317,6 @@
     font-size: 0.8rem;
     margin-top: 0.5rem;
     font-style: italic;
-  }
-}
-
-/* Very small screens additional tweaks */
-@media (max-width: 480px) {
-  .improved-comparison-table-wrapper {
-    margin: 0 -0.5rem;
-    width: calc(100% + 1rem);
-  }
-
-  .improved-comparison-table {
-    min-width: 450px;
-  }
-
-  /* Tighter spacing for small screens */
-  .improved-comparison-table th,
-  .improved-comparison-table td {
-    padding: 0.5rem;
-  }
-
-  .feature-header, 
-  .feature-name {
-    font-size: 0.8rem;
-    padding-left: 0.5rem;
-  }
-
-  .provider-name {
-    font-size: 0.9rem;
-  }
-
-  .provider-description {
-    font-size: 0.7rem;
   }
 }
 

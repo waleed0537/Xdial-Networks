@@ -1,45 +1,75 @@
 import React from 'react';
-import { Check } from 'lucide-react';
 import '../assets/css/ServicesComparison.css';
 
 const ServicesComparison = () => {
-  // Features that will be compared - prioritizing the most important differentiators
-  // Common features at top, differentiating features below
+  // Updated features with more specific text
   const features = [
-    'Inbound & Outbound Support',
-    'Voicemail Detection',
-    'Call Screening Capability',
-    'Low Latency Response',
+    'Call Direction Support',
+    'Response Time',
+    'Call Screening',
+    'Latency',
     'Live Call Monitoring',
     'Sentiment Analysis',
-    'AI-driven Custom Rules'
+    'Adaptive Learning'
   ];
 
-  // Service tiers mapped from ServicesCard data with simplified feature matrix
+  // Updated providers with text values instead of booleans
   const providers = [
     {
       name: 'xLite',
       description: 'Essential Call Screening',
       link: '/services/lite',
-      features: [true, true, true, false, false, false, false]
+      features: [
+        'Inbound & Outbound', 
+        '3s', 
+        'Basic', 
+        'Moderate',
+        'N/A',
+        'N/A',
+        'N/A'
+      ]
     },
     {
       name: 'xPlus',
       description: 'Advanced Call Handling',
       link: '/services/plus',
-      features: [true, true, true, true, true, true, false]
+      features: [
+        'Outbound', 
+        '5s', 
+        'Advanced', 
+        'Superfast',
+        'Yes',
+        'Yes',
+        'N/A'
+      ]
     },
     {
       name: 'xUltra',
       description: 'Premium Call Intelligence',
       link: '/services/ultra',
-      features: [true, true, true, true, false, false, false]
+      features: [
+        'Inbound & Outbound', 
+        '3s', 
+        'Premium', 
+        'Faster',
+        'N/A',
+        'Yes',
+        'Yes'
+      ]
     },
     {
       name: 'xCustom',
       description: 'Personalized Solution',
       link: '/services/custom',
-      features: [true, true, true, true, false, false, true]
+      features: [
+        'Custom', 
+        'Custom', 
+        'Custom', 
+        'Custom',
+        'Custom',
+        'Custom',
+        'Custom'
+      ]
     }
   ];
 
@@ -68,16 +98,14 @@ const ServicesComparison = () => {
               <tr key={featureIndex}>
                 <td className="feature-name">{feature}</td>
                 {providers.map((provider, providerIndex) => (
-                  <td key={providerIndex} className="feature-cell">
-                    {provider.features[featureIndex] ? (
-                      <div className="feature-available">
-                        <Check size={18} strokeWidth={3} />
-                      </div>
-                    ) : (
-                      <div className="feature-unavailable">
-                        <span>—</span>
-                      </div>
-                    )}
+                  <td key={providerIndex} className={`feature-cell ${provider.features[featureIndex] === 'Custom' ? 'custom-feature' : ''}`}>
+                    <div className={`feature-value ${
+                      provider.features[featureIndex] === 'Yes' ? 'feature-yes' : 
+                      provider.features[featureIndex] === 'N/A' ? 'feature-na' : 
+                      provider.features[featureIndex] === 'Custom' ? 'feature-custom no-underline' : 'feature-text'
+                    }`}>
+                      {provider.features[featureIndex]}
+                    </div>
                   </td>
                 ))}
               </tr>

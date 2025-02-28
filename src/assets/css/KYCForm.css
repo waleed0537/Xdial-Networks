@@ -286,3 +286,177 @@
 ::-webkit-scrollbar-thumb:hover {
     background: #45a049;
 }
+
+/* Add these additional styles to your existing KYCForm.css */
+
+/* Contact Form Specific Styles */
+.contact-form-wrapper {
+  max-width: 800px; /* Slightly narrower than KYC form */
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 10px;
+}
+
+/* Enhanced form title for contact form */
+.contact-form-wrapper .form-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 40px;
+}
+
+.contact-form-wrapper .form-title:after {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Enhance textarea for message field */
+.contact-form-wrapper .form-textarea {
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.contact-form-wrapper .form-textarea:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Focus style for inputs */
+.contact-form-wrapper .form-input:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Success message enhancements */
+.contact-form-wrapper .success-message {
+  padding: 50px 30px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  text-align: center;
+}
+
+.contact-form-wrapper .success-message h3 {
+  color: #4CAF50;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 15px;
+}
+
+.contact-form-wrapper .success-message h3:after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 2px;
+  background: #4CAF50;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Enhanced submit button with gradient background */
+.contact-form-wrapper .submit-button {
+  background: linear-gradient(90deg, #45ACAB 0%, #4788AC 100%);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form-wrapper .submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.contact-form-wrapper .submit-button:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .contact-form-wrapper {
+    padding: 30px 20px;
+  }
+  
+  .contact-form-wrapper .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+/* Small screen adjustments */
+@media (max-width: 480px) {
+  .contact-form-wrapper {
+    padding: 20px 15px;
+  }
+  
+  .contact-form-wrapper .form-title {
+    font-size: 1.8rem;
+  }
+}
+/* Add these styles to your KYCForm.css file */
+
+.form-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  
+  .form-back-button {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  .form-back-button:hover {
+    color: #4CAF50;
+    transform: translateY(-50%) translateX(-3px);
+  }
+  
+  .form-title {
+    flex: 1;
+    text-align: center;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .form-header {
+      flex-direction: column;
+      margin-bottom: 30px;
+    }
+    
+    .form-back-button {
+      position: static;
+      transform: none;
+      align-self: flex-start;
+      margin-bottom: 20px;
+    }
+    
+    .form-title {
+      font-size: 2rem;
+    }
+  }

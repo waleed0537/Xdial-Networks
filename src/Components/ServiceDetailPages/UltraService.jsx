@@ -12,7 +12,7 @@ const UltraService = () => {
             <a href="/">Home</a>
             <a href="#features">Features</a>
             <a href="#benefits">Benefits</a>
-            <a href="#contact">Contact</a>
+            <a href="/contact-form">Contact</a>
           </nav>
 
           <section className="service-hero">
@@ -52,7 +52,10 @@ const UltraService = () => {
           <section className="service-cta">
             <h2>Maximize Your Call Operations</h2>
             <p>Transform your business with intelligent, real-time AI call handling</p>
-            <button className="cta-button">Contact Sales</button>
+            <button className="cta-button" onClick={() => window.location.href = "/contact-form"}>
+  Contact Sales
+</button>
+
           </section>
 
           <section className="sample-recordings">

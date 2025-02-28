@@ -101,9 +101,9 @@ const MobileNavigation = ({ logo }) => {
                   <li><a href="#" onClick={(e) => handleNavClick(e, '/services/voip')}>VoIP</a></li>
                 </ul>
               </li>
-              {/* <li>
-                <a href="/kyc-form" onClick={(e) => handleNavClick(e, '/contact-form')}>Contact Form</a>
-              </li> */}
+              <li>
+                <a href="/contact-form" onClick={(e) => handleNavClick(e, '/contact-form')}>Contact Form</a>
+              </li>
             </ul>
           </div>
           {/* <div className="contact-info">

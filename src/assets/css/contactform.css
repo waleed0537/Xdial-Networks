@@ -1,0 +1,214 @@
+/* MinimalistContactForm.css */
+.minimalist-contact-container {
+    background-color: #0a1428;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    color: #ffffff;
+  }
+  
+  .minimalist-contact-content {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .minimalist-header {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-bottom: 40px;
+  }
+  
+  .minimalist-back-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    font-size: 16px;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  .minimalist-back-button:hover {
+    color: #45ACAB;
+    transform: translateX(-3px);
+  }
+  
+  .minimalist-contact-title {
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .minimalist-contact-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background: #45ACAB;
+  }
+  
+  .minimalist-contact-form {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .minimalist-form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .minimalist-form-group {
+    flex: 1;
+    margin-bottom: 20px;
+  }
+  
+  .minimalist-form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #ffffff;
+  }
+  
+  .required-star {
+    color: #45ACAB;
+  }
+  
+  .minimalist-form-input,
+  .minimalist-form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .minimalist-form-input::placeholder,
+  .minimalist-form-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  .minimalist-form-input:focus,
+  .minimalist-form-textarea:focus {
+    outline: none;
+    border-color: #45ACAB;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .minimalist-form-textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+  
+  .minimalist-error-input {
+    border-color: #ff4d4d !important;
+  }
+  
+  .minimalist-error-message {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  .minimalist-form-actions {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .minimalist-submit-button {
+    background-color: #45ACAB;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 14px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+  
+  .minimalist-submit-button:hover {
+    background-color: #3C9A9A;
+  }
+  
+  .minimalist-submit-button:disabled {
+    background-color: #2a3a4c;
+    cursor: not-allowed;
+  }
+  
+  .minimalist-success-message {
+    background-color: rgba(69, 172, 171, 0.1);
+    border: 1px solid rgba(69, 172, 171, 0.2);
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .minimalist-success-message h3 {
+    color: #45ACAB;
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  
+  .minimalist-success-message p {
+    color: #ffffff;
+    margin-bottom: 30px;
+  }
+  
+  .minimalist-button {
+    background-color: transparent;
+    color: #45ACAB;
+    border: 1px solid #45ACAB;
+    border-radius: 4px;
+    padding: 12px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .minimalist-button:hover {
+    background-color: rgba(69, 172, 171, 0.1);
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .minimalist-form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .minimalist-contact-form {
+      padding: 30px 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .minimalist-contact-title {
+      font-size: 28px;
+    }
+    
+    .minimalist-contact-form {
+      padding: 20px 15px;
+    }
+  }
