@@ -16,12 +16,12 @@ const LiteAIAgent = () => {
           </nav>
 
           <section className="service-hero">
-            <h1>Lite AI Agent</h1>
+            <h1>AI Agent - xLite </h1>
             <p>Cost-Effective and Efficient Call Handling Solution</p>
           </section>
 
           <section className="service-features" id="features">
-            <h2>Key Features</h2>
+            
             <div className="features-grid">
               
               <div className="feature-item">
@@ -48,23 +48,7 @@ const LiteAIAgent = () => {
             </div>
           </section>
 
-          <section className="service-benefits" id="benefits">
-            <h2>Business Benefits</h2>
-            <div className="benefits-list">
-              <div className="benefit-item">
-                <h3>Cost-Effective Solution</h3>
-                <p>Reduce operational costs while maintaining efficient call screening capabilities</p>
-              </div>
-              <div className="benefit-item">
-                <h3>Outbound Call Center Optimization</h3>
-                <p>Primarily designed for outbound operations with flexible inbound customization</p>
-              </div>
-              <div className="benefit-item">
-                <h3>Scalable AI Integration</h3>
-                <p>Reliable AI-powered call handling without unnecessary complexity</p>
-              </div>
-            </div>
-          </section>
+        
 
           <section className="service-cta">
             <h2>Ready to Enhance Your Call Center?</h2>

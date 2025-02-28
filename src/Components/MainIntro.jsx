@@ -8,15 +8,11 @@ const MainIntro = () => {
       <div className="main-intro-container">
         <div className="main-intro-content">
           <div className="main-intro-text">
-            <h2>Transform Your Call Center Operations</h2>
+            <h2>Supercharge Your Call Center with AI-Powered Dialing – Smarter, Faster, Seamless!</h2>
             <p>
-              At XDial Networks, we revolutionize call center operations with a complete 
-              suite of VoIP services, custom dialers, and AI-powered call-handling bots. 
-              Our solutions are designed to enhance efficiency, streamline communication, 
-              and deliver crystal-clear voice connectivity. Whether you're optimizing 
-              outbound campaigns, managing inbound calls, or automating customer interactions, 
-              XDial Networks provides the technology, reliability, and scalability your 
-              business needs. Power up your call center with cutting-edge solutions—all in one place.
+              Optimize your sales with our next-generation Auto Dialer & Predictive Dialer. Connect smarter and faster
+              with our AI-powered Conversational Dialer—turning every lead into an opportunity. Simplify your
+              infrastructure and make every call a smart call with XDial Networks' cutting-edge call center dialing solutions
             </p>
           </div>
         </div>

@@ -15,12 +15,12 @@ const CustomService = () => {
             </nav>
   
             <section className="service-hero">
-              <h1>Custom Service Plan</h1>
+              <h1>AI Agent - xCustom</h1>
               <p>Tailored solutions for unique business needs</p>
             </section>
   
             <section className="service-features" id="features">
-              <h2>Customizable Features</h2>
+              
               <div className="features-grid">
                 <div className="feature-item">
                   <Settings className="feature-icon" />
@@ -45,23 +45,7 @@ const CustomService = () => {
               </div>
             </section>
   
-            <section className="service-benefits" id="benefits">
-              <h2>Custom Benefits</h2>
-              <div className="benefits-list">
-                <div className="benefit-item">
-                  <h3>Tailored Experience</h3>
-                  <p>Solutions designed specifically for your business</p>
-                </div>
-                <div className="benefit-item">
-                  <h3>Flexible Pricing</h3>
-                  <p>Pay only for the features you need</p>
-                </div>
-                <div className="benefit-item">
-                  <h3>Dedicated Support</h3>
-                  <p>Personal account manager and technical support</p>
-                </div>
-              </div>
-            </section>
+          
   
             <section className="service-cta">
               <h2>Build Your Custom Solution</h2>

@@ -16,12 +16,12 @@ const PlusService = () => {
           </nav>
 
           <section className="service-hero">
-            <h1>Plus AI Agent</h1>
+            <h1>AI Agent - xPlus </h1>
             <p>Advanced Call Handling with Smarter Filtering and Real-Time Monitoring</p>
           </section>
 
           <section className="service-features" id="features">
-            <h2>Key Features</h2>
+         
             <div className="features-grid">
               
               <div className="feature-item">
@@ -47,23 +47,7 @@ const PlusService = () => {
             </div>
           </section>
 
-          <section className="service-benefits" id="benefits">
-            <h2>Business Benefits</h2>
-            <div className="benefits-list">
-              <div className="benefit-item">
-                <h3>Enhanced Call Intelligence</h3>
-                <p>More intelligent call screening with improved accuracy and real-time insights</p>
-              </div>
-              <div className="benefit-item">
-                <h3>Outbound Operations Optimization</h3>
-                <p>Designed for high-performance outbound call centers with flexible inbound customization</p>
-              </div>
-              <div className="benefit-item">
-                <h3>Superior Communication Experience</h3>
-                <p>Faster response times and advanced sentiment detection for more effective interactions</p>
-              </div>
-            </div>
-          </section>
+    
 
           <section className="service-cta">
             <h2>Ready to Elevate Your Call Operations?</h2>

@@ -250,68 +250,60 @@ const SensaiTemplate = () => {
           {/* Main Header */}
           <header className="main-header header-style-seven">
             {/* Header Lower */}
-            <div className="header-lower">
-  <div className="auto-container">
-    <div className="outer-box">
-      <div className="logo-box">
-        <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop: "24px" }} /></a></figure>
-      </div>
-      <div className="menu-area">
-        {/* Mobile Navigation Toggler */}
-        <MobileNavigation logo={logo} />
-        <nav className="main-menu navbar-expand-md navbar-light clearfix">
-          <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent">
-          <ul className="navigation clearfix" style={{ display: "flex", gap: "40px" }}>
+            <div className="header-lower" >
+              <div className="auto-container" >
+                <div className="outer-box">
+                  <div className="logo-box">
+                    <figure className="logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop: "24px" }} /></a></figure>
+                  </div>
+                  <div className="menu-area" style={{  marginLeft: "-100px" }}>
+                    {/* Mobile Navigation Toggler */}
+                    <MobileNavigation logo={logo} />
+                    <nav className="main-menu navbar-expand-md navbar-light clearfix" style={{ display: "flex", justifyContent: "flex-start", marginLeft: "10px" }}>
+                      <div className="collapse navbar-collapse show clearfix" id="navbarSupportedContent" style={{ justifyContent: "flex-start" }}>
+                        <ul className="navigation clearfix" style={{ display: "flex", gap: "40px", justifyContent: "flex-start" }}>
+                          <li className="current dropdown"><a href="/">Home</a></li>
+                          <li><a href="/">About</a></li>
+                          <li className="dropdown" style={{ position: "relative" }}><a href="#">Services</a>
+                            <ul style={{ marginTop: "0", padding: "8px 0" }}>
+                              <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">AI Agents</a>
+                                <ul style={{
+                                  position: "absolute",
+                                  left: "100%",
+                                  top: "0",
+                                  marginTop: "0",
+                                  marginLeft: "10px",
+                                  padding: "8px 0",
+                                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)"
+                                }}>
+                                  <li style={{ margin: "0", padding: "0" }}>
+                                    <Link to="/services/lite" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xLite</Link>
+                                  </li>
+                                  <li style={{ margin: "0", padding: "0" }}>
+                                    <Link to="/services/plus" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xPlus</Link>
+                                  </li>
+                                  <li style={{ margin: "0", padding: "0" }}>
+                                    <Link to="/services/ultra" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xUltra</Link>
+                                  </li>
+                                  <li style={{ margin: "0", padding: "0" }}>
+                                    <Link to="/services/custom" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xCustom</Link>
+                                  </li>
+                                </ul>
+                              </li>
+                              <li style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">Auto Dialer</a></li>
+                              <li style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">VoIP</a></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </nav>
+                  </div>
+                  <div className="menu-right-content">
 
-              <li className="current dropdown"><a href="/">Home</a>
-
-              </li>
-              <li><a href="/">About</a></li>
-              <li className="dropdown" style={{ position: "relative" }}><a href="#">Services</a>
-                <ul style={{ marginTop: "0", padding: "8px 0" }}>
-                  <li className="dropdown" style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">AI Agents</a>
-                    <ul style={{
-                      position: "absolute",
-                      left: "100%",
-                      top: "0",
-                      marginTop: "0",
-                      marginLeft: "10px", /* Added spacing between parent menu and submenu */
-                      padding: "8px 0",
-                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)" /* Optional: adds a subtle shadow to better distinguish the menu */
-                    }}>
-                      <li style={{ margin: "0", padding: "0" }}>
-  <Link to="/services/lite" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xLite</Link>
-</li>
-<li style={{ margin: "0", padding: "0" }}>
-  <Link to="/services/plus" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xPlus</Link>
-</li>
-<li style={{ margin: "0", padding: "0" }}>
-  <Link to="/services/ultra" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xUltra</Link>
-</li>
-<li style={{ margin: "0", padding: "0" }}>
-  <Link to="/services/custom" style={{ padding: "6px 40px", textTransform: "none", fontVariant: "normal" }}>xCustom</Link>
-</li>
-
-                    </ul>
-                  </li>
-                  <li  style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">Auto Dialer</a></li>
-                  <li  style={{ position: "relative", margin: "0", padding: "0" }}><a href="#">VoIP</a></li>
-                  
-                </ul>
-              </li>
-             
-              {/* <li><Link to="/kyc-form" className="nav-link">Contact Form</Link></li> */}
-            </ul>
-          </div>
-        </nav>
-      </div>
-      <div className="menu-right-content">
-        <div className="search-box-outer search-toggler mr_30"><i className="icon-1"></i></div>
-        <div className="btn-box"><a href="/" className="theme-btn btn-one">Account</a></div>
-      </div>
-    </div>
-  </div>
-</div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Sticky Header */}
             <div className="sticky-header">
@@ -585,53 +577,54 @@ const SensaiTemplate = () => {
 
           {/* Feature Style Five */}
           <section className="feature-style-five">
-            <div className="auto-container">
-              <div className="inner-container pt_150 pb_150">
-                <div className="row align-items-center">
-                  <div className="col-lg-6 col-md-12 col-sm-12 content-column">
-                    <div className="content_block_seven">
-                      <div className="content-box mr_60">
-                        <div className="sec-title mb_35">
-                          <span className="sub-title">Top Feature</span>
-                          <h2>Empowering companies stand the customer</h2>
-                        </div>
-                        <div className="inner-box">
-                          <div className="row clearfix">
-                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                              <div className="single-item mb_40">
-                                <div className="icon-box"><i className="icon-25"></i></div>
-                                <h3>Manage Content</h3>
-                                <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
-                              </div>
-                            </div>
-                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                              <div className="single-item">
-                                <div className="icon-box"><i className="icon-27"></i></div>
-                                <h3>Coach Reps</h3>
-                                <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
-                              </div>
-                            </div>
-                            <div className="col-lg-6 col-md-6 col-sm-12 single-column">
-                              <div className="single-item">
-                                <div className="icon-box"><i className="icon-28"></i></div>
-                                <h3>Connect Users</h3>
-                                <p>Dicta sunt explicabo. Nemo ipsu enim ipsam voluptatem quia</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+  <div className="auto-container">
+    <div className="inner-container pt_150 pb_150">
+      <div className="row align-items-center">
+        <div className="col-lg-6 col-md-12 col-sm-12 content-column">
+          <div className="content_block_seven">
+            <div className="content-box mr_60">
+              <div className="sec-title mb_35">
+                <span className="sub-title">Top Feature</span>
+                <h2>Empowering Companies to Connect, Manage, and Grow</h2>
+              </div>
+              <div className="inner-box">
+                <div className="row clearfix">
+                  <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                    <div className="single-item mb_40">
+                      <div className="icon-box"><i className="icon-25"></i></div>
+                      <h3>Manage Content</h3>
+                      <p>Effortlessly organize, edit, and deliver engaging content that captivates your audience.</p>
                     </div>
                   </div>
-                  <div className="col-lg-6 col-md-12 col-sm-12 image-column">
-                    <div className="image-box ml_40">
-                      <figure className="image"><img src={dashboard8} alt="" /></figure>
+                  <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                    <div className="single-item">
+                      <div className="icon-box"><i className="icon-27"></i></div>
+                      <h3>Coach Reps</h3>
+                      <p>Empower your sales and support teams with real-time insights, training, and feedback.</p>
+                    </div>
+                  </div>
+                  <div className="col-lg-6 col-md-6 col-sm-12 single-column">
+                    <div className="single-item">
+                      <div className="icon-box"><i className="icon-28"></i></div>
+                      <h3>Connect Users</h3>
+                      <p>Build strong relationships by seamlessly connecting users with your platform and services.</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
+        </div>
+        <div className="col-lg-6 col-md-12 col-sm-12 image-column">
+          <div className="image-box ml_40">
+            <figure className="image"><img src={dashboard8} alt="Feature Overview" /></figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
           {/* CTA Style Two */}
           <section className="cta-style-two centred">
@@ -641,12 +634,12 @@ const SensaiTemplate = () => {
                 <div className="pattern-layer" style={{ backgroundImage: `url(${shape57})` }}></div>
                 <div className="sec-title light mb_25">
                   <span className="sub-title-three">Get a Demo</span>
-                  <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span>sales</span> <br />opportunities</h2>
+                  <h2 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Turn conversations into <span>sales</span></h2>
                 </div>
                 <p style={{ position: 'relative', zIndex: 2, color: '#fff', margin: '15px 0' }}>Convert words into sales in mere seconds</p>
                 <div className="btn-box">
-                  <a href="index-6.html" className="theme-btn btn-one mr_20">Schedule a Demo</a>
-                  <a href="index-6.html" className="theme-btn btn-two">Try Pro Version</a>
+                  <a href="/" className="theme-btn btn-one mr_20">Schedule a Demo</a>
+
                 </div>
               </div>
             </div>
@@ -844,7 +837,7 @@ const SensaiTemplate = () => {
           </div>
         </section> */}
           {/* Testimonial Section */}
-          <section className="testimonial-section centred pb_140">
+          {/* <section className="testimonial-section centred pb_140">
             <div className="shape">
               <div className="shape-3" style={{ backgroundImage: `url(${shape45})`, marginTop: "70px" }}></div>
               <div className="shape-2" style={{ backgroundImage: `url(${shape63})` }}></div>
@@ -902,10 +895,10 @@ const SensaiTemplate = () => {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
 
           {/* CTA Section */}
-          <section className="cta-section">
+          <section className="cta-section" style={{ marginTop: "80px", paddingTop: "60px" }}>
             <div className="auto-container">
               <div className="inner-container">
                 <div className="pattern-layer">
@@ -915,10 +908,9 @@ const SensaiTemplate = () => {
                   <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
                 </div>
                 <div className="inner-box">
-                  <h2>The #1 rated AI Audio software <br />on the planet</h2>
+                  <h2>#1 rated AI Audio software </h2>
                   <div className="btn-box">
-                    <a href="index-4.html" className="theme-btn btn-two mr_20">Generate Now</a>
-                    <a href="contact.html" className="theme-btn btn-one">Need Support</a>
+                    <a href="/kyc-form" className="theme-btn btn-one">Need Support</a>
                   </div>
                 </div>
               </div>
@@ -932,8 +924,8 @@ const SensaiTemplate = () => {
                 <div className="row clearfix">
                   <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
                     <div className="footer-widget logo-widget">
-                      <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" style={{ paddingTop: "0px", height: "100px" }} /></a></figure>
-                      <p>Combined with a handy platform and top-notch support from our in-house production team</p>
+                      <figure className="footer-logo"><a href="index.html"><img src={logo} alt="" style={{ marginTop: "-30px", height: "100px" }} /></a></figure>
+                      <p>Unleashing the power of AI for call centers with seamless VoIP integration and expert technical support from our dedicated team</p>
                       <ul className="social-links clearfix">
                         <li><a href="index.html"><i className="fa-brands fa-facebook"></i></a></li>
                         <li><a href="index.html"><i className="fa-brands fa-twitter"></i></a></li>
@@ -943,36 +935,27 @@ const SensaiTemplate = () => {
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
-                    <div className="footer-widget links-widget ml_60">
+                    <div className="footer-widget links-widget" style={{ textAlign: "left", marginLeft: "150px" }}>
                       <div className="widget-title">
                         <h3>Resources</h3>
                       </div>
                       <div className="widget-content">
-                        <ul className="links-list clearfix">
-                          <li><a href="about.html">About</a></li>
-                          <li><a href="contact.html">Contact</a></li>
-                          <li><a href="blog.html">Blog</a></li>
-                          <li><a href="shop.html">Affiliates</a></li>
-                          <li><a href="contact.html">Help</a></li>
+                        <ul className="links-list clearfix" style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                          paddingLeft: "0"
+                        }}>
+                          <li style={{ width: "100%", textAlign: "left" }}><a href="/">About</a></li>
+                          <li style={{ width: "100%", textAlign: "left" }}><a href="/">Contact</a></li>
+                          <li style={{ width: "100%", textAlign: "left" }}><a href="/">Affiliates</a></li>
+                          <li style={{ width: "100%", textAlign: "left" }}><a href="/">Help</a></li>
                         </ul>
                       </div>
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
-                    <div className="footer-widget links-widget">
-                      <div className="widget-title">
-                        <h3>Primary Pages</h3>
-                      </div>
-                      <div className="widget-content">
-                        <ul className="links-list clearfix">
-                          <li><a href="index.html">Privacy</a></li>
-                          <li><a href="index.html">Press</a></li>
-                          <li><a href="index.html">Terms & Conditions</a></li>
-                          <li><a href="index.html">Refund Policy</a></li>
-                          <li><a href="index.html">Sitemap</a></li>
-                        </ul>
-                      </div>
-                    </div>
+
                   </div>
                   <div className="col-lg-3 col-md-6 col-sm-12 footer-column">
                     <div className="footer-widget subscribe-widget">

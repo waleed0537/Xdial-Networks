@@ -54,7 +54,7 @@ const MobileNavigation = ({ logo }) => {
 
   return (
     <>
-      <div className="mobile-nav-toggler" onClick={toggleMenu}>
+      <div className="mobile-nav-toggler" onClick={toggleMenu} style={{  marginLeft: "250px",borderRadius:"5px" }}> 
         <span className="icon-bar"></span>
         <span className="icon-bar"></span>
         <span className="icon-bar"></span>

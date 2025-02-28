@@ -16,12 +16,12 @@ const UltraService = () => {
           </nav>
 
           <section className="service-hero">
-            <h1>Ultra AI Agent</h1>
+            <h1>AI Agent - xUltra </h1>
             <p>Enterprise-Grade AI for Intelligent Call Handling</p>
           </section>
 
           <section className="service-features" id="features">
-            <h2>Key Features</h2>
+  
             <div className="features-grid">
             
               <div className="feature-item">
@@ -47,23 +47,7 @@ const UltraService = () => {
             </div>
           </section>
 
-          <section className="service-benefits" id="benefits">
-            <h2>Business Benefits</h2>
-            <div className="benefits-list">
-              <div className="benefit-item">
-                <h3>Intelligent Call Handling</h3>
-                <p>Real-time decision-making and advanced speech recognition for maximum efficiency</p>
-              </div>
-              <div className="benefit-item">
-                <h3>Comprehensive Call Center Solution</h3>
-                <p>Supports both inbound and outbound operations with adaptable features</p>
-              </div>
-              <div className="benefit-item">
-                <h3>Highest Accuracy and Efficiency</h3>
-                <p>Industry-leading accuracy in speech recognition and call classification</p>
-              </div>
-            </div>
-          </section>
+   
 
           <section className="service-cta">
             <h2>Maximize Your Call Operations</h2>
