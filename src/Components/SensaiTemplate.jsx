@@ -899,23 +899,30 @@ const SensaiTemplate = () => {
 
           {/* CTA Section */}
           <section className="cta-section" style={{ marginTop: "80px", paddingTop: "60px" }}>
-            <div className="auto-container">
-              <div className="inner-container">
-                <div className="pattern-layer">
-                  <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
-                  <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
-                  <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
-                  <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
-                </div>
-                <div className="inner-box">
-                  <h2>#1 rated AI Audio software </h2>
-                  <div className="btn-box">
-                    <a href="/kyc-form" className="theme-btn btn-one">Need Support</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+  <div className="auto-container">
+    <div className="inner-container">
+      <div className="pattern-layer">
+        <div className="pattern-1" style={{ backgroundImage: `url(${shape66})` }}></div>
+        <div className="pattern-2 rotate-me" style={{ backgroundImage: `url(${shape24})` }}></div>
+        <div className="pattern-3 rotate-me" style={{ backgroundImage: `url(${shape25})` }}></div>
+        <div className="pattern-4 rotate-me" style={{ backgroundImage: `url(${shape26})` }}></div>
+      </div>
+      <div className="inner-box">
+        <h2>
+          #1 Rated AI Audio Software
+          <span style={{ display: "block", marginTop: "10px", fontSize: "18px", fontWeight: "normal", color: "#fff" }}>
+            Enhance your workflow with cutting-edge AI-driven audio solutions
+          </span>
+        </h2>
+        <div className="btn-box">
+          <a href="/kyc-form" className="theme-btn btn-one">Need Support</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
           {/* Main Footer */}
           <footer className="main-footer">
