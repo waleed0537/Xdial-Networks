@@ -54,7 +54,7 @@ const VoIPService = () => {
               <h2 className="section-subtitle">Intelligent Communication</h2>
               <div className="highlighted-text">
                 <strong>xDial VoIP</strong> delivers 
-                <span className="text-gradient"> enterprise-grade telephony</span> 
+                <span className="text-gradient"> enterprise-grade telephony </span> 
                 with complete financial transparency and control.
               </div>
 
