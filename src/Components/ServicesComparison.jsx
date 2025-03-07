@@ -5,7 +5,7 @@ const ServicesComparison = () => {
   // Updated features with more specific text
   const features = [
     'Call Direction Support',
-    'Response Time',
+
     'Call Screening',
     'Latency',
     'Live Call Monitoring',
@@ -21,7 +21,7 @@ const ServicesComparison = () => {
       link: '/services/lite',
       features: [
         'Inbound & Outbound', 
-        '3s', 
+     
         'Basic', 
         'Moderate',
         'N/A',
@@ -35,7 +35,7 @@ const ServicesComparison = () => {
       link: '/services/plus',
       features: [
         'Outbound', 
-        '5s', 
+ 
         'Advanced', 
         'Superfast',
         'Yes',
@@ -49,7 +49,7 @@ const ServicesComparison = () => {
       link: '/services/ultra',
       features: [
         'Inbound & Outbound', 
-        '3s', 
+    
         'Premium', 
         'Faster',
         'N/A',
@@ -63,7 +63,7 @@ const ServicesComparison = () => {
       link: '/services/custom',
       features: [
         'Custom', 
-        'Custom', 
+     
         'Custom', 
         'Custom',
         'Custom',

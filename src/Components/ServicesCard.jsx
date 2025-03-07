@@ -19,7 +19,8 @@ const ServicesCard = () => {
         "Voicemail Detection",
         "90% Accuracy",
         "Recorded Call Playback",
-        "Inbound and Outbound"
+        "Inbound and Outbound",
+        "Dashboard"
       ]
     },
     {
