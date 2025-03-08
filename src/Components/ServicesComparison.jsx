@@ -10,7 +10,8 @@ const ServicesComparison = () => {
     'Latency',
     'Live Call Monitoring',
     'Sentiment Analysis',
-    'Adaptive Learning'
+    'Adaptive Learning',
+    'Compaitable'
   ];
 
   // Updated providers with text values instead of booleans
@@ -24,6 +25,7 @@ const ServicesComparison = () => {
      
         'Basic', 
         'Moderate',
+        'N/A',
         'N/A',
         'N/A',
         'N/A'
@@ -40,7 +42,8 @@ const ServicesComparison = () => {
         'Superfast',
         'Yes',
         'Yes',
-        'N/A'
+        'N/A',
+        'Yes'
       ]
     },
     {
@@ -54,6 +57,7 @@ const ServicesComparison = () => {
         'Faster',
         'N/A',
         'Yes',
+        'Yes',
         'Yes'
       ]
     },
@@ -65,6 +69,7 @@ const ServicesComparison = () => {
         'Custom', 
      
         'Custom', 
+        'Custom',
         'Custom',
         'Custom',
         'Custom',
