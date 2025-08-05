@@ -10,7 +10,8 @@ export default defineConfig({
       'xdial-networks-frontend.onrender.com',
       'xdialnetworks.com',
       '.onrender.com',
-      'localhost'
+      'localhost',
+      'www.xdialnetworks.com'
     ]
   },
   preview: {
@@ -20,7 +21,8 @@ export default defineConfig({
       'xdial-networks-frontend.onrender.com',
       'xdialnetworks.com',
       '.onrender.com',
-      'localhost'
+      'localhost',
+      'www.xdialnetworks.com'
     ]
   }
 })
