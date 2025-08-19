@@ -584,13 +584,13 @@ const SensaiTemplate = () => {
                     <div className="content_block_seven">
                       <div className="content-box mr_60">
                         <div className="sec-title mb_35">
-                        <span className='sub-title' style={{ 
-  background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)', 
-  WebkitBackgroundClip: 'text', 
-  WebkitTextFillColor: 'transparent' 
-}}>
-  Top Features
-</span>
+                          <span className='sub-title' style={{
+                            background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent'
+                          }}>
+                            Top Features
+                          </span>
 
                           <h2>Empowering Companies to Connect, Manage, and Grow</h2>
                         </div>
@@ -1002,14 +1002,14 @@ const SensaiTemplate = () => {
             <div className="footer-bottom centred">
               <div className="auto-container">
                 <div className="copyright">
-                  <p>Copyright &copy; 2023 <a href='/' style={{ 
-  background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)', 
-  WebkitBackgroundClip: 'text', 
-  WebkitTextFillColor: 'transparent' 
-}}>
-  xDial
-</a>
-, Inc. All Rights Reserved</p>
+                  <p>Copyright &copy; 2023 <a href='/' style={{
+                    background: 'linear-gradient(90deg, rgb(69, 172, 171) 0%, rgb(71, 136, 172) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
+                    xDial
+                  </a>
+                    , Inc. All Rights Reserved</p>
                 </div>
               </div>
             </div>
