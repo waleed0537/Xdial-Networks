@@ -164,6 +164,41 @@ app.get('/api/health', (req, res) => {
     database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
   });
 });
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // List of allowed origins
+    const allowedOrigins = [
+      'https://xdial-networks-frontend.onrender.com',
+      'https://xdialnetworks.com',
+      'https://www.xdialnetworks.com',
+      'http://localhost:5173',
+      'http://localhost:5000',
+      'http://localhost:3000'
+    ];
+    
+    // Check if the origin is in the allowed list or if it's a subdomain
+    if (allowedOrigins.indexOf(origin) !== -1 || 
+        origin.endsWith('.onrender.com') ||
+        origin.endsWith('.xdialnetworks.com')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // For development, allow all origins
+      // In production, use: callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Submit Integration Request
 app.post('/api/integration/submit', async (req, res) => {
@@ -308,6 +343,10 @@ app.get('/api/integration/:id', async (req, res) => {
       error: error.message
     });
   }
+});
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
 });
 
 // Update Integration Status

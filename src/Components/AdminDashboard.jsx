@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/AdminDashboard.css';
 
+const API_URL = 'https://xdial-networks-backend.onrender.com';
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [integrations, setIntegrations] = useState([]);
@@ -57,7 +59,7 @@ const AdminDashboard = () => {
   const fetchIntegrations = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:5000/api/integration/all');
+      const response = await fetch(`${API_URL}/api/integration/all`);
       const data = await response.json();
 
       if (data.success) {
@@ -104,7 +106,7 @@ const AdminDashboard = () => {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/integration/${id}/status`, {
+      const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +145,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/integration/${id}`, {
+      const response = await fetch(`${API_URL}/api/integration/${id}`, {
         method: 'DELETE'
       });
 
