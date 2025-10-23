@@ -10,6 +10,9 @@ import CustomService from './Components/ServiceDetailPages/CustomService';
 import ContactForm from './Components/ContactForm';
 import AutoDialer from './Components/AutoDialer';
 import VoIPSolutions from './Components/VoIPSolutions';
+import IntegrationForm from './Components/IntegrationForm';
+import AdminDashboard from './Components/AdminDashboard';
+import AdminLogin from './Components/Login';
 import './App.css';
 
 function App() {
@@ -29,6 +32,11 @@ function App() {
         <Route path="/contact-form" element={<ContactForm />} />
         <Route path="/auto-dialer" element={<AutoDialer />} />
         <Route path="/voip-solutions" element={<VoIPSolutions />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        
+        {/* Integration Form Route */}
+        <Route path="/integration-form" element={<IntegrationForm />} />
       </Routes>
     </Router>
   );
