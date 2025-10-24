@@ -274,7 +274,7 @@ const IntegrationForm = () => {
 
             <div className="form-group">
               <label htmlFor="numberOfBots">
-                Number of Bots <span className="required">*</span>
+                Number of Remote Agents <span className="required">*</span>
               </label>
               <input
                 type="number"
@@ -287,7 +287,7 @@ const IntegrationForm = () => {
                 max="100"
                 required
               />
-              <small className="form-hint">Specify how many concurrent bots you need (1-100)</small>
+              <small className="form-hint">Specify how many concurrent remote agents you need (1-100)</small>
             </div>
 
             {formData.model && (
@@ -419,7 +419,7 @@ const IntegrationForm = () => {
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="primaryBotsCampaign">
-                    Bots Campaign <span className="required">*</span>
+                    Campaign Name <span className="required">*</span>
                   </label>
                   <input
                     type="text"
@@ -427,7 +427,7 @@ const IntegrationForm = () => {
                     name="primaryBotsCampaign"
                     value={formData.primaryBotsCampaign}
                     onChange={handleChange}
-                    placeholder="Campaign name for bots"
+                    placeholder="Campaign name for remote agents"
                     required
                   />
                 </div>
@@ -699,12 +699,12 @@ const IntegrationForm = () => {
           <section className="form-section">
             <div className="section-header">
               <i className="bi bi-chat-square-text"></i>
-              <h2>Current Bots</h2>
+              <h2>Current Remote Agents</h2>
             </div>
 
             <div className="form-group">
               <label htmlFor="customRequirements">
-                What company’s bots are you currently using? (Optional)
+                What company’s remote agents are you currently using? (Optional)
               </label>
               <textarea
                 id="customRequirements"
