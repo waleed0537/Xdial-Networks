@@ -2,7 +2,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/IntegrationForm.css';
 
-const API_URL = 'https://xdial-networks-backend.onrender.com';
+// Environment detection
+const getApiUrl = () => {
+  // Check if running locally
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000';
+  }
+  // Production
+  return 'https://xdial-networks-backend.onrender.com';
+};
+
+const API_URL = getApiUrl();
 
 const IntegrationForm = () => {
   const navigate = useNavigate();
