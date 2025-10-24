@@ -699,24 +699,21 @@ const IntegrationForm = () => {
           <section className="form-section">
             <div className="section-header">
               <i className="bi bi-chat-square-text"></i>
-              <h2>Custom Requirements</h2>
+              <h2>Current Bots</h2>
             </div>
 
             <div className="form-group">
               <label htmlFor="customRequirements">
-                What are your specific goals for the AI bots? (Optional)
+                What company’s bots are you currently using? (Optional)
               </label>
               <textarea
                 id="customRequirements"
                 name="customRequirements"
                 value={formData.customRequirements}
                 onChange={handleChange}
-                placeholder="Tell us about your expectations... For example:&#10;• Focus on higher transfer volume&#10;• Prioritize lead quality over quantity&#10;• Specific objection handling requirements&#10;• Target conversion rates&#10;• Any other custom needs"
                 rows="6"
               />
-              <small className="form-hint">
-                Help us optimize the bot behavior to meet your business goals
-              </small>
+
             </div>
           </section>
 

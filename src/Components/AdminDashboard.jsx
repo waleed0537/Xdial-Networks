@@ -576,7 +576,7 @@ const AdminDashboard = () => {
               {/* Custom Requirements */}
               {selectedIntegration.customRequirements && (
                 <div className="detail-section">
-                  <h3><i className="bi bi-chat-square-text"></i> Custom Requirements</h3>
+                  <h3><i className="bi bi-chat-square-text"></i> Current Bots</h3>
                   <div className="notes-box">
                     <p>{selectedIntegration.customRequirements}</p>
                   </div>
