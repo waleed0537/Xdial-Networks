@@ -265,10 +265,7 @@ const IntegrationForm = () => {
                     <option key={model} value={model}>{model}</option>
                   ))}
                 </select>
-                <small className="form-hint">
-                  {formData.model === 'Basic' && 'Basic model offers standard AI responses with flexible transfer options'}
-                  {formData.model === 'Advanced' && 'Advanced model provides enhanced AI capabilities with optimized transfer logic'}
-                </small>
+          
               </div>
             )}
 
@@ -708,7 +705,7 @@ const IntegrationForm = () => {
 
             <div className="form-group">
               <label htmlFor="customRequirements">
-                What companyâ€™s remote agents are you currently using? (Optional)
+                What company's remote agents are you currently using? (Optional)
               </label>
               <textarea
                 id="customRequirements"
