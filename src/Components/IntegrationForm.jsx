@@ -732,67 +732,8 @@ const IntegrationForm = () => {
           </div>
         </form>
       </div>
-
-      <style jsx>{`
-        .submit-message {
-          max-width: 800px;
-          margin: 0 auto 1rem;
-          padding: 1rem 1.5rem;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          font-size: 0.9375rem;
-          font-weight: 500;
-          animation: slideDown 0.3s ease-out;
-        }
-
-        .submit-message i {
-          font-size: 1.25rem;
-          flex-shrink: 0;
-        }
-
-        .submit-message.success {
-          background: #d1fae5;
-          color: #065f46;
-          border: 1px solid #6ee7b7;
-        }
-
-        .submit-message.error {
-          background: #fee2e2;
-          color: #991b1b;
-          border: 1px solid #fca5a5;
-        }
-
-        .submit-message.info {
-          background: #dbeafe;
-          color: #1e40af;
-          border: 1px solid #93c5fd;
-        }
-
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .submit-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-          transform: none !important;
-        }
-
-        .submit-btn:disabled:hover {
-          box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
-        }
-      `}</style>
     </div>
   );
 };
 
-export default IntegrationForm; 
+export default IntegrationForm;

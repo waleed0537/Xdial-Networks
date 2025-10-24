@@ -372,16 +372,24 @@ const AdminDashboard = () => {
                   </td>
                   <td>{integration.contactPerson}</td>
                   <td>
-                    <span className="campaign-badge">
-                      {integration.campaign}
-                    </span>
+                    {integration.campaign ? (
+                      <span className="campaign-badge">
+                        {integration.campaign}
+                      </span>
+                    ) : (
+                      <span className="legacy-badge">Legacy</span>
+                    )}
                   </td>
                   <td>
-                    <span className={`model-badge ${integration.model.toLowerCase()}`}>
-                      {integration.model}
-                    </span>
+                    {integration.model ? (
+                      <span className={`model-badge ${integration.model.toLowerCase()}`}>
+                        {integration.model}
+                      </span>
+                    ) : (
+                      <span className="legacy-badge">N/A</span>
+                    )}
                   </td>
-                  <td>{integration.numberOfBots}</td>
+                  <td>{integration.numberOfBots || '-'}</td>
                   <td>
                     <span className={`status-badge ${getStatusBadgeClass(integration.status)}`}>
                       {getStatusLabel(integration.status)}
@@ -436,27 +444,29 @@ const AdminDashboard = () => {
               </div>
 
               {/* Campaign Configuration */}
-              <div className="detail-section">
-                <h3><i className="bi bi-robot"></i> Campaign Configuration</h3>
-                <div className="detail-grid">
-                  <div className="detail-item">
-                    <label>Campaign Type</label>
-                    <p><span className="campaign-badge">{selectedIntegration.campaign}</span></p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Bot Model</label>
-                    <p><span className={`model-badge ${selectedIntegration.model.toLowerCase()}`}>{selectedIntegration.model}</span></p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Number of Bots</label>
-                    <p>{selectedIntegration.numberOfBots}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Transfer Settings</label>
-                    <p>{getTransferSettingsLabel(selectedIntegration.transferSettings)}</p>
+              {selectedIntegration.campaign && (
+                <div className="detail-section">
+                  <h3><i className="bi bi-robot"></i> Campaign Configuration</h3>
+                  <div className="detail-grid">
+                    <div className="detail-item">
+                      <label>Campaign Type</label>
+                      <p><span className="campaign-badge">{selectedIntegration.campaign}</span></p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Bot Model</label>
+                      <p><span className={`model-badge ${selectedIntegration.model?.toLowerCase()}`}>{selectedIntegration.model}</span></p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Number of Bots</label>
+                      <p>{selectedIntegration.numberOfBots}</p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Transfer Settings</label>
+                      <p>{getTransferSettingsLabel(selectedIntegration.transferSettings)}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Primary Dialler Settings */}
               <div className="detail-section">
