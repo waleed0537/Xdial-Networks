@@ -272,6 +272,32 @@ const IntegrationForm = () => {
               </div>
             )}
 
+            {formData.model && (
+              <div className="form-group">
+                <label>
+                  Transfer Settings <span className="required">*</span>
+                </label>
+                <div className="radio-group-vertical">
+                  {availableTransfers.map(option => (
+                    <label key={option.value} className="radio-card">
+                      <input
+                        type="radio"
+                        name="transferSettings"
+                        value={option.value}
+                        checked={formData.transferSettings === option.value}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="radio-card-content">
+                        <span className="radio-card-title">{option.label}</span>
+                        <span className="radio-card-description">{option.description}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="form-group">
               <label htmlFor="numberOfBots">
                 Number of Remote Agents <span className="required">*</span>
@@ -289,28 +315,6 @@ const IntegrationForm = () => {
               />
               <small className="form-hint">Specify how many concurrent remote agents you need (1-100)</small>
             </div>
-
-            {formData.model && (
-              <div className="form-group">
-                <label htmlFor="transferSettings">
-                  Transfer Settings <span className="required">*</span>
-                </label>
-                <select
-                  id="transferSettings"
-                  name="transferSettings"
-                  value={formData.transferSettings}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select transfer settings</option>
-                  {availableTransfers.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label} - {option.description}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
           </section>
 
           {/* Integration Settings Section */}
@@ -704,7 +708,7 @@ const IntegrationForm = () => {
 
             <div className="form-group">
               <label htmlFor="customRequirements">
-                What company’s remote agents are you currently using? (Optional)
+                What companyâ€™s remote agents are you currently using? (Optional)
               </label>
               <textarea
                 id="customRequirements"

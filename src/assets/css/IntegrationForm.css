@@ -292,6 +292,7 @@
   transition: all 0.2s ease;
   background: #ffffff;
   user-select: none;
+  position: relative;
 }
 
 .radio-card:hover {
@@ -300,30 +301,47 @@
 }
 
 .radio-card input[type="radio"] {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  width: 22px;
-  height: 22px;
-  border: 2px solid #d1d5db;
-  border-radius: 50%;
-  background: #ffffff;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-  margin-top: 2px;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.radio-card input[type="radio"]:checked {
-  border-color: #7c3aed;
-  background: #7c3aed;
-  border-width: 6px;
-}
 
 .radio-card:has(input[type="radio"]:checked) {
   border-color: #7c3aed;
   background: #faf5ff;
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+  padding-left: 3.5rem;
+}
+
+.radio-card:has(input[type="radio"]:checked)::before {
+  content: '';
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background: #7c3aed;
+  border-radius: 50%;
+}
+
+.radio-card:has(input[type="radio"]:checked)::after {
+  content: '✓';
+  position: absolute;
+  left: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
 }
 
 .radio-card-content {
