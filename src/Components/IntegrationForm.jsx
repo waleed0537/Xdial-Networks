@@ -292,27 +292,23 @@ const IntegrationForm = () => {
 
             {formData.model && (
               <div className="form-group">
-                <label>
+                <label htmlFor="transferSettings">
                   Transfer Settings <span className="required">*</span>
                 </label>
-                <div className="radio-group-vertical">
+                <select
+                  id="transferSettings"
+                  name="transferSettings"
+                  value={formData.transferSettings}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select transfer settings</option>
                   {availableTransfers.map(option => (
-                    <label key={option.value} className="radio-card">
-                      <input
-                        type="radio"
-                        name="transferSettings"
-                        value={option.value}
-                        checked={formData.transferSettings === option.value}
-                        onChange={handleChange}
-                        required
-                      />
-                      <div className="radio-card-content">
-                        <span className="radio-card-title">{option.label}</span>
-                        <span className="radio-card-description">{option.description}</span>
-                      </div>
-                    </label>
+                    <option key={option.value} value={option.value}>
+                      {option.label} - {option.description}
+                    </option>
                   ))}
-                </div>
+                </select>
               </div>
             )}
           </section>
