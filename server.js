@@ -1,5 +1,5 @@
 // ============================================================================
-// xDial Integration Backend - All-in-One Server
+// xDial Integration Backend - Updated Server
 // ============================================================================
 
 const express = require('express');
@@ -34,24 +34,33 @@ mongoose.connect(MONGODB_URI, {
 // ============================================================================
 
 const integrationSchema = new mongoose.Schema({
-  // Remote Agent Setup
-  adminAccess: {
+  // Campaign Configuration
+  campaign: {
     type: String,
     required: true,
+    enum: ['Medicare', 'Final Expense', 'MVA', 'Auto Insurance', 'Auto Warranty'],
     trim: true
   },
-  sipSeries: {
+  model: {
     type: String,
     required: true,
+    enum: ['Basic', 'Advanced'],
     trim: true
   },
-  portExtension: {
+  numberOfBots: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 100
+  },
+  transferSettings: {
     type: String,
-    default: '5060',
+    required: true,
+    enum: ['high-quality', 'balanced', 'broader', 'balanced-broad', 'balanced-qualified'],
     trim: true
   },
   
-  // Transfer Setup
+  // Integration Settings
   setupType: {
     type: String,
     enum: ['same', 'separate'],
@@ -59,36 +68,90 @@ const integrationSchema = new mongoose.Schema({
     default: 'same'
   },
   
-  // Same Dialler fields
-  verifierCampaign: {
+  // Primary Dialler Settings
+  primaryIpValidation: {
     type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'same';
-    }
+    required: true,
+    trim: true
   },
-  inboundGroup: {
+  primaryAdminLink: {
     type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'same';
-    }
+    required: true,
+    trim: true
   },
-  userGroup: {
+  primaryUser: {
     type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'same';
-    }
+    required: true,
+    trim: true
+  },
+  primaryPassword: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  primaryBotsCampaign: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  primaryUserSeries: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  primaryPort: {
+    type: String,
+    default: '5060',
+    trim: true
   },
   
-  // Separate Dialler fields
-  closerDiallerAccess: {
+  // Closer Dialler Settings (for separate setup)
+  closerIpValidation: {
     type: String,
     trim: true,
     required: function() {
       return this.setupType === 'separate';
     }
+  },
+  closerAdminLink: {
+    type: String,
+    trim: true,
+    required: function() {
+      return this.setupType === 'separate';
+    }
+  },
+  closerUser: {
+    type: String,
+    trim: true,
+    required: function() {
+      return this.setupType === 'separate';
+    }
+  },
+  closerPassword: {
+    type: String,
+    trim: true,
+    required: function() {
+      return this.setupType === 'separate';
+    }
+  },
+  closerCampaign: {
+    type: String,
+    trim: true,
+    required: function() {
+      return this.setupType === 'separate';
+    }
+  },
+  closerIngroup: {
+    type: String,
+    trim: true,
+    required: function() {
+      return this.setupType === 'separate';
+    }
+  },
+  closerPort: {
+    type: String,
+    default: '5060',
+    trim: true
   },
   
   // Contact Info
@@ -114,7 +177,9 @@ const integrationSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  additionalNotes: {
+  
+  // Custom Requirements
+  customRequirements: {
     type: String,
     trim: true,
     default: ''
@@ -147,23 +212,16 @@ integrationSchema.pre('save', function(next) {
 // Create indexes for faster queries
 integrationSchema.index({ email: 1 });
 integrationSchema.index({ companyName: 1 });
+integrationSchema.index({ campaign: 1 });
 integrationSchema.index({ status: 1 });
 integrationSchema.index({ submittedAt: -1 });
 
 const Integration = mongoose.model('Integration', integrationSchema);
 
 // ============================================================================
-// API Routes
+// CORS Configuration
 // ============================================================================
 
-// Health Check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Server is running',
-    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
-  });
-});
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -200,57 +258,126 @@ app.use(cors(corsOptions));
 // Handle preflight requests
 app.options('*', cors(corsOptions));
 
+// Additional CORS header
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
+// ============================================================================
+// API Routes
+// ============================================================================
+
+// Health Check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
+  });
+});
+
 // Submit Integration Request
 app.post('/api/integration/submit', async (req, res) => {
   try {
     const {
-      adminAccess,
-      sipSeries,
-      portExtension,
+      campaign,
+      model,
+      numberOfBots,
+      transferSettings,
       setupType,
-      verifierCampaign,
-      inboundGroup,
-      userGroup,
-      closerDiallerAccess,
+      primaryIpValidation,
+      primaryAdminLink,
+      primaryUser,
+      primaryPassword,
+      primaryBotsCampaign,
+      primaryUserSeries,
+      primaryPort,
+      closerIpValidation,
+      closerAdminLink,
+      closerUser,
+      closerPassword,
+      closerCampaign,
+      closerIngroup,
+      closerPort,
       companyName,
       contactPerson,
       email,
       phone,
-      additionalNotes
+      customRequirements
     } = req.body;
 
-    // Validate required fields based on setupType
-    if (setupType === 'same') {
-      if (!verifierCampaign || !inboundGroup || !userGroup) {
+    // Validate campaign and model combination
+    const validCombinations = {
+      'Medicare': ['Basic', 'Advanced'],
+      'Final Expense': ['Basic', 'Advanced'],
+      'MVA': ['Basic'],
+      'Auto Insurance': ['Advanced'],
+      'Auto Warranty': ['Advanced']
+    };
+
+    if (!validCombinations[campaign]?.includes(model)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign]?.join(', ')}`
+      });
+    }
+
+    // Validate transfer settings based on model
+    const basicTransfers = ['high-quality', 'balanced', 'broader'];
+    const advancedTransfers = ['balanced-broad', 'balanced-qualified'];
+
+    if (model === 'Basic' && !basicTransfers.includes(transferSettings)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid transfer settings for Basic model'
+      });
+    }
+
+    if (model === 'Advanced' && !advancedTransfers.includes(transferSettings)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid transfer settings for Advanced model'
+      });
+    }
+
+    // Validate separate dialler fields if needed
+    if (setupType === 'separate') {
+      if (!closerIpValidation || !closerAdminLink || !closerUser || 
+          !closerPassword || !closerCampaign || !closerIngroup) {
         return res.status(400).json({
           success: false,
-          message: 'For same dialler setup, verifierCampaign, inboundGroup, and userGroup are required'
-        });
-      }
-    } else if (setupType === 'separate') {
-      if (!closerDiallerAccess) {
-        return res.status(400).json({
-          success: false,
-          message: 'For separate dialler setup, closerDiallerAccess is required'
+          message: 'All closer dialler fields are required for separate setup'
         });
       }
     }
 
     // Create new integration request
     const integration = new Integration({
-      adminAccess,
-      sipSeries,
-      portExtension: portExtension || '5060',
+      campaign,
+      model,
+      numberOfBots,
+      transferSettings,
       setupType,
-      verifierCampaign: setupType === 'same' ? verifierCampaign : undefined,
-      inboundGroup: setupType === 'same' ? inboundGroup : undefined,
-      userGroup: setupType === 'same' ? userGroup : undefined,
-      closerDiallerAccess: setupType === 'separate' ? closerDiallerAccess : undefined,
+      primaryIpValidation,
+      primaryAdminLink,
+      primaryUser,
+      primaryPassword,
+      primaryBotsCampaign,
+      primaryUserSeries,
+      primaryPort: primaryPort || '5060',
+      closerIpValidation: setupType === 'separate' ? closerIpValidation : undefined,
+      closerAdminLink: setupType === 'separate' ? closerAdminLink : undefined,
+      closerUser: setupType === 'separate' ? closerUser : undefined,
+      closerPassword: setupType === 'separate' ? closerPassword : undefined,
+      closerCampaign: setupType === 'separate' ? closerCampaign : undefined,
+      closerIngroup: setupType === 'separate' ? closerIngroup : undefined,
+      closerPort: setupType === 'separate' ? (closerPort || '5060') : undefined,
       companyName,
       contactPerson,
       email,
       phone,
-      additionalNotes: additionalNotes || ''
+      customRequirements: customRequirements || ''
     });
 
     // Save to database
@@ -286,9 +413,12 @@ app.post('/api/integration/submit', async (req, res) => {
 // Get All Integration Requests
 app.get('/api/integration/all', async (req, res) => {
   try {
-    const { status, page = 1, limit = 10 } = req.query;
+    const { status, campaign, page = 1, limit = 10 } = req.query;
     
-    const query = status ? { status } : {};
+    const query = {};
+    if (status) query.status = status;
+    if (campaign) query.campaign = campaign;
+    
     const skip = (page - 1) * limit;
 
     const integrations = await Integration.find(query)
@@ -343,10 +473,6 @@ app.get('/api/integration/:id', async (req, res) => {
       error: error.message
     });
   }
-});
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
 });
 
 // Update Integration Status
@@ -438,6 +564,6 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
   console.log(`📝 Submit form: POST http://localhost:${PORT}/api/integration/submit`);
 });

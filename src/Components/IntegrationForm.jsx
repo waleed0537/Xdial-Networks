@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/IntegrationForm.css';
 
@@ -9,30 +9,64 @@ const IntegrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
   
+  // Campaign configuration
+  const campaignConfig = {
+    'Medicare': ['Basic', 'Advanced'],
+    'Final Expense': ['Basic', 'Advanced'],
+    'MVA': ['Basic'],
+    'Auto Insurance': ['Advanced'],
+    'Auto Warranty': ['Advanced']
+  };
+
+  const basicTransferOptions = [
+    { value: 'high-quality', label: 'High-Quality Transfers', description: 'Highly Qualified Leads, Lower Volume' },
+    { value: 'balanced', label: 'Balanced Transfers', description: 'Moderate Qualification, Moderate Volume' },
+    { value: 'broader', label: 'Broader Transfers', description: 'Higher Volume, Less Qualification' }
+  ];
+
+  const advancedTransferOptions = [
+    { value: 'balanced-broad', label: 'Balanced Broad', description: 'Optimized for Volume with Quality' },
+    { value: 'balanced-qualified', label: 'Balanced Qualified', description: 'Optimized for Quality with Volume' }
+  ];
+
   const [formData, setFormData] = useState({
-    // Remote Agent Setup
-    adminAccess: '',
-    sipSeries: '',
-    portExtension: '5060',
+    // Campaign Configuration
+    campaign: '',
+    model: '',
+    numberOfBots: '',
+    transferSettings: '',
     
-    // Transfer Setup
-    setupType: 'same', // 'same' or 'separate'
+    // Integration Settings - Primary Dialler
+    setupType: 'same',
+    primaryIpValidation: '',
+    primaryAdminLink: '',
+    primaryUser: '',
+    primaryPassword: '',
+    primaryBotsCampaign: '',
+    primaryUserSeries: '',
+    primaryPort: '5060',
     
-    // Same Dialler fields
-    verifierCampaign: '',
-    inboundGroup: '',
-    userGroup: '',
-    
-    // Separate Dialler fields
-    closerDiallerAccess: '',
+    // Separate Closer Dialler (if applicable)
+    closerIpValidation: '',
+    closerAdminLink: '',
+    closerUser: '',
+    closerPassword: '',
+    closerCampaign: '',
+    closerIngroup: '',
+    closerPort: '5060',
     
     // Contact Info
     companyName: '',
     contactPerson: '',
     email: '',
     phone: '',
-    additionalNotes: ''
+    
+    // Custom Requirements
+    customRequirements: ''
   });
+
+  const [availableModels, setAvailableModels] = useState([]);
+  const [availableTransfers, setAvailableTransfers] = useState([]);
 
   const whitelistIPs = [
     '5.78.93.62',
@@ -41,6 +75,23 @@ const IntegrationForm = () => {
     '5.78.108.42',
     '178.156.174.132'
   ];
+
+  // Update available models when campaign changes
+  useEffect(() => {
+    if (formData.campaign) {
+      setAvailableModels(campaignConfig[formData.campaign] || []);
+      setFormData(prev => ({ ...prev, model: '', transferSettings: '' }));
+    }
+  }, [formData.campaign]);
+
+  // Update available transfer options when model changes
+  useEffect(() => {
+    if (formData.model) {
+      const transfers = formData.model === 'Basic' ? basicTransferOptions : advancedTransferOptions;
+      setAvailableTransfers(transfers);
+      setFormData(prev => ({ ...prev, transferSettings: '' }));
+    }
+  }, [formData.model]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,19 +147,30 @@ const IntegrationForm = () => {
         // Reset form after successful submission
         setTimeout(() => {
           setFormData({
-            adminAccess: '',
-            sipSeries: '',
-            portExtension: '5060',
+            campaign: '',
+            model: '',
+            numberOfBots: '',
+            transferSettings: '',
             setupType: 'same',
-            verifierCampaign: '',
-            inboundGroup: '',
-            userGroup: '',
-            closerDiallerAccess: '',
+            primaryIpValidation: '',
+            primaryAdminLink: '',
+            primaryUser: '',
+            primaryPassword: '',
+            primaryBotsCampaign: '',
+            primaryUserSeries: '',
+            primaryPort: '5060',
+            closerIpValidation: '',
+            closerAdminLink: '',
+            closerUser: '',
+            closerPassword: '',
+            closerCampaign: '',
+            closerIngroup: '',
+            closerPort: '5060',
             companyName: '',
             contactPerson: '',
             email: '',
             phone: '',
-            additionalNotes: ''
+            customRequirements: ''
           });
           setSubmitMessage({ type: '', text: '' });
         }, 3000);
@@ -135,8 +197,8 @@ const IntegrationForm = () => {
         {/* Header */}
         <div className="form-header">
           <div>
-            <h1 className="form-title">Remote Agent Integration</h1>
-            <p className="form-subtitle">Please provide the following information to proceed with the integration</p>
+            <h1 className="form-title">AI Bot Integration Request</h1>
+            <p className="form-subtitle">Configure your AI bot campaign and integration settings</p>
           </div>
         </div>
 
@@ -151,68 +213,109 @@ const IntegrationForm = () => {
         )}
 
         <form onSubmit={handleSubmit} className="integration-form">
-          {/* Remote Agent Setup Section */}
+          {/* Campaign Configuration Section */}
           <section className="form-section">
             <div className="section-header">
-              <i className="bi bi-gear-fill"></i>
-              <h2>Remote Agent Setup</h2>
+              <i className="bi bi-robot"></i>
+              <h2>Campaign Configuration</h2>
             </div>
             
             <div className="form-group">
-              <label htmlFor="adminAccess">
-                Admin Access of Dialler <span className="required">*</span>
+              <label htmlFor="campaign">
+                Campaign Type <span className="required">*</span>
               </label>
-              <input
-                type="text"
-                id="adminAccess"
-                name="adminAccess"
-                value={formData.adminAccess}
+              <select
+                id="campaign"
+                name="campaign"
+                value={formData.campaign}
                 onChange={handleChange}
-                placeholder="Enter admin access credentials"
                 required
-              />
+              >
+                <option value="">Select Campaign</option>
+                {Object.keys(campaignConfig).map(campaign => (
+                  <option key={campaign} value={campaign}>{campaign}</option>
+                ))}
+              </select>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="sipSeries">
-                SIP Series for Bots <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                id="sipSeries"
-                name="sipSeries"
-                value={formData.sipSeries}
-                onChange={handleChange}
-                placeholder="e.g., 8600-8699"
-                required
-              />
-            </div>
+            {formData.campaign && (
+              <div className="form-group">
+                <label htmlFor="model">
+                  Bot Model <span className="required">*</span>
+                </label>
+                <select
+                  id="model"
+                  name="model"
+                  value={formData.model}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Model</option>
+                  {availableModels.map(model => (
+                    <option key={model} value={model}>{model}</option>
+                  ))}
+                </select>
+                <small className="form-hint">
+                  {formData.model === 'Basic' && 'Basic model offers standard AI responses with flexible transfer options'}
+                  {formData.model === 'Advanced' && 'Advanced model provides enhanced AI capabilities with optimized transfer logic'}
+                </small>
+              </div>
+            )}
 
             <div className="form-group">
-              <label htmlFor="portExtension">
-                Port Extension
+              <label htmlFor="numberOfBots">
+                Number of Bots <span className="required">*</span>
               </label>
               <input
-                type="text"
-                id="portExtension"
-                name="portExtension"
-                value={formData.portExtension}
+                type="number"
+                id="numberOfBots"
+                name="numberOfBots"
+                value={formData.numberOfBots}
                 onChange={handleChange}
-                placeholder="Default: 5060"
+                placeholder="e.g., 10"
+                min="1"
+                max="100"
+                required
               />
-              <small className="form-hint">Leave default if using port 5060</small>
+              <small className="form-hint">Specify how many concurrent bots you need (1-100)</small>
             </div>
+
+            {formData.model && (
+              <div className="form-group">
+                <label>
+                  Transfer Settings <span className="required">*</span>
+                </label>
+                <div className="radio-group-vertical">
+                  {availableTransfers.map(option => (
+                    <label key={option.value} className="radio-card">
+                      <input
+                        type="radio"
+                        name="transferSettings"
+                        value={option.value}
+                        checked={formData.transferSettings === option.value}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="radio-card-content">
+                        <span className="radio-card-title">{option.label}</span>
+                        <span className="radio-card-description">{option.description}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
 
-          {/* Transfer Setup Section */}
+          {/* Integration Settings Section */}
           <section className="form-section">
             <div className="section-header">
-              <i className="bi bi-arrow-left-right"></i>
-              <h2>Bot Campaign Transfer Setup</h2>
+              <i className="bi bi-hdd-network"></i>
+              <h2>Integration Settings</h2>
             </div>
 
             <div className="form-group">
-              <label>Setup Type <span className="required">*</span></label>
+              <label>Dialler Configuration <span className="required">*</span></label>
               <div className="radio-group">
                 <label className="radio-label">
                   <input
@@ -232,72 +335,247 @@ const IntegrationForm = () => {
                     checked={formData.setupType === 'separate'}
                     onChange={handleChange}
                   />
-                  <span>Separate Dialler</span>
+                  <span>Separate Closer Dialler</span>
                 </label>
               </div>
             </div>
 
-            {formData.setupType === 'same' ? (
-              <>
+            <div className="integration-subsection">
+              <h3 className="subsection-title">
+                <i className="bi bi-gear-wide-connected"></i>
+                Primary Dialler Settings
+              </h3>
+
+              <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="verifierCampaign">
-                    Verifier Campaign <span className="required">*</span>
+                  <label htmlFor="primaryIpValidation">
+                    IP Validation <span className="required">*</span>
                   </label>
                   <input
                     type="text"
-                    id="verifierCampaign"
-                    name="verifierCampaign"
-                    value={formData.verifierCampaign}
+                    id="primaryIpValidation"
+                    name="primaryIpValidation"
+                    value={formData.primaryIpValidation}
                     onChange={handleChange}
-                    placeholder="Enter verifier campaign name"
+                    placeholder="e.g., 192.168.1.1"
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="inboundGroup">
-                    Inbound Group <span className="required">*</span>
+                  <label htmlFor="primaryAdminLink">
+                    Admin Link <span className="required">*</span>
+                  </label>
+                  <input
+                    type="url"
+                    id="primaryAdminLink"
+                    name="primaryAdminLink"
+                    value={formData.primaryAdminLink}
+                    onChange={handleChange}
+                    placeholder="https://your-dialer.com"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="primaryUser">
+                    Username <span className="required">*</span>
                   </label>
                   <input
                     type="text"
-                    id="inboundGroup"
-                    name="inboundGroup"
-                    value={formData.inboundGroup}
+                    id="primaryUser"
+                    name="primaryUser"
+                    value={formData.primaryUser}
                     onChange={handleChange}
-                    placeholder="Enter inbound group"
+                    placeholder="Admin username"
                     required
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="userGroup">
-                    User Group <span className="required">*</span>
+                  <label htmlFor="primaryPassword">
+                    Password <span className="required">*</span>
                   </label>
                   <input
-                    type="text"
-                    id="userGroup"
-                    name="userGroup"
-                    value={formData.userGroup}
+                    type="password"
+                    id="primaryPassword"
+                    name="primaryPassword"
+                    value={formData.primaryPassword}
                     onChange={handleChange}
-                    placeholder="Enter user group"
+                    placeholder="Admin password"
                     required
                   />
                 </div>
-              </>
-            ) : (
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="primaryBotsCampaign">
+                    Bots Campaign <span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="primaryBotsCampaign"
+                    name="primaryBotsCampaign"
+                    value={formData.primaryBotsCampaign}
+                    onChange={handleChange}
+                    placeholder="Campaign name for bots"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="primaryUserSeries">
+                    User Series for Remote Agents <span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="primaryUserSeries"
+                    name="primaryUserSeries"
+                    value={formData.primaryUserSeries}
+                    onChange={handleChange}
+                    placeholder="e.g., 8600-8699"
+                    required
+                  />
+                </div>
+              </div>
+
               <div className="form-group">
-                <label htmlFor="closerDiallerAccess">
-                  Admin Access of Closer Dialler <span className="required">*</span>
+                <label htmlFor="primaryPort">
+                  Port
                 </label>
                 <input
                   type="text"
-                  id="closerDiallerAccess"
-                  name="closerDiallerAccess"
-                  value={formData.closerDiallerAccess}
+                  id="primaryPort"
+                  name="primaryPort"
+                  value={formData.primaryPort}
                   onChange={handleChange}
-                  placeholder="Enter closer dialler admin access"
-                  required
+                  placeholder="Default: 5060"
                 />
+                <small className="form-hint">Leave default if using port 5060</small>
+              </div>
+            </div>
+
+            {/* Separate Closer Dialler Settings */}
+            {formData.setupType === 'separate' && (
+              <div className="integration-subsection closer-section">
+                <h3 className="subsection-title">
+                  <i className="bi bi-diagram-3"></i>
+                  Closer Dialler Settings
+                </h3>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="closerIpValidation">
+                      IP Validation <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="closerIpValidation"
+                      name="closerIpValidation"
+                      value={formData.closerIpValidation}
+                      onChange={handleChange}
+                      placeholder="e.g., 192.168.1.2"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="closerAdminLink">
+                      Admin Link <span className="required">*</span>
+                    </label>
+                    <input
+                      type="url"
+                      id="closerAdminLink"
+                      name="closerAdminLink"
+                      value={formData.closerAdminLink}
+                      onChange={handleChange}
+                      placeholder="https://closer-dialer.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="closerUser">
+                      Username <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="closerUser"
+                      name="closerUser"
+                      value={formData.closerUser}
+                      onChange={handleChange}
+                      placeholder="Admin username"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="closerPassword">
+                      Password <span className="required">*</span>
+                    </label>
+                    <input
+                      type="password"
+                      id="closerPassword"
+                      name="closerPassword"
+                      value={formData.closerPassword}
+                      onChange={handleChange}
+                      placeholder="Admin password"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="closerCampaign">
+                      Campaign <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="closerCampaign"
+                      name="closerCampaign"
+                      value={formData.closerCampaign}
+                      onChange={handleChange}
+                      placeholder="Closer campaign name"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="closerIngroup">
+                      Ingroup <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="closerIngroup"
+                      name="closerIngroup"
+                      value={formData.closerIngroup}
+                      onChange={handleChange}
+                      placeholder="Inbound group name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="closerPort">
+                    Port
+                  </label>
+                  <input
+                    type="text"
+                    id="closerPort"
+                    name="closerPort"
+                    value={formData.closerPort}
+                    onChange={handleChange}
+                    placeholder="Default: 5060"
+                  />
+                  <small className="form-hint">Leave default if using port 5060</small>
+                </div>
               </div>
             )}
           </section>
@@ -409,19 +687,30 @@ const IntegrationForm = () => {
                 />
               </div>
             </div>
+          </section>
+
+          {/* Custom Requirements Section */}
+          <section className="form-section">
+            <div className="section-header">
+              <i className="bi bi-chat-square-text"></i>
+              <h2>Custom Requirements</h2>
+            </div>
 
             <div className="form-group">
-              <label htmlFor="additionalNotes">
-                Additional Notes
+              <label htmlFor="customRequirements">
+                What are your specific goals for the AI bots? (Optional)
               </label>
               <textarea
-                id="additionalNotes"
-                name="additionalNotes"
-                value={formData.additionalNotes}
+                id="customRequirements"
+                name="customRequirements"
+                value={formData.customRequirements}
                 onChange={handleChange}
-                placeholder="Any additional information or special requirements..."
-                rows="4"
+                placeholder="Tell us about your expectations... For example:&#10;• Focus on higher transfer volume&#10;• Prioritize lead quality over quantity&#10;• Specific objection handling requirements&#10;• Target conversion rates&#10;• Any other custom needs"
+                rows="6"
               />
+              <small className="form-hint">
+                Help us optimize the bot behavior to meet your business goals
+              </small>
             </div>
           </section>
 
@@ -431,11 +720,11 @@ const IntegrationForm = () => {
               {isSubmitting ? (
                 <>
                   <i className="bi bi-hourglass-split"></i>
-                  Submitting...
+                  Submitting Request...
                 </>
               ) : (
                 <>
-                  <i className="bi bi-check-circle"></i>
+                  <i className="bi bi-send-fill"></i>
                   Submit Integration Request
                 </>
               )}
@@ -445,7 +734,6 @@ const IntegrationForm = () => {
       </div>
 
       <style jsx>{`
-        /* Submit Message Styles */
         .submit-message {
           max-width: 800px;
           margin: 0 auto 1rem;
@@ -493,7 +781,6 @@ const IntegrationForm = () => {
           }
         }
 
-        /* Disabled submit button */
         .submit-btn:disabled {
           opacity: 0.6;
           cursor: not-allowed;
@@ -508,4 +795,4 @@ const IntegrationForm = () => {
   );
 };
 
-export default IntegrationForm;
+export default IntegrationForm; 

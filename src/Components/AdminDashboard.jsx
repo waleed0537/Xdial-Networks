@@ -13,6 +13,7 @@ const AdminDashboard = () => {
   const [selectedIntegration, setSelectedIntegration] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [campaignFilter, setCampaignFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [stats, setStats] = useState({
     total: 0,
@@ -35,7 +36,7 @@ const AdminDashboard = () => {
     fetchIntegrations();
   }, []);
 
-  // Filter integrations based on status and search
+  // Filter integrations based on status, campaign, and search
   useEffect(() => {
     let filtered = integrations;
 
@@ -44,17 +45,23 @@ const AdminDashboard = () => {
       filtered = filtered.filter(item => item.status === statusFilter);
     }
 
+    // Filter by campaign
+    if (campaignFilter !== 'all') {
+      filtered = filtered.filter(item => item.campaign === campaignFilter);
+    }
+
     // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(item =>
         item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(searchTerm.toLowerCase())
+        item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.campaign.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     setFilteredIntegrations(filtered);
-  }, [statusFilter, searchTerm, integrations]);
+  }, [statusFilter, campaignFilter, searchTerm, integrations]);
 
   const fetchIntegrations = async () => {
     try {
@@ -117,7 +124,6 @@ const AdminDashboard = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Update local state
         setIntegrations(prev =>
           prev.map(item =>
             item._id === id ? { ...item, status: newStatus } : item
@@ -128,7 +134,6 @@ const AdminDashboard = () => {
           setSelectedIntegration({ ...selectedIntegration, status: newStatus });
         }
 
-        // Recalculate stats
         const updatedIntegrations = integrations.map(item =>
           item._id === id ? { ...item, status: newStatus } : item
         );
@@ -191,6 +196,17 @@ const AdminDashboard = () => {
     return labelMap[status] || status;
   };
 
+  const getTransferSettingsLabel = (value) => {
+    const labels = {
+      'high-quality': 'High-Quality Transfers',
+      'balanced': 'Balanced Transfers',
+      'broader': 'Broader Transfers',
+      'balanced-broad': 'Balanced Broad',
+      'balanced-qualified': 'Balanced Qualified'
+    };
+    return labels[value] || value;
+  };
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -207,7 +223,7 @@ const AdminDashboard = () => {
         <div className="header-content">
           <div className="header-left">
             <h1><i className="bi bi-speedometer2"></i> Admin Dashboard</h1>
-            <p>Manage integration requests</p>
+            <p>Manage AI bot integration requests</p>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
             <i className="bi bi-box-arrow-right"></i>
@@ -265,37 +281,52 @@ const AdminDashboard = () => {
           <i className="bi bi-search"></i>
           <input
             type="text"
-            placeholder="Search by company, contact, or email..."
+            placeholder="Search by company, contact, email, or campaign..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
-        <div className="status-filters">
-          <button
-            className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
-            onClick={() => setStatusFilter('all')}
+        <div className="filter-group">
+          <div className="status-filters">
+            <button
+              className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('all')}
+            >
+              All
+            </button>
+            <button
+              className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('pending')}
+            >
+              Pending
+            </button>
+            <button
+              className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('in-progress')}
+            >
+              In Progress
+            </button>
+            <button
+              className={`filter-btn ${statusFilter === 'completed' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('completed')}
+            >
+              Completed
+            </button>
+          </div>
+
+          <select 
+            className="campaign-filter"
+            value={campaignFilter}
+            onChange={(e) => setCampaignFilter(e.target.value)}
           >
-            All
-          </button>
-          <button
-            className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
-            onClick={() => setStatusFilter('pending')}
-          >
-            Pending
-          </button>
-          <button
-            className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
-            onClick={() => setStatusFilter('in-progress')}
-          >
-            In Progress
-          </button>
-          <button
-            className={`filter-btn ${statusFilter === 'completed' ? 'active' : ''}`}
-            onClick={() => setStatusFilter('completed')}
-          >
-            Completed
-          </button>
+            <option value="all">All Campaigns</option>
+            <option value="Medicare">Medicare</option>
+            <option value="Final Expense">Final Expense</option>
+            <option value="MVA">MVA</option>
+            <option value="Auto Insurance">Auto Insurance</option>
+            <option value="Auto Warranty">Auto Warranty</option>
+          </select>
         </div>
 
         <button className="refresh-btn" onClick={fetchIntegrations}>
@@ -324,9 +355,10 @@ const AdminDashboard = () => {
             <thead>
               <tr>
                 <th>Company</th>
-                <th>Contact Person</th>
-                <th>Email</th>
-                <th>Setup Type</th>
+                <th>Contact</th>
+                <th>Campaign</th>
+                <th>Model</th>
+                <th>Bots</th>
                 <th>Status</th>
                 <th>Submitted</th>
                 <th>Actions</th>
@@ -339,12 +371,17 @@ const AdminDashboard = () => {
                     <strong>{integration.companyName}</strong>
                   </td>
                   <td>{integration.contactPerson}</td>
-                  <td>{integration.email}</td>
                   <td>
-                    <span className="setup-type">
-                      {integration.setupType === 'same' ? 'Same Dialler' : 'Separate Dialler'}
+                    <span className="campaign-badge">
+                      {integration.campaign}
                     </span>
                   </td>
+                  <td>
+                    <span className={`model-badge ${integration.model.toLowerCase()}`}>
+                      {integration.model}
+                    </span>
+                  </td>
+                  <td>{integration.numberOfBots}</td>
                   <td>
                     <span className={`status-badge ${getStatusBadgeClass(integration.status)}`}>
                       {getStatusLabel(integration.status)}
@@ -398,9 +435,104 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Company Info */}
+              {/* Campaign Configuration */}
               <div className="detail-section">
-                <h3><i className="bi bi-building"></i> Company Information</h3>
+                <h3><i className="bi bi-robot"></i> Campaign Configuration</h3>
+                <div className="detail-grid">
+                  <div className="detail-item">
+                    <label>Campaign Type</label>
+                    <p><span className="campaign-badge">{selectedIntegration.campaign}</span></p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Bot Model</label>
+                    <p><span className={`model-badge ${selectedIntegration.model.toLowerCase()}`}>{selectedIntegration.model}</span></p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Number of Bots</label>
+                    <p>{selectedIntegration.numberOfBots}</p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Transfer Settings</label>
+                    <p>{getTransferSettingsLabel(selectedIntegration.transferSettings)}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Primary Dialler Settings */}
+              <div className="detail-section">
+                <h3><i className="bi bi-hdd-network"></i> Primary Dialler Settings</h3>
+                <div className="detail-grid">
+                  <div className="detail-item">
+                    <label>IP Validation</label>
+                    <p><code>{selectedIntegration.primaryIpValidation}</code></p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Admin Link</label>
+                    <p><a href={selectedIntegration.primaryAdminLink} target="_blank" rel="noopener noreferrer">{selectedIntegration.primaryAdminLink}</a></p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Username</label>
+                    <p>{selectedIntegration.primaryUser}</p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Password</label>
+                    <p><code>{selectedIntegration.primaryPassword}</code></p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Bots Campaign</label>
+                    <p>{selectedIntegration.primaryBotsCampaign}</p>
+                  </div>
+                  <div className="detail-item">
+                    <label>User Series</label>
+                    <p>{selectedIntegration.primaryUserSeries}</p>
+                  </div>
+                  <div className="detail-item">
+                    <label>Port</label>
+                    <p>{selectedIntegration.primaryPort}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Closer Dialler Settings */}
+              {selectedIntegration.setupType === 'separate' && (
+                <div className="detail-section closer-detail">
+                  <h3><i className="bi bi-diagram-3"></i> Closer Dialler Settings</h3>
+                  <div className="detail-grid">
+                    <div className="detail-item">
+                      <label>IP Validation</label>
+                      <p><code>{selectedIntegration.closerIpValidation}</code></p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Admin Link</label>
+                      <p><a href={selectedIntegration.closerAdminLink} target="_blank" rel="noopener noreferrer">{selectedIntegration.closerAdminLink}</a></p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Username</label>
+                      <p>{selectedIntegration.closerUser}</p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Password</label>
+                      <p><code>{selectedIntegration.closerPassword}</code></p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Campaign</label>
+                      <p>{selectedIntegration.closerCampaign}</p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Ingroup</label>
+                      <p>{selectedIntegration.closerIngroup}</p>
+                    </div>
+                    <div className="detail-item">
+                      <label>Port</label>
+                      <p>{selectedIntegration.closerPort}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Contact Information */}
+              <div className="detail-section">
+                <h3><i className="bi bi-person-fill"></i> Contact Information</h3>
                 <div className="detail-grid">
                   <div className="detail-item">
                     <label>Company Name</label>
@@ -412,75 +544,21 @@ const AdminDashboard = () => {
                   </div>
                   <div className="detail-item">
                     <label>Email</label>
-                    <p>{selectedIntegration.email}</p>
+                    <p><a href={`mailto:${selectedIntegration.email}`}>{selectedIntegration.email}</a></p>
                   </div>
                   <div className="detail-item">
                     <label>Phone</label>
-                    <p>{selectedIntegration.phone}</p>
+                    <p><a href={`tel:${selectedIntegration.phone}`}>{selectedIntegration.phone}</a></p>
                   </div>
                 </div>
               </div>
 
-              {/* Remote Agent Setup */}
-              <div className="detail-section">
-                <h3><i className="bi bi-gear-fill"></i> Remote Agent Setup</h3>
-                <div className="detail-grid">
-                  <div className="detail-item">
-                    <label>Admin Access</label>
-                    <p>{selectedIntegration.adminAccess}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>SIP Series</label>
-                    <p>{selectedIntegration.sipSeries}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Port Extension</label>
-                    <p>{selectedIntegration.portExtension}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Transfer Setup */}
-              <div className="detail-section">
-                <h3><i className="bi bi-arrow-left-right"></i> Transfer Setup</h3>
-                <div className="detail-grid">
-                  <div className="detail-item">
-                    <label>Setup Type</label>
-                    <p className="setup-type-badge">
-                      {selectedIntegration.setupType === 'same' ? 'Same Dialler' : 'Separate Dialler'}
-                    </p>
-                  </div>
-                  
-                  {selectedIntegration.setupType === 'same' ? (
-                    <>
-                      <div className="detail-item">
-                        <label>Verifier Campaign</label>
-                        <p>{selectedIntegration.verifierCampaign}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>Inbound Group</label>
-                        <p>{selectedIntegration.inboundGroup}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>User Group</label>
-                        <p>{selectedIntegration.userGroup}</p>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="detail-item">
-                      <label>Closer Dialler Access</label>
-                      <p>{selectedIntegration.closerDiallerAccess}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Additional Notes */}
-              {selectedIntegration.additionalNotes && (
+              {/* Custom Requirements */}
+              {selectedIntegration.customRequirements && (
                 <div className="detail-section">
-                  <h3><i className="bi bi-chat-left-text-fill"></i> Additional Notes</h3>
+                  <h3><i className="bi bi-chat-square-text"></i> Custom Requirements</h3>
                   <div className="notes-box">
-                    <p>{selectedIntegration.additionalNotes}</p>
+                    <p>{selectedIntegration.customRequirements}</p>
                   </div>
                 </div>
               )}
