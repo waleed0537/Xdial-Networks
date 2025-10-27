@@ -207,8 +207,8 @@ const IntegrationForm = () => {
         {/* Header */}
         <div className="form-header">
           <div>
-            <h1 className="form-title">AI Bot Integration Request</h1>
-            <p className="form-subtitle">Configure your AI bot campaign and integration settings</p>
+            <h1 className="form-title">Remote Agent Integration Request</h1>
+            <p className="form-subtitle">Configure your Remote Agent campaign and integration settings</p>
           </div>
         </div>
 
