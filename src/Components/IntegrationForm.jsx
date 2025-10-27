@@ -587,43 +587,6 @@ const IntegrationForm = () => {
             )}
           </section>
 
-          {/* IP Whitelist Section */}
-          <section className="form-section ip-section">
-            <div className="section-header">
-              <i className="bi bi-shield-check"></i>
-              <h2>IP Whitelist Information</h2>
-            </div>
-            
-            <p className="ip-instruction">
-              Please share the following IPs with your dialer team for whitelisting:
-            </p>
-
-            <div className="ip-list">
-              {whitelistIPs.map((ip, index) => (
-                <div key={index} className="ip-item">
-                  <code>{ip}</code>
-                  <button
-                    type="button"
-                    className="copy-btn"
-                    onClick={() => copyToClipboard(ip)}
-                    title="Copy IP"
-                  >
-                    <i className="bi bi-clipboard"></i>
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              className="copy-all-btn"
-              onClick={copyAllIPs}
-            >
-              <i className="bi bi-clipboard-check"></i>
-              Copy All IPs
-            </button>
-          </section>
-
           {/* Contact Information Section */}
           <section className="form-section">
             <div className="section-header">
