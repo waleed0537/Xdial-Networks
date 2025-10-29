@@ -307,10 +307,10 @@ const IntegrationForm = () => {
                 onChange={handleChange}
                 placeholder="e.g., 10"
                 min="1"
-                max="100"
+                max="1000"
                 required
               />
-              <small className="form-hint">Specify how many concurrent remote agents you need (1-100)</small>
+              <small className="form-hint">Specify how many concurrent remote agents you need (1-1000)</small>
             </div>
           </section>
 
