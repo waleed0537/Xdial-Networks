@@ -212,16 +212,6 @@ const IntegrationForm = () => {
           </div>
         </div>
 
-        {/* Submit Message */}
-        {submitMessage.text && (
-          <div className={`submit-message ${submitMessage.type}`}>
-            {submitMessage.type === 'success' && <i className="bi bi-check-circle-fill"></i>}
-            {submitMessage.type === 'error' && <i className="bi bi-exclamation-circle-fill"></i>}
-            {submitMessage.type === 'info' && <i className="bi bi-info-circle-fill"></i>}
-            <span>{submitMessage.text}</span>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="integration-form">
           {/* Campaign Configuration Section */}
           <section className="form-section">
@@ -697,6 +687,16 @@ const IntegrationForm = () => {
               )}
             </button>
           </div>
+
+          {/* Submit Message */}
+          {submitMessage.text && (
+            <div className={`submit-message ${submitMessage.type}`}>
+              {submitMessage.type === 'success' && <i className="bi bi-check-circle-fill"></i>}
+              {submitMessage.type === 'error' && <i className="bi bi-exclamation-circle-fill"></i>}
+              {submitMessage.type === 'info' && <i className="bi bi-info-circle-fill"></i>}
+              <span>{submitMessage.text}</span>
+            </div>
+          )}
         </form>
       </div>
     </div>

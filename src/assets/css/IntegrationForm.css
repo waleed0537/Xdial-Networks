@@ -658,8 +658,7 @@ select:focus-visible {
 
 /* Submit Message Styles */
 .submit-message {
-  max-width: 800px;
-  margin: 0 auto 1rem;
+  margin: 1.5rem 0 0 0;
   padding: 1rem 1.5rem;
   border-radius: 8px;
   display: flex;
