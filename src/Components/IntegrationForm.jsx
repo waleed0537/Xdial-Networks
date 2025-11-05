@@ -9,7 +9,7 @@ const getApiUrl = () => {
     return 'http://localhost:5010';
   }
   // Production
-  return 'https://xdialnetworks.com/api';
+  return 'https://xdialnetworks.com';
 };
 
 const API_URL = getApiUrl();
