@@ -5,7 +5,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+const path = require('path');
 const app = express();
 
 // ============================================================================
@@ -13,6 +13,7 @@ const app = express();
 // ============================================================================
 
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,7 +29,12 @@ mongoose.connect(MONGODB_URI, {
 })
 .then(() => console.log('✅ Connected to MongoDB - xDial database'))
 .catch((err) => console.error('❌ MongoDB connection error:', err));
-
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 // ============================================================================
 // MongoDB Schema & Model Definition
 // ============================================================================
