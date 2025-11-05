@@ -6,10 +6,10 @@ import '../assets/css/AdminDashboard.css';
 const getApiUrl = () => {
   // Check if running locally
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:5000';
+    return 'http://localhost:5010';
   }
   // Production
-  return 'https://xdial-networks-backend.onrender.com';
+  return 'https://xdialnetworks.com/api';
 };
 
 const API_URL = getApiUrl();
