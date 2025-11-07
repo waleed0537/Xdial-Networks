@@ -27,8 +27,8 @@ mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ Connected to MongoDB - xDial database'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+.then(() => console.log('âœ… Connected to MongoDB - xDial database'))
+.catch((err) => console.error('âŒ MongoDB connection error:', err));
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next();
@@ -97,12 +97,12 @@ const integrationSchema = new mongoose.Schema({
   },
   primaryBotsCampaign: {
     type: String,
-    required: true,
+    required: false,
     trim: true
   },
   primaryUserSeries: {
     type: String,
-    required: true,
+    required: false,
     trim: true
   },
   primaryPort: {
@@ -569,7 +569,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5010;
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📝 Submit form: POST http://localhost:${PORT}/api/integration/submit`);
+  console.log(` Server is running on port ${PORT}`);
+  console.log(` Health check: http://localhost:${PORT}/api/health`);
+  console.log(` Submit form: POST http://localhost:${PORT}/api/integration/submit`);
 });

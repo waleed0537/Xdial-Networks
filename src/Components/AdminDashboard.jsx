@@ -483,7 +483,7 @@ const AdminDashboard = () => {
                 <h3><i className="bi bi-hdd-network"></i> Primary Dialler Settings</h3>
                 <div className="detail-grid">
                   <div className="detail-item">
-                    <label>IP Validation</label>
+                    <label>IP Validation Link</label>
                     <p><code>{selectedIntegration.primaryIpValidation}</code></p>
                   </div>
                   <div className="detail-item">
@@ -499,12 +499,12 @@ const AdminDashboard = () => {
                     <p><code>{selectedIntegration.primaryPassword}</code></p>
                   </div>
                   <div className="detail-item">
-                    <label>Bots Campaign</label>
-                    <p>{selectedIntegration.primaryBotsCampaign}</p>
+                    <label>Fronting Campaign</label>
+                    <p>{selectedIntegration.primaryBotsCampaign || '-'}</p>
                   </div>
                   <div className="detail-item">
-                    <label>User Series</label>
-                    <p>{selectedIntegration.primaryUserSeries}</p>
+                    <label>Verifier Campaign</label>
+                    <p>{selectedIntegration.primaryUserSeries || '-'}</p>
                   </div>
                   <div className="detail-item">
                     <label>Port</label>
@@ -519,7 +519,7 @@ const AdminDashboard = () => {
                   <h3><i className="bi bi-diagram-3"></i> Closer Dialler Settings</h3>
                   <div className="detail-grid">
                     <div className="detail-item">
-                      <label>IP Validation</label>
+                      <label>IP Validation Link</label>
                       <p><code>{selectedIntegration.closerIpValidation}</code></p>
                     </div>
                     <div className="detail-item">

@@ -346,7 +346,7 @@ const IntegrationForm = () => {
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="primaryIpValidation">
-                    IP Validation <span className="required">*</span>
+                    IP Validation Link <span className="required">*</span>
                   </label>
                   <input
                     type="text"
@@ -354,7 +354,7 @@ const IntegrationForm = () => {
                     name="primaryIpValidation"
                     value={formData.primaryIpValidation}
                     onChange={handleChange}
-                    placeholder="e.g., 192.168.1.1"
+                    placeholder="e.g., example.com"
                     required
                   />
                 </div>
@@ -364,12 +364,12 @@ const IntegrationForm = () => {
                     Admin Link <span className="required">*</span>
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     id="primaryAdminLink"
                     name="primaryAdminLink"
                     value={formData.primaryAdminLink}
                     onChange={handleChange}
-                    placeholder="https://your-dialer.com"
+                    placeholder="e.g., your-dialer.com, www.your-dialer.com, or https://your-dialer.com"
                     required
                   />
                 </div>
@@ -410,7 +410,7 @@ const IntegrationForm = () => {
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="primaryBotsCampaign">
-                    Campaign Name <span className="required">*</span>
+                    Fronting Campaign
                   </label>
                   <input
                     type="text"
@@ -418,14 +418,13 @@ const IntegrationForm = () => {
                     name="primaryBotsCampaign"
                     value={formData.primaryBotsCampaign}
                     onChange={handleChange}
-                    placeholder="Campaign name for remote agents"
-                    required
+                    placeholder="Enter fronting campaign name (optional)"
                   />
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="primaryUserSeries">
-                    User Series for Remote Agents <span className="required">*</span>
+                    Verifier Campaign
                   </label>
                   <input
                     type="text"
@@ -433,8 +432,7 @@ const IntegrationForm = () => {
                     name="primaryUserSeries"
                     value={formData.primaryUserSeries}
                     onChange={handleChange}
-                    placeholder="e.g., 8600-8699"
-                    required
+                    placeholder="Enter verifier campaign name (optional)"
                   />
                 </div>
               </div>
@@ -449,7 +447,7 @@ const IntegrationForm = () => {
                   name="primaryPort"
                   value={formData.primaryPort}
                   onChange={handleChange}
-                  placeholder="Default: 5060"
+                  placeholder="e.g., 7788"
                 />
                 <small className="form-hint">Leave default if using port 5060</small>
               </div>
@@ -466,7 +464,7 @@ const IntegrationForm = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="closerIpValidation">
-                      IP Validation <span className="required">*</span>
+                      IP Validation Link <span className="required">*</span>
                     </label>
                     <input
                       type="text"
@@ -474,7 +472,7 @@ const IntegrationForm = () => {
                       name="closerIpValidation"
                       value={formData.closerIpValidation}
                       onChange={handleChange}
-                      placeholder="e.g., 192.168.1.2"
+                      placeholder="e.g., example.com"
                       required
                     />
                   </div>
@@ -484,12 +482,12 @@ const IntegrationForm = () => {
                       Admin Link <span className="required">*</span>
                     </label>
                     <input
-                      type="url"
+                      type="text"
                       id="closerAdminLink"
                       name="closerAdminLink"
                       value={formData.closerAdminLink}
                       onChange={handleChange}
-                      placeholder="https://closer-dialer.com"
+                      placeholder="e.g., closer-dialer.com, www.closer-dialer.com, or https://closer-dialer.com"
                       required
                     />
                   </div>
