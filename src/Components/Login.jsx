@@ -2,6 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/Login.css';
 
+// Environment detection
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5010';
+  }
+  return 'https://xdialnetworks.com';
+};
+
+const API_URL = getApiUrl();
+
 const Login = () => {
   const navigate = useNavigate();
   const [credentials, setCredentials] = useState({
@@ -11,7 +21,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Hard-coded credentials
+  // Hard-coded admin credentials
   const ADMIN_CREDENTIALS = {
     username: 'admin',
     password: 'xdial2024'
@@ -23,31 +33,58 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    setError(''); // Clear error on input change
+    setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    // Simulate a slight delay for better UX
-    setTimeout(() => {
-      if (
-        credentials.username === ADMIN_CREDENTIALS.username &&
-        credentials.password === ADMIN_CREDENTIALS.password
-      ) {
-        // Store authentication token in localStorage
-        localStorage.setItem('isAdminAuthenticated', 'true');
-        localStorage.setItem('adminUsername', credentials.username);
-        
-        // Navigate to dashboard
-        navigate('/admin/dashboard');
-      } else {
-        setError('Invalid username or password');
-        setIsLoading(false);
+    // Check if it's admin login
+    if (
+      credentials.username === ADMIN_CREDENTIALS.username &&
+      credentials.password === ADMIN_CREDENTIALS.password
+    ) {
+      localStorage.setItem('isAdminAuthenticated', 'true');
+      localStorage.setItem('adminUsername', credentials.username);
+      navigate('/admin/dashboard');
+      return;
+    }
+
+    // Check if it's a client login (numeric username)
+    const isNumeric = /^\d+$/.test(credentials.username);
+    if (isNumeric) {
+      const expectedPassword = `xdial${credentials.username}`;
+      
+      if (credentials.password === expectedPassword) {
+        try {
+          // Verify client exists in backend
+          const response = await fetch(`${API_URL}/api/client/verify/${credentials.username}`);
+          const data = await response.json();
+
+          if (data.success) {
+            localStorage.setItem('isClientAuthenticated', 'true');
+            localStorage.setItem('clientId', credentials.username);
+            navigate('/client/dashboard');
+            return;
+          } else {
+            setError('Client ID not found or not activated');
+            setIsLoading(false);
+            return;
+          }
+        } catch (err) {
+          console.error('Error verifying client:', err);
+          setError('Failed to verify client credentials');
+          setIsLoading(false);
+          return;
+        }
       }
-    }, 500);
+    }
+
+    // If neither admin nor valid client
+    setError('Invalid username or password');
+    setIsLoading(false);
   };
 
   return (
@@ -58,8 +95,8 @@ const Login = () => {
             <div className="logo-container">
               <i className="bi bi-shield-lock-fill"></i>
             </div>
-            <h1>Admin Login</h1>
-            <p>Enter your credentials to access the dashboard</p>
+            <h1>xDial Networks Login</h1>
+            <p>Admin & Client Portal</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
@@ -73,7 +110,7 @@ const Login = () => {
             <div className="form-group">
               <label htmlFor="username">
                 <i className="bi bi-person-fill"></i>
-                Username
+                Username / Client ID
               </label>
               <input
                 type="text"
@@ -81,10 +118,13 @@ const Login = () => {
                 name="username"
                 value={credentials.username}
                 onChange={handleChange}
-                placeholder="Enter your username"
+                placeholder="Enter admin username or client ID"
                 required
                 autoFocus
               />
+              <small className="form-hint">
+                Admin: Use your username | Client: Use your Client ID
+              </small>
             </div>
 
             <div className="form-group">

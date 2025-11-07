@@ -1,5 +1,5 @@
 // ============================================================================
-// xDial Integration Backend - Updated Server
+// xDial Integration Backend - Updated Server (Admin-only fields)
 // ============================================================================
 
 const express = require('express');
@@ -27,14 +27,16 @@ mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('âœ… Connected to MongoDB - xDial database'))
-.catch((err) => console.error('âŒ MongoDB connection error:', err));
+.then(() => console.log('✓ Connected to MongoDB - xDial database'))
+.catch((err) => console.error('✗ MongoDB connection error:', err));
+
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next();
   }
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
+
 // ============================================================================
 // MongoDB Schema & Model Definition
 // ============================================================================
@@ -64,6 +66,62 @@ const integrationSchema = new mongoose.Schema({
     required: true,
     enum: ['high-quality', 'balanced', 'broader', 'balanced-broad', 'balanced-qualified'],
     trim: true
+  },
+  
+  // Admin-only Fields (not required on submission, filled by admin)
+  clientId: {
+    type: String,
+    trim: true,
+    index: true,
+    default: ''
+  },
+  extensions: {
+    type: [String],
+    default: []
+  },
+  serverIPs: {
+    type: [String],
+    default: []
+  },
+  dialplan: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  
+  // Completion Requirements (checkboxes)
+  completionRequirements: {
+    longScript: {
+      type: Boolean,
+      default: false
+    },
+    clientDashboard: {
+      type: Boolean,
+      default: false
+    },
+    disposition: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
+  // Campaign Resources (URLs added by admin)
+  campaignResources: {
+    longScript: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    clientDashboard: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    disposition: {
+      type: String,
+      trim: true,
+      default: ''
+    }
   },
   
   // Integration Settings
@@ -204,6 +262,12 @@ const integrationSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  
+  // Client Access Control
+  clientAccessEnabled: {
+    type: Boolean,
+    default: false
   }
 }, {
   timestamps: true
@@ -221,6 +285,7 @@ integrationSchema.index({ companyName: 1 });
 integrationSchema.index({ campaign: 1 });
 integrationSchema.index({ status: 1 });
 integrationSchema.index({ submittedAt: -1 });
+integrationSchema.index({ clientId: 1 });
 
 const Integration = mongoose.model('Integration', integrationSchema);
 
@@ -230,10 +295,8 @@ const Integration = mongoose.model('Integration', integrationSchema);
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // List of allowed origins
     const allowedOrigins = [
       'https://xdial-networks-frontend.onrender.com',
       'https://xdialnetworks.com',
@@ -243,14 +306,12 @@ const corsOptions = {
       'http://localhost:3000'
     ];
     
-    // Check if the origin is in the allowed list or if it's a subdomain
     if (allowedOrigins.indexOf(origin) !== -1 || 
         origin.endsWith('.onrender.com') ||
         origin.endsWith('.xdialnetworks.com')) {
       callback(null, true);
     } else {
-      callback(null, true); // For development, allow all origins
-      // In production, use: callback(new Error('Not allowed by CORS'));
+      callback(null, true);
     }
   },
   credentials: true,
@@ -260,11 +321,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Additional CORS header
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
@@ -283,7 +341,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Submit Integration Request
+// Submit Integration Request (Client-facing form)
 app.post('/api/integration/submit', async (req, res) => {
   try {
     const {
@@ -313,7 +371,6 @@ app.post('/api/integration/submit', async (req, res) => {
       customRequirements
     } = req.body;
 
-    // Validate campaign and model combination
     const validCombinations = {
       'Medicare': ['Basic', 'Advanced'],
       'Final Expense': ['Basic', 'Advanced'],
@@ -329,7 +386,6 @@ app.post('/api/integration/submit', async (req, res) => {
       });
     }
 
-    // Validate transfer settings based on model
     const basicTransfers = ['high-quality', 'balanced', 'broader'];
     const advancedTransfers = ['balanced-broad', 'balanced-qualified'];
 
@@ -347,7 +403,6 @@ app.post('/api/integration/submit', async (req, res) => {
       });
     }
 
-    // Validate separate dialler fields if needed
     if (setupType === 'separate') {
       if (!closerIpValidation || !closerAdminLink || !closerUser || 
           !closerPassword || !closerCampaign || !closerIngroup) {
@@ -358,12 +413,16 @@ app.post('/api/integration/submit', async (req, res) => {
       }
     }
 
-    // Create new integration request
     const integration = new Integration({
       campaign,
       model,
       numberOfBots,
       transferSettings,
+      // Admin-only fields - empty on submission, to be filled by admin
+      clientId: '',
+      extensions: [],
+      serverIPs: [],
+      dialplan: '',
       setupType,
       primaryIpValidation,
       primaryAdminLink,
@@ -383,10 +442,20 @@ app.post('/api/integration/submit', async (req, res) => {
       contactPerson,
       email,
       phone,
-      customRequirements: customRequirements || ''
+      customRequirements: customRequirements || '',
+      completionRequirements: {
+        longScript: false,
+        clientDashboard: false,
+        disposition: false
+      },
+      campaignResources: {
+        longScript: '',
+        clientDashboard: '',
+        disposition: ''
+      },
+      clientAccessEnabled: false
     });
 
-    // Save to database
     const savedIntegration = await integration.save();
 
     res.status(201).json({
@@ -398,7 +467,6 @@ app.post('/api/integration/submit', async (req, res) => {
   } catch (error) {
     console.error('Error submitting integration request:', error);
     
-    // Handle validation errors
     if (error.name === 'ValidationError') {
       const errors = Object.values(error.errors).map(err => err.message);
       return res.status(400).json({
@@ -416,7 +484,7 @@ app.post('/api/integration/submit', async (req, res) => {
   }
 });
 
-// Get All Integration Requests
+// Get All Integration Requests (Admin)
 app.get('/api/integration/all', async (req, res) => {
   try {
     const { status, campaign, page = 1, limit = 10 } = req.query;
@@ -484,7 +552,7 @@ app.get('/api/integration/:id', async (req, res) => {
 // Update Integration Status
 app.patch('/api/integration/:id/status', async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, clientAccessEnabled } = req.body;
 
     if (!['pending', 'in-progress', 'completed', 'cancelled'].includes(status)) {
       return res.status(400).json({
@@ -493,9 +561,19 @@ app.patch('/api/integration/:id/status', async (req, res) => {
       });
     }
 
+    const updateData = { 
+      status, 
+      updatedAt: Date.now() 
+    };
+
+    // If clientAccessEnabled is provided, update it
+    if (clientAccessEnabled !== undefined) {
+      updateData.clientAccessEnabled = clientAccessEnabled;
+    }
+
     const integration = await Integration.findByIdAndUpdate(
       req.params.id,
-      { status, updatedAt: Date.now() },
+      updateData,
       { new: true, runValidators: true }
     );
 
@@ -508,7 +586,7 @@ app.patch('/api/integration/:id/status', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Status updated successfully',
+      message: `Status updated successfully${clientAccessEnabled ? ' and client access enabled' : ''}`,
       data: integration
     });
 
@@ -517,6 +595,115 @@ app.patch('/api/integration/:id/status', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to update status',
+      error: error.message
+    });
+  }
+});
+
+// Update Integration Field (Generic Update) - Admin only
+app.patch('/api/integration/:id', async (req, res) => {
+  try {
+    const updateData = { ...req.body, updatedAt: Date.now() };
+
+    const integration = await Integration.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true, runValidators: false }
+    );
+
+    if (!integration) {
+      return res.status(404).json({
+        success: false,
+        message: 'Integration request not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Integration updated successfully',
+      data: integration
+    });
+
+  } catch (error) {
+    console.error('Error updating integration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update integration',
+      error: error.message
+    });
+  }
+});
+
+// Complete Integration (Enable Client Access)
+app.patch('/api/integration/:id/complete', async (req, res) => {
+  try {
+    const integration = await Integration.findById(req.params.id);
+
+    if (!integration) {
+      return res.status(404).json({
+        success: false,
+        message: 'Integration request not found'
+      });
+    }
+
+    // Check if all completion requirements are met
+    const { completionRequirements } = integration;
+    if (!completionRequirements.longScript || 
+        !completionRequirements.clientDashboard || 
+        !completionRequirements.disposition) {
+      return res.status(400).json({
+        success: false,
+        message: 'All completion requirements must be checked before completing integration'
+      });
+    }
+
+    // Check if admin-only fields are filled
+    if (!integration.clientId || integration.clientId.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Client ID must be assigned before completing integration'
+      });
+    }
+
+    if (!integration.extensions || integration.extensions.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one extension must be added before completing integration'
+      });
+    }
+
+    if (!integration.serverIPs || integration.serverIPs.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one server IP must be added before completing integration'
+      });
+    }
+
+    if (!integration.dialplan || integration.dialplan.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Dialplan must be specified before completing integration'
+      });
+    }
+
+    // Update status to completed and enable client access
+    integration.status = 'completed';
+    integration.clientAccessEnabled = true;
+    integration.updatedAt = Date.now();
+    
+    await integration.save();
+
+    res.json({
+      success: true,
+      message: 'Integration completed successfully. Client access has been enabled.',
+      data: integration
+    });
+
+  } catch (error) {
+    console.error('Error completing integration:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to complete integration',
       error: error.message
     });
   }
@@ -550,6 +737,89 @@ app.delete('/api/integration/:id', async (req, res) => {
 });
 
 // ============================================================================
+// Client Portal Routes
+// ============================================================================
+
+// Verify Client Login
+app.get('/api/client/verify/:clientId', async (req, res) => {
+  try {
+    const { clientId } = req.params;
+
+    const campaigns = await Integration.find({ 
+      clientId: clientId,
+      clientAccessEnabled: true 
+    });
+
+    if (campaigns.length === 0) {
+      return res.json({
+        success: false,
+        message: 'Client not found or access not enabled'
+      });
+    }
+
+    // Get client info from the first campaign
+    const clientInfo = {
+      companyName: campaigns[0].companyName,
+      contactPerson: campaigns[0].contactPerson,
+      email: campaigns[0].email
+    };
+
+    res.json({
+      success: true,
+      client: clientInfo
+    });
+
+  } catch (error) {
+    console.error('Error verifying client:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to verify client',
+      error: error.message
+    });
+  }
+});
+
+// Get Client Campaigns
+app.get('/api/client/:clientId/campaigns', async (req, res) => {
+  try {
+    const { clientId } = req.params;
+
+    const campaigns = await Integration.find({ 
+      clientId: clientId,
+      clientAccessEnabled: true 
+    }).sort({ submittedAt: -1 });
+
+    if (campaigns.length === 0) {
+      return res.json({
+        success: true,
+        client: null,
+        campaigns: []
+      });
+    }
+
+    const clientInfo = {
+      companyName: campaigns[0].companyName,
+      contactPerson: campaigns[0].contactPerson,
+      email: campaigns[0].email
+    };
+
+    res.json({
+      success: true,
+      client: clientInfo,
+      campaigns: campaigns
+    });
+
+  } catch (error) {
+    console.error('Error fetching client campaigns:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch campaigns',
+      error: error.message
+    });
+  }
+});
+
+// ============================================================================
 // Error Handling Middleware
 // ============================================================================
 
@@ -569,7 +839,8 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5010;
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(` Server is running on port ${PORT}`);
-  console.log(` Health check: http://localhost:${PORT}/api/health`);
-  console.log(` Submit form: POST http://localhost:${PORT}/api/integration/submit`);
+  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`📝 Submit form: POST http://localhost:${PORT}/api/integration/submit`);
+  console.log(`👥 Client portal: GET http://localhost:${PORT}/api/client/:clientId/campaigns`);
 });

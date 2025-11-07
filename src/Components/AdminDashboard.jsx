@@ -4,11 +4,9 @@ import '../assets/css/AdminDashboard.css';
 
 // Environment detection
 const getApiUrl = () => {
-  // Check if running locally
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5010';
   }
-  // Production
   return 'https://xdialnetworks.com';
 };
 
@@ -22,9 +20,19 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
   const [selectedIntegration, setSelectedIntegration] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showResourceModal, setShowResourceModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [campaignFilter, setCampaignFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingField, setEditingField] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [editArrayValue, setEditArrayValue] = useState([]);
+  const [copyFeedback, setCopyFeedback] = useState('');
+  const [campaignResources, setCampaignResources] = useState({
+    longScript: '',
+    clientDashboard: '',
+    disposition: ''
+  });
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -33,7 +41,13 @@ const AdminDashboard = () => {
     cancelled: 0
   });
 
-  // Check authentication on mount
+  // Completion requirements
+  const [completionChecks, setCompletionChecks] = useState({
+    longScript: false,
+    clientDashboard: false,
+    disposition: false
+  });
+
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
     if (!isAuthenticated) {
@@ -41,32 +55,28 @@ const AdminDashboard = () => {
     }
   }, [navigate]);
 
-  // Fetch integration requests
   useEffect(() => {
     fetchIntegrations();
   }, []);
 
-  // Filter integrations based on status, campaign, and search
   useEffect(() => {
     let filtered = integrations;
 
-    // Filter by status
     if (statusFilter !== 'all') {
       filtered = filtered.filter(item => item.status === statusFilter);
     }
 
-    // Filter by campaign
     if (campaignFilter !== 'all') {
       filtered = filtered.filter(item => item.campaign === campaignFilter);
     }
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(item =>
         item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.campaign.toLowerCase().includes(searchTerm.toLowerCase())
+        item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.clientId && item.clientId.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -114,21 +124,151 @@ const AdminDashboard = () => {
   const viewDetails = (integration) => {
     setSelectedIntegration(integration);
     setShowModal(true);
+    
+    // Load completion checks
+    if (integration.completionRequirements) {
+      setCompletionChecks(integration.completionRequirements);
+    } else {
+      setCompletionChecks({
+        longScript: false,
+        clientDashboard: false,
+        disposition: false
+      });
+    }
   };
 
   const closeModal = () => {
     setShowModal(false);
+    setShowResourceModal(false);
     setSelectedIntegration(null);
+    setEditingField(null);
+    setEditValue('');
+    setEditArrayValue([]);
+    setCampaignResources({
+      longScript: '',
+      clientDashboard: '',
+      disposition: ''
+    });
   };
 
-  const updateStatus = async (id, newStatus) => {
+  const copyToClipboard = async (text, label) => {
     try {
-      const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
+      await navigator.clipboard.writeText(text);
+      setCopyFeedback(`${label} copied!`);
+      setTimeout(() => setCopyFeedback(''), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      setCopyFeedback('Failed to copy');
+      setTimeout(() => setCopyFeedback(''), 2000);
+    }
+  };
+
+  const startEditing = (field, currentValue) => {
+    setEditingField(field);
+    // Check if the field is meant to be an array
+    const isArrayField = ['extensions', 'serverIPs'].includes(field);
+    
+    if (isArrayField) {
+      // Handle array fields
+      const arrayValue = Array.isArray(currentValue) ? currentValue : [];
+      setEditArrayValue(arrayValue.length > 0 ? arrayValue : ['']);
+      setEditValue(''); // Reset single value
+    } else {
+      // Handle single value fields
+      const stringValue = Array.isArray(currentValue) ? '' : (currentValue || '');
+      setEditValue(stringValue);
+      setEditArrayValue([]); // Reset array value
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingField(null);
+    setEditValue('');
+    setEditArrayValue([]);
+  };
+
+  const addArrayItem = () => {
+    setEditArrayValue([...editArrayValue, '']);
+  };
+
+  const removeArrayItem = (index) => {
+    if (editArrayValue.length > 1) {
+      setEditArrayValue(editArrayValue.filter((_, i) => i !== index));
+    }
+  };
+
+  const updateArrayItem = (index, value) => {
+    const newArray = [...editArrayValue];
+    newArray[index] = value;
+    setEditArrayValue(newArray);
+  };
+
+  const saveField = async (field) => {
+    if (!selectedIntegration) return;
+
+    // Check if the field is meant to be an array
+    const isArrayField = ['extensions', 'serverIPs'].includes(field);
+    
+    // Use the appropriate value based on field type
+    const valueToSave = isArrayField ? 
+      editArrayValue.filter(item => item.trim() !== '') : 
+      editValue;
+
+    try {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ [field]: valueToSave })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the integrations list
+        const updatedIntegrations = integrations.map(item =>
+          item._id === selectedIntegration._id ? { ...item, [field]: valueToSave } : item
+        );
+        setIntegrations(updatedIntegrations);
+        setFilteredIntegrations(updatedIntegrations); // Also update filtered list
+        
+        // Update the selected integration
+        setSelectedIntegration({ ...selectedIntegration, [field]: valueToSave });
+        
+        // Reset edit state
+        setEditingField(null);
+        setEditValue('');
+        setEditArrayValue([]);
+      } else {
+        throw new Error(data.message || 'Failed to save changes');
+      }
+    } catch (err) {
+      console.error('Error updating field:', err);
+      const errorMessage = err.message || 'Failed to update field';
+      setError(errorMessage);
+      setTimeout(() => setError(''), 3000); // Clear error after 3 seconds
+      
+      // Reset edit state
+      setEditingField(null);
+      setEditValue('');
+      setEditArrayValue([]);
+    }
+  };
+
+  const updateCompletionCheck = async (field, value) => {
+    if (!selectedIntegration) return;
+
+    const newChecks = { ...completionChecks, [field]: value };
+    setCompletionChecks(newChecks);
+
+    try {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completionRequirements: newChecks })
       });
 
       const data = await response.json();
@@ -136,23 +276,136 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === id ? { ...item, status: newStatus } : item
+            item._id === selectedIntegration._id ? 
+            { ...item, completionRequirements: newChecks } : item
           )
         );
         
-        if (selectedIntegration && selectedIntegration._id === id) {
-          setSelectedIntegration({ ...selectedIntegration, status: newStatus });
-        }
-
-        const updatedIntegrations = integrations.map(item =>
-          item._id === id ? { ...item, status: newStatus } : item
-        );
-        calculateStats(updatedIntegrations);
+        setSelectedIntegration({ ...selectedIntegration, completionRequirements: newChecks });
       }
     } catch (err) {
-      console.error('Error updating status:', err);
+      console.error('Error updating completion check:', err);
     }
   };
+
+  const allCompletionChecksMet = () => {
+    return completionChecks.longScript && 
+           completionChecks.clientDashboard && 
+           completionChecks.disposition;
+  };
+
+  const openResourceModal = () => {
+    setCampaignResources({
+      longScript: selectedIntegration?.campaignResources?.longScript || '',
+      clientDashboard: selectedIntegration?.campaignResources?.clientDashboard || '',
+      disposition: selectedIntegration?.campaignResources?.disposition || ''
+    });
+    setShowResourceModal(true);
+  };
+
+  const saveCampaignResources = async () => {
+    if (!selectedIntegration) return;
+
+    try {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ campaignResources })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIntegrations(prev =>
+          prev.map(item =>
+            item._id === selectedIntegration._id ? 
+            { ...item, campaignResources } : item
+          )
+        );
+        
+        setSelectedIntegration({ ...selectedIntegration, campaignResources });
+        setShowResourceModal(false);
+        setCopyFeedback('Campaign resources updated!');
+        setTimeout(() => setCopyFeedback(''), 2000);
+      }
+    } catch (err) {
+      console.error('Error updating campaign resources:', err);
+      alert('Failed to update campaign resources');
+    }
+  };
+
+  const updateStatus = async (id, newStatus) => {
+  // Check if trying to set to completed
+  if (newStatus === 'completed' && !allCompletionChecksMet()) {
+    alert('Cannot mark as completed! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
+    return;
+  }
+
+  // Check if clientId is set when marking as completed
+  if (newStatus === 'completed' && (!selectedIntegration.clientId || selectedIntegration.clientId.trim() === '')) {
+    alert('Cannot mark as completed! Please assign a Client ID first.');
+    return;
+  }
+
+  try {
+    const updateData = { status: newStatus };
+    
+    // Automatically enable client access when marking as completed
+    if (newStatus === 'completed') {
+      updateData.clientAccessEnabled = true;
+    }
+
+    const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setIntegrations(prev =>
+        prev.map(item =>
+          item._id === id ? { 
+            ...item, 
+            status: newStatus,
+            clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
+          } : item
+        )
+      );
+      
+      if (selectedIntegration && selectedIntegration._id === id) {
+        setSelectedIntegration({ 
+          ...selectedIntegration, 
+          status: newStatus,
+          clientAccessEnabled: newStatus === 'completed' ? true : selectedIntegration.clientAccessEnabled
+        });
+      }
+
+      const updatedIntegrations = integrations.map(item =>
+        item._id === id ? { 
+          ...item, 
+          status: newStatus,
+          clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
+        } : item
+      );
+      calculateStats(updatedIntegrations);
+
+      // Show success message
+      if (newStatus === 'completed') {
+        setCopyFeedback('Status updated to Completed! Client access enabled.');
+        setTimeout(() => setCopyFeedback(''), 3000);
+      }
+    }
+  } catch (err) {
+    console.error('Error updating status:', err);
+    alert('Failed to update status. Please try again.');
+  }
+};
 
   const deleteIntegration = async (id) => {
     if (!window.confirm('Are you sure you want to delete this integration request?')) {
@@ -217,6 +470,158 @@ const AdminDashboard = () => {
     return labels[value] || value;
   };
 
+  const EditableField = ({ field, value, label, type = 'text', isTextarea = false }) => {
+    const isEditing = editingField === field;
+
+    return (
+      <div className="detail-item editable-field">
+        <label>
+          {label}
+          {!isEditing && (
+            <button 
+              className="edit-icon-btn"
+              onClick={() => startEditing(field, value)}
+              title="Edit"
+            >
+              <i className="bi bi-pencil"></i>
+            </button>
+          )}
+        </label>
+        {isEditing ? (
+          <div className="edit-mode">
+            {isTextarea ? (
+              <textarea
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                rows="3"
+                autoFocus
+              />
+            ) : (
+              <input
+                type={type}
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onBlur={(e) => e.target.focus()}
+                autoFocus
+              />
+            )}
+            <div className="edit-actions">
+              <button className="save-btn" onClick={() => saveField(field)}>
+                <i className="bi bi-check-lg"></i> Save
+              </button>
+              <button className="cancel-btn" onClick={cancelEditing}>
+                <i className="bi bi-x-lg"></i> Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p>{value || '-'}</p>
+        )}
+      </div>
+    );
+  };
+
+  const EditableArrayField = ({ field, value, label }) => {
+    const isEditing = editingField === field;
+
+    return (
+      <div className="detail-item editable-field">
+        <label>
+          {label}
+          {!isEditing && (
+            <button 
+              className="edit-icon-btn"
+              onClick={() => startEditing(field, value)}
+              title="Edit"
+            >
+              <i className="bi bi-pencil"></i>
+            </button>
+          )}
+        </label>
+        {isEditing ? (
+          <div className="edit-mode">
+            {editArrayValue.map((item, index) => (
+              <div key={index} className="array-edit-row">
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => updateArrayItem(index, e.target.value)}
+                  placeholder={`${label} ${index + 1}`}
+                />
+                {editArrayValue.length > 1 && (
+                  <button
+                    type="button"
+                    className="remove-array-btn"
+                    onClick={() => removeArrayItem(index)}
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
+                )}
+              </div>
+            ))}
+            <button type="button" className="add-array-btn" onClick={addArrayItem}>
+              <i className="bi bi-plus-circle"></i> Add Another
+            </button>
+            <div className="edit-actions">
+              <button className="save-btn" onClick={() => saveField(field)}>
+                <i className="bi bi-check-lg"></i> Save
+              </button>
+              <button className="cancel-btn" onClick={cancelEditing}>
+                <i className="bi bi-x-lg"></i> Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="array-display">
+            {value && value.length > 0 ? (
+              value.map((item, index) => (
+                <span key={index} className="array-item-badge">{item}</span>
+              ))
+            ) : (
+              <p>-</p>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const CopyableField = ({ value, label }) => (
+    <div className="detail-item copyable-field">
+      <label>{label}</label>
+      <div className="copyable-content">
+        <p><code>{value}</code></p>
+        <button 
+          className="copy-btn"
+          onClick={() => copyToClipboard(value, label)}
+          title="Copy to clipboard"
+        >
+          <i className="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+  );
+
+  const CopyableLinkField = ({ value, label }) => (
+    <div className="detail-item copyable-field">
+      <label>{label}</label>
+      <div className="copyable-content">
+        <p>
+          <a href={value.startsWith('http') ? value : `https://${value}`} target="_blank" rel="noopener noreferrer">
+            {value}
+          </a>
+        </p>
+        <button 
+          className="copy-btn"
+          onClick={() => copyToClipboard(value, label)}
+          title="Copy to clipboard"
+        >
+          <i className="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -228,7 +633,13 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      {/* Header */}
+      {copyFeedback && (
+        <div className="copy-toast">
+          <i className="bi bi-check-circle-fill"></i>
+          {copyFeedback}
+        </div>
+      )}
+
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
@@ -242,7 +653,6 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      {/* Stats Cards */}
       <div className="stats-container">
         <div className="stat-card stat-total">
           <div className="stat-icon">
@@ -285,13 +695,12 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="filters-container">
         <div className="search-box">
           <i className="bi bi-search"></i>
           <input
             type="text"
-            placeholder="Search by company, contact, email, or campaign..."
+            placeholder="Search by company, contact, email, client ID, or campaign..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -345,7 +754,6 @@ const AdminDashboard = () => {
         </button>
       </div>
 
-      {/* Table */}
       <div className="table-container">
         {error && (
           <div className="error-banner">
@@ -365,58 +773,70 @@ const AdminDashboard = () => {
             <thead>
               <tr>
                 <th>Company</th>
-                <th>Contact</th>
-                <th>Campaign</th>
-                <th>Model</th>
-                <th>Bots</th>
+                <th>Extension</th>
+                <th>Server IP</th>
+                <th>Campaign + Model</th>
+                <th>Remote Agents</th>
                 <th>Status</th>
                 <th>Submitted</th>
-                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredIntegrations.map((integration) => (
-                <tr key={integration._id}>
+                <tr 
+                  key={integration._id}
+                  onClick={() => viewDetails(integration)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <td>
                     <strong>{integration.companyName}</strong>
+                    {integration.clientId && (
+                      <div className="client-id-badge">ID: {integration.clientId}</div>
+                    )}
                   </td>
-                  <td>{integration.contactPerson}</td>
                   <td>
-                    {integration.campaign ? (
-                      <span className="campaign-badge">
-                        {integration.campaign}
-                      </span>
+                    {integration.extensions && integration.extensions.length > 0 ? (
+                      <div className="extensions-cell">
+                        {integration.extensions.map((ext, idx) => (
+                          <span key={idx} className="extension-badge">{ext}</span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span>-</span>
+                    )}
+                  </td>
+                  <td>
+                    {integration.serverIPs && integration.serverIPs.length > 0 ? (
+                      <div className="ips-cell">
+                        {integration.serverIPs.slice(0, 2).map((ip, idx) => (
+                          <span key={idx} className="ip-badge">{ip}</span>
+                        ))}
+                        {integration.serverIPs.length > 2 && (
+                          <span className="more-badge">+{integration.serverIPs.length - 2}</span>
+                        )}
+                      </div>
+                    ) : (
+                      '-'
+                    )}
+                  </td>
+                  <td>
+                    {integration.campaign && integration.model ? (
+                      <div className="campaign-model-cell">
+                        <span className="campaign-badge">
+                          {integration.campaign} {integration.model}
+                        </span>
+                      </div>
                     ) : (
                       <span className="legacy-badge">Legacy</span>
                     )}
                   </td>
-                  <td>
-                    {integration.model ? (
-                      <span className={`model-badge ${integration.model.toLowerCase()}`}>
-                        {integration.model}
-                      </span>
-                    ) : (
-                      <span className="legacy-badge">N/A</span>
-                    )}
-                  </td>
-                  <td>{integration.numberOfBots || '-'}</td>
+                  <td><strong>{integration.numberOfBots || '-'}</strong></td>
                   <td>
                     <span className={`status-badge ${getStatusBadgeClass(integration.status)}`}>
                       {getStatusLabel(integration.status)}
                     </span>
                   </td>
                   <td>{formatDate(integration.submittedAt)}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button
-                        className="action-btn view-btn"
-                        onClick={() => viewDetails(integration)}
-                        title="View Details"
-                      >
-                        <i className="bi bi-eye-fill"></i>
-                      </button>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -424,10 +844,10 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Main Details Modal */}
       {showModal && selectedIntegration && (
         <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Integration Request Details</h2>
               <button className="close-modal-btn" onClick={closeModal}>
@@ -436,10 +856,62 @@ const AdminDashboard = () => {
             </div>
 
             <div className="modal-body">
-              {/* Status Update */}
+              {/* Status Update with Completion Requirements */}
               <div className="detail-section">
-                <h3><i className="bi bi-flag-fill"></i> Status</h3>
+                <h3><i className="bi bi-flag-fill"></i> Status & Completion Requirements</h3>
+                
+                <div className="completion-requirements">
+                  <div className="requirement-header">
+                    <p><strong>Mark complete before setting to "Completed" status:</strong></p>
+                  </div>
+                  <div className="requirements-grid">
+                    <label className="requirement-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={completionChecks.longScript}
+                        onChange={(e) => updateCompletionCheck('longScript', e.target.checked)}
+                      />
+                      <span>Long Script</span>
+                      {selectedIntegration.campaignResources?.longScript && (
+                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+                      )}
+                    </label>
+                    
+                    <label className="requirement-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={completionChecks.clientDashboard}
+                        onChange={(e) => updateCompletionCheck('clientDashboard', e.target.checked)}
+                      />
+                      <span>Client Dashboard</span>
+                      {selectedIntegration.campaignResources?.clientDashboard && (
+                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+                      )}
+                    </label>
+                    
+                    <label className="requirement-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={completionChecks.disposition}
+                        onChange={(e) => updateCompletionCheck('disposition', e.target.checked)}
+                      />
+                      <span>Disposition</span>
+                      {selectedIntegration.campaignResources?.disposition && (
+                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+                      )}
+                    </label>
+                  </div>
+                  
+                  <button 
+                    className="manage-resources-btn"
+                    onClick={openResourceModal}
+                  >
+                    <i className="bi bi-gear"></i> Manage Campaign Resources
+                  </button>
+                </div>
+
                 <div className="status-selector">
+                  <label>Update Status:</label>
                   <select
                     value={selectedIntegration.status}
                     onChange={(e) => updateStatus(selectedIntegration._id, e.target.value)}
@@ -450,6 +922,11 @@ const AdminDashboard = () => {
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
                   </select>
+                  {!allCompletionChecksMet() && (
+                    <small className="warning-text">
+                      ⚠️ All requirements must be checked before marking as completed
+                    </small>
+                  )}
                 </div>
               </div>
 
@@ -458,22 +935,47 @@ const AdminDashboard = () => {
                 <div className="detail-section">
                   <h3><i className="bi bi-robot"></i> Campaign Configuration</h3>
                   <div className="detail-grid">
-                    <div className="detail-item">
-                      <label>Campaign Type</label>
-                      <p><span className="campaign-badge">{selectedIntegration.campaign}</span></p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Bot Model</label>
-                      <p><span className={`model-badge ${selectedIntegration.model?.toLowerCase()}`}>{selectedIntegration.model}</span></p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Number of Bots</label>
-                      <p>{selectedIntegration.numberOfBots}</p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Transfer Settings</label>
-                      <p>{getTransferSettingsLabel(selectedIntegration.transferSettings)}</p>
-                    </div>
+                    <EditableField
+                      field="clientId"
+                      value={selectedIntegration.clientId}
+                      label="Client ID"
+                    />
+                    <EditableField
+                      field="campaign"
+                      value={selectedIntegration.campaign}
+                      label="Campaign Type"
+                    />
+                    <EditableField
+                      field="model"
+                      value={selectedIntegration.model}
+                      label="Bot Model"
+                    />
+                    <EditableField
+                      field="numberOfBots"
+                      value={selectedIntegration.numberOfBots}
+                      label="Number of Bots"
+                      type="number"
+                    />
+                    <EditableArrayField
+                      field="extensions"
+                      value={selectedIntegration.extensions}
+                      label="Extensions"
+                    />
+                    <EditableArrayField
+                      field="serverIPs"
+                      value={selectedIntegration.serverIPs}
+                      label="Server IPs"
+                    />
+                    <EditableField
+                      field="dialplan"
+                      value={selectedIntegration.dialplan}
+                      label="Dialplan"
+                    />
+                    <EditableField
+                      field="transferSettings"
+                      value={getTransferSettingsLabel(selectedIntegration.transferSettings)}
+                      label="Transfer Settings"
+                    />
                   </div>
                 </div>
               )}
@@ -482,34 +984,37 @@ const AdminDashboard = () => {
               <div className="detail-section">
                 <h3><i className="bi bi-hdd-network"></i> Primary Dialler Settings</h3>
                 <div className="detail-grid">
-                  <div className="detail-item">
-                    <label>IP Validation Link</label>
-                    <p><code>{selectedIntegration.primaryIpValidation}</code></p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Admin Link</label>
-                    <p><a href={selectedIntegration.primaryAdminLink} target="_blank" rel="noopener noreferrer">{selectedIntegration.primaryAdminLink}</a></p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Username</label>
-                    <p>{selectedIntegration.primaryUser}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Password</label>
-                    <p><code>{selectedIntegration.primaryPassword}</code></p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Fronting Campaign</label>
-                    <p>{selectedIntegration.primaryBotsCampaign || '-'}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Verifier Campaign</label>
-                    <p>{selectedIntegration.primaryUserSeries || '-'}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Port</label>
-                    <p>{selectedIntegration.primaryPort}</p>
-                  </div>
+                  <CopyableField
+                    value={selectedIntegration.primaryIpValidation}
+                    label="IP Validation Link"
+                  />
+                  <CopyableLinkField
+                    value={selectedIntegration.primaryAdminLink}
+                    label="Admin Link"
+                  />
+                  <CopyableField
+                    value={selectedIntegration.primaryUser}
+                    label="Username"
+                  />
+                  <CopyableField
+                    value={selectedIntegration.primaryPassword}
+                    label="Password"
+                  />
+                  <EditableField
+                    field="primaryBotsCampaign"
+                    value={selectedIntegration.primaryBotsCampaign}
+                    label="Fronting Campaign"
+                  />
+                  <EditableField
+                    field="primaryUserSeries"
+                    value={selectedIntegration.primaryUserSeries}
+                    label="Verifier Campaign"
+                  />
+                  <EditableField
+                    field="primaryPort"
+                    value={selectedIntegration.primaryPort}
+                    label="Port"
+                  />
                 </div>
               </div>
 
@@ -518,34 +1023,37 @@ const AdminDashboard = () => {
                 <div className="detail-section closer-detail">
                   <h3><i className="bi bi-diagram-3"></i> Closer Dialler Settings</h3>
                   <div className="detail-grid">
-                    <div className="detail-item">
-                      <label>IP Validation Link</label>
-                      <p><code>{selectedIntegration.closerIpValidation}</code></p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Admin Link</label>
-                      <p><a href={selectedIntegration.closerAdminLink} target="_blank" rel="noopener noreferrer">{selectedIntegration.closerAdminLink}</a></p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Username</label>
-                      <p>{selectedIntegration.closerUser}</p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Password</label>
-                      <p><code>{selectedIntegration.closerPassword}</code></p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Campaign</label>
-                      <p>{selectedIntegration.closerCampaign}</p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Ingroup</label>
-                      <p>{selectedIntegration.closerIngroup}</p>
-                    </div>
-                    <div className="detail-item">
-                      <label>Port</label>
-                      <p>{selectedIntegration.closerPort}</p>
-                    </div>
+                    <CopyableField
+                      value={selectedIntegration.closerIpValidation}
+                      label="IP Validation Link"
+                    />
+                    <CopyableLinkField
+                      value={selectedIntegration.closerAdminLink}
+                      label="Admin Link"
+                    />
+                    <CopyableField
+                      value={selectedIntegration.closerUser}
+                      label="Username"
+                    />
+                    <CopyableField
+                      value={selectedIntegration.closerPassword}
+                      label="Password"
+                    />
+                    <EditableField
+                      field="closerCampaign"
+                      value={selectedIntegration.closerCampaign}
+                      label="Campaign"
+                    />
+                    <EditableField
+                      field="closerIngroup"
+                      value={selectedIntegration.closerIngroup}
+                      label="Ingroup"
+                    />
+                    <EditableField
+                      field="closerPort"
+                      value={selectedIntegration.closerPort}
+                      label="Port"
+                    />
                   </div>
                 </div>
               )}
@@ -554,34 +1062,41 @@ const AdminDashboard = () => {
               <div className="detail-section">
                 <h3><i className="bi bi-person-fill"></i> Contact Information</h3>
                 <div className="detail-grid">
-                  <div className="detail-item">
-                    <label>Company Name</label>
-                    <p>{selectedIntegration.companyName}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Contact Person</label>
-                    <p>{selectedIntegration.contactPerson}</p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Email</label>
-                    <p><a href={`mailto:${selectedIntegration.email}`}>{selectedIntegration.email}</a></p>
-                  </div>
-                  <div className="detail-item">
-                    <label>Phone</label>
-                    <p><a href={`tel:${selectedIntegration.phone}`}>{selectedIntegration.phone}</a></p>
-                  </div>
+                  <EditableField
+                    field="companyName"
+                    value={selectedIntegration.companyName}
+                    label="Company Name"
+                  />
+                  <EditableField
+                    field="contactPerson"
+                    value={selectedIntegration.contactPerson}
+                    label="Contact Person"
+                  />
+                  <EditableField
+                    field="email"
+                    value={selectedIntegration.email}
+                    label="Email"
+                    type="email"
+                  />
+                  <EditableField
+                    field="phone"
+                    value={selectedIntegration.phone}
+                    label="Phone"
+                    type="tel"
+                  />
                 </div>
               </div>
 
               {/* Custom Requirements */}
-              {selectedIntegration.customRequirements && (
-                <div className="detail-section">
-                  <h3><i className="bi bi-chat-square-text"></i> Current Bots</h3>
-                  <div className="notes-box">
-                    <p>{selectedIntegration.customRequirements}</p>
-                  </div>
-                </div>
-              )}
+              <div className="detail-section">
+                <h3><i className="bi bi-chat-square-text"></i> Current Bots</h3>
+                <EditableField
+                  field="customRequirements"
+                  value={selectedIntegration.customRequirements}
+                  label="Notes"
+                  isTextarea={true}
+                />
+              </div>
 
               {/* Timestamps */}
               <div className="detail-section">
@@ -609,6 +1124,84 @@ const AdminDashboard = () => {
               </button>
               <button className="close-btn" onClick={closeModal}>
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Resources Modal */}
+      {showResourceModal && selectedIntegration && (
+        <div className="modal-overlay" onClick={() => setShowResourceModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Campaign Resources</h2>
+              <button className="close-modal-btn" onClick={() => setShowResourceModal(false)}>
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="resource-form">
+                <div className="form-group">
+                  <label htmlFor="longScript">
+                    <i className="bi bi-file-text"></i> Long Script URL
+                  </label>
+                  <input
+                    type="url"
+                    id="longScript"
+                    value={campaignResources.longScript}
+                    onChange={(e) => setCampaignResources({
+                      ...campaignResources,
+                      longScript: e.target.value
+                    })}
+                    placeholder="https://example.com/long-script"
+                  />
+                  <small>Enter the URL for the long script document</small>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="clientDashboard">
+                    <i className="bi bi-speedometer2"></i> Client Dashboard URL
+                  </label>
+                  <input
+                    type="url"
+                    id="clientDashboard"
+                    value={campaignResources.clientDashboard}
+                    onChange={(e) => setCampaignResources({
+                      ...campaignResources,
+                      clientDashboard: e.target.value
+                    })}
+                    placeholder="https://example.com/dashboard"
+                  />
+                  <small>Enter the URL for the client dashboard</small>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="disposition">
+                    <i className="bi bi-list-check"></i> Disposition URL
+                  </label>
+                  <input
+                    type="url"
+                    id="disposition"
+                    value={campaignResources.disposition}
+                    onChange={(e) => setCampaignResources({
+                      ...campaignResources,
+                      disposition: e.target.value
+                    })}
+                    placeholder="https://example.com/disposition"
+                  />
+                  <small>Enter the URL for the disposition document</small>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="cancel-btn" onClick={() => setShowResourceModal(false)}>
+                Cancel
+              </button>
+              <button className="save-btn" onClick={saveCampaignResources}>
+                <i className="bi bi-check-lg"></i> Save Resources
               </button>
             </div>
           </div>

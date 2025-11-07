@@ -13,6 +13,7 @@ import VoIPSolutions from './Components/VoIPSolutions';
 import IntegrationForm from './Components/IntegrationForm';
 import AdminDashboard from './Components/AdminDashboard';
 import AdminLogin from './Components/Login';
+import ClientDashboard from './Components/ClientDashboard';
 import './App.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         
         {/* Integration Form Route */}
         <Route path="/integration-form" element={<IntegrationForm />} />
+        <Route path="/client/dashboard" element={<ClientDashboard />} />
       </Routes>
     </Router>
   );
