@@ -22,7 +22,7 @@ import '../assets/css/module-css/testimonial.css';
 import '../assets/css/module-css/cta.css';
 import '../assets/css/responsive.css';
 // Import our new preloader CSS
-import '../assets/css/Preloader.css';
+// import '../assets/css/Preloader.css';
 
 // Logo imports
 import logo from '../assets/images/logo.png'
@@ -83,7 +83,7 @@ import AITopFeatures from './AITopFeatures';
 import AutoDialerService from './AutoDialerService';
 import MainIntro from './MainIntro';
 import MobileNavigation from './MobileNavigation';
-import Preloader from './Preloader';
+// import Preloader from './Preloader';
 
 const SensaiTemplate = () => {
   // Define critical images to preload first - these are essential for initial view
@@ -215,7 +215,7 @@ const SensaiTemplate = () => {
       </HelmetProvider>
 
       {/* Use the improved preloader with all images to preload */}
-      <Preloader images={preloadImages}>
+      {/* <Preloader images={preloadImages}> */}
         <div className="dark-home dark-color-2 ltr" style={{
           minHeight: '100vh',
           display: 'flex',
@@ -1028,7 +1028,7 @@ const SensaiTemplate = () => {
           </div>
 
         </div>
-      </Preloader>
+      {/* </Preloader> */}
     </>
   );
 };
