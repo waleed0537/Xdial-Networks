@@ -67,9 +67,7 @@ const IntegrationForm = () => {
     
     // Contact Info
     companyName: '',
-    contactPerson: '',
-    email: '',
-    phone: '',
+   
     
     // Custom Requirements
     customRequirements: ''
@@ -177,9 +175,7 @@ const IntegrationForm = () => {
             closerIngroup: '',
             closerPort: '5060',
             companyName: '',
-            contactPerson: '',
-            email: '',
-            phone: '',
+
             customRequirements: ''
           });
           setSubmitMessage({ type: '', text: '' });
@@ -213,6 +209,31 @@ const IntegrationForm = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="integration-form">
+          <section className="form-section">
+            <div className="section-header">
+              <i className="bi bi-person-fill"></i>
+              <h2>Contact Information</h2>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="companyName">
+                  Company Name <span className="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="companyName"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                  placeholder="Your company name"
+                  required
+                />
+              </div>
+            </div>
+
+          
+          </section>
           {/* Campaign Configuration Section */}
           <section className="form-section">
             <div className="section-header">
@@ -576,76 +597,7 @@ const IntegrationForm = () => {
           </section>
 
           {/* Contact Information Section */}
-          <section className="form-section">
-            <div className="section-header">
-              <i className="bi bi-person-fill"></i>
-              <h2>Contact Information</h2>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="companyName">
-                  Company Name <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="companyName"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  placeholder="Your company name"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="contactPerson">
-                  Contact Person <span className="required">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="contactPerson"
-                  name="contactPerson"
-                  value={formData.contactPerson}
-                  onChange={handleChange}
-                  placeholder="Full name"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="email">
-                  Email Address <span className="required">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="email@example.com"
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="phone">
-                  Phone Number <span className="required">*</span>
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="+1 (555) 000-0000"
-                  required
-                />
-              </div>
-            </div>
-          </section>
+          
 
           {/* Custom Requirements Section */}
           <section className="form-section">

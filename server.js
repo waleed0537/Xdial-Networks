@@ -224,23 +224,7 @@ const integrationSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  contactPerson: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    lowercase: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
-  },
-  phone: {
-    type: String,
-    required: true,
-    trim: true
-  },
+ 
   
   // Custom Requirements
   customRequirements: {
@@ -280,7 +264,6 @@ integrationSchema.pre('save', function(next) {
 });
 
 // Create indexes for faster queries
-integrationSchema.index({ email: 1 });
 integrationSchema.index({ companyName: 1 });
 integrationSchema.index({ campaign: 1 });
 integrationSchema.index({ status: 1 });
@@ -365,9 +348,9 @@ app.post('/api/integration/submit', async (req, res) => {
       closerIngroup,
       closerPort,
       companyName,
-      contactPerson,
-      email,
-      phone,
+      // contactPerson,
+      // email,
+      // phone,
       customRequirements
     } = req.body;
 
@@ -439,9 +422,9 @@ app.post('/api/integration/submit', async (req, res) => {
       closerIngroup: setupType === 'separate' ? closerIngroup : undefined,
       closerPort: setupType === 'separate' ? (closerPort || '5060') : undefined,
       companyName,
-      contactPerson,
-      email,
-      phone,
+      // contactPerson,
+      // email,
+      // phone,
       customRequirements: customRequirements || '',
       completionRequirements: {
         longScript: false,
@@ -760,8 +743,8 @@ app.get('/api/client/verify/:clientId', async (req, res) => {
     // Get client info from the first campaign
     const clientInfo = {
       companyName: campaigns[0].companyName,
-      contactPerson: campaigns[0].contactPerson,
-      email: campaigns[0].email
+      // contactPerson: campaigns[0].contactPerson,
+      // email: campaigns[0].email
     };
 
     res.json({
@@ -799,8 +782,8 @@ app.get('/api/client/:clientId/campaigns', async (req, res) => {
 
     const clientInfo = {
       companyName: campaigns[0].companyName,
-      contactPerson: campaigns[0].contactPerson,
-      email: campaigns[0].email
+      // contactPerson: campaigns[0].contactPerson,
+      // email: campaigns[0].email
     };
 
     res.json({
