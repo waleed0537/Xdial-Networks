@@ -60,28 +60,26 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = integrations;
+  let filtered = integrations;
 
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(item => item.status === statusFilter);
-    }
+  if (statusFilter !== 'all') {
+    filtered = filtered.filter(item => item.status === statusFilter);
+  }
 
-    if (campaignFilter !== 'all') {
-      filtered = filtered.filter(item => item.campaign === campaignFilter);
-    }
+  if (campaignFilter !== 'all') {
+    filtered = filtered.filter(item => item.campaign === campaignFilter);
+  }
 
-    if (searchTerm) {
-      filtered = filtered.filter(item =>
-        item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.clientId && item.clientId.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+  if (searchTerm) {
+    filtered = filtered.filter(item =>
+      item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.clientId && item.clientId.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }
 
-    setFilteredIntegrations(filtered);
-  }, [statusFilter, campaignFilter, searchTerm, integrations]);
+  setFilteredIntegrations(filtered);
+}, [statusFilter, campaignFilter, searchTerm, integrations]);
 
   const fetchIntegrations = async () => {
     try {
@@ -697,14 +695,14 @@ const AdminDashboard = () => {
 
       <div className="filters-container">
         <div className="search-box">
-          <i className="bi bi-search"></i>
-          <input
-            type="text"
-            placeholder="Search by company, contact, email, client ID, or campaign..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+  <i className="bi bi-search"></i>
+  <input
+    type="text"
+    placeholder="Search by company, client ID, or campaign..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+</div>
 
         <div className="filter-group">
           <div className="status-filters">
@@ -1067,23 +1065,8 @@ const AdminDashboard = () => {
                     value={selectedIntegration.companyName}
                     label="Company Name"
                   />
-                  <EditableField
-                    field="contactPerson"
-                    value={selectedIntegration.contactPerson}
-                    label="Contact Person"
-                  />
-                  <EditableField
-                    field="email"
-                    value={selectedIntegration.email}
-                    label="Email"
-                    type="email"
-                  />
-                  <EditableField
-                    field="phone"
-                    value={selectedIntegration.phone}
-                    label="Phone"
-                    type="tel"
-                  />
+                  
+                
                 </div>
               </div>
 

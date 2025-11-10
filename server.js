@@ -325,6 +325,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Submit Integration Request (Client-facing form)
+// Submit Integration Request (Client-facing form)
 app.post('/api/integration/submit', async (req, res) => {
   try {
     const {
@@ -348,9 +349,6 @@ app.post('/api/integration/submit', async (req, res) => {
       closerIngroup,
       closerPort,
       companyName,
-      // contactPerson,
-      // email,
-      // phone,
       customRequirements
     } = req.body;
 
@@ -401,7 +399,6 @@ app.post('/api/integration/submit', async (req, res) => {
       model,
       numberOfBots,
       transferSettings,
-      // Admin-only fields - empty on submission, to be filled by admin
       clientId: '',
       extensions: [],
       serverIPs: [],
@@ -411,20 +408,17 @@ app.post('/api/integration/submit', async (req, res) => {
       primaryAdminLink,
       primaryUser,
       primaryPassword,
-      primaryBotsCampaign,
-      primaryUserSeries,
+      primaryBotsCampaign: primaryBotsCampaign || '',
+      primaryUserSeries: primaryUserSeries || '',
       primaryPort: primaryPort || '5060',
-      closerIpValidation: setupType === 'separate' ? closerIpValidation : undefined,
-      closerAdminLink: setupType === 'separate' ? closerAdminLink : undefined,
-      closerUser: setupType === 'separate' ? closerUser : undefined,
-      closerPassword: setupType === 'separate' ? closerPassword : undefined,
-      closerCampaign: setupType === 'separate' ? closerCampaign : undefined,
-      closerIngroup: setupType === 'separate' ? closerIngroup : undefined,
-      closerPort: setupType === 'separate' ? (closerPort || '5060') : undefined,
+      closerIpValidation: setupType === 'separate' ? closerIpValidation : '',
+      closerAdminLink: setupType === 'separate' ? closerAdminLink : '',
+      closerUser: setupType === 'separate' ? closerUser : '',
+      closerPassword: setupType === 'separate' ? closerPassword : '',
+      closerCampaign: setupType === 'separate' ? closerCampaign : '',
+      closerIngroup: setupType === 'separate' ? closerIngroup : '',
+      closerPort: setupType === 'separate' ? (closerPort || '5060') : '5060',
       companyName,
-      // contactPerson,
-      // email,
-      // phone,
       customRequirements: customRequirements || '',
       completionRequirements: {
         longScript: false,
@@ -740,11 +734,8 @@ app.get('/api/client/verify/:clientId', async (req, res) => {
       });
     }
 
-    // Get client info from the first campaign
     const clientInfo = {
-      companyName: campaigns[0].companyName,
-      // contactPerson: campaigns[0].contactPerson,
-      // email: campaigns[0].email
+      companyName: campaigns[0].companyName
     };
 
     res.json({
@@ -761,7 +752,6 @@ app.get('/api/client/verify/:clientId', async (req, res) => {
     });
   }
 });
-
 // Get Client Campaigns
 app.get('/api/client/:clientId/campaigns', async (req, res) => {
   try {
@@ -781,9 +771,7 @@ app.get('/api/client/:clientId/campaigns', async (req, res) => {
     }
 
     const clientInfo = {
-      companyName: campaigns[0].companyName,
-      // contactPerson: campaigns[0].contactPerson,
-      // email: campaigns[0].email
+      companyName: campaigns[0].companyName
     };
 
     res.json({
