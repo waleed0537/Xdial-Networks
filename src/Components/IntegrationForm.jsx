@@ -466,11 +466,11 @@ const IntegrationForm = () => {
                   type="text"
                   id="primaryPort"
                   name="primaryPort"
-                  value={formData.primaryPort}
+                  // value={formData.primaryPort}
                   onChange={handleChange}
                   placeholder="e.g., 7788"
                 />
-                <small className="form-hint">Leave default if using port 5060</small>
+                {/* <small className="form-hint">Leave default if using port 5060</small> */}
               </div>
             </div>
 
@@ -588,7 +588,7 @@ const IntegrationForm = () => {
                     name="closerPort"
                     value={formData.closerPort}
                     onChange={handleChange}
-                    placeholder="Default: 5060"
+                    placeholder=" e.g., 7788"
                   />
                   <small className="form-hint">Leave default if using port 5060</small>
                 </div>

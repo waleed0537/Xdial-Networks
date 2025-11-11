@@ -32,7 +32,7 @@ const ArrayInputRow = React.memo(({ value, index, label, onChange, onRemove, can
         type="text"
         value={localValue}
         onChange={handleChange}
-        placeholder={`${label} ${index + 1}`}
+        placeholder={""}
         className="form-input"
         autoComplete="off"
       />
@@ -67,6 +67,8 @@ const AdminDashboard = () => {
   const [editArrayValue, setEditArrayValue] = useState([]);
   const [copyFeedback, setCopyFeedback] = useState('');
   const [arrayItemIds, setArrayItemIds] = useState([]);
+  // Utility to generate short stable ids for array items so keys don't change on re-render
+  const generateId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
     clientDashboard: '',
@@ -226,9 +228,11 @@ const AdminDashboard = () => {
       // Properly handle array values - create a copy
       const arrayValue = Array.isArray(currentValue) && currentValue.length > 0
         ? [...currentValue]  // Create a copy of the existing array
-        : [''];  // Start with one empty field if no values
+        : [];  // Start empty if no values
 
       setEditArrayValue(arrayValue);
+      // create stable ids for each array item to use as keys
+      setArrayItemIds(arrayValue.map(() => generateId()));
       setEditValue('');
     } else {
       const stringValue = Array.isArray(currentValue) ? '' : (currentValue || '');
@@ -241,16 +245,18 @@ const AdminDashboard = () => {
     setEditingField(null);
     setEditValue('');
     setEditArrayValue([]);
+    setArrayItemIds([]);
   };
 
   const addArrayItem = () => {
-    setEditArrayValue([...editArrayValue, '']);
+    setEditArrayValue(prev => [...prev, '']);
+    setArrayItemIds(prev => [...prev, generateId()]);
   };
 
   const removeArrayItem = (index) => {
-    if (editArrayValue.length > 1) {
-      setEditArrayValue(editArrayValue.filter((_, i) => i !== index));
-    }
+    // Allow removing any item; empty state is permitted
+    setEditArrayValue(prev => prev.filter((_, i) => i !== index));
+    setArrayItemIds(prev => prev.filter((_, i) => i !== index));
   };
 
   const updateArrayItem = useCallback((index, value) => {
@@ -260,6 +266,7 @@ const AdminDashboard = () => {
       return newArray;
     });
   }, []);
+
 
   const saveField = async (field) => {
     if (!selectedIntegration) return;
@@ -673,51 +680,24 @@ const AdminDashboard = () => {
       {isEditMode && isEditing ? (
         <div className="edit-mode">
           {editArrayValue.map((item, index) => (
-            <div key={index} className="array-edit-row">
-              <input
-                type="text"
-                value={item}
-                onChange={(e) => {
-                  const newValue = e.target.value;
-                  setEditArrayValue(prev => {
-                    const newArray = [...prev];
-                    newArray[index] = newValue;
-                    return newArray;
-                  });
-                }}
-                placeholder={`${label} ${index + 1}`}
-                className="form-input"
-                autoComplete="off"
-              />
-              {editArrayValue.length > 1 && (
-                <button
-                  type="button"
-                  className="remove-array-btn"
-                  onClick={() => {
-                    if (editArrayValue.length > 1) {
-                      setEditArrayValue(prev => prev.filter((_, i) => i !== index));
-                    }
-                  }}
-                >
-                  <i className="bi bi-trash"></i>
-                </button>
-              )}
-            </div>
+            <ArrayInputRow
+              key={arrayItemIds[index] || `item-${index}`}
+              value={item}
+              index={index}
+              label={label}
+              onChange={updateArrayItem}
+              onRemove={() => removeArrayItem(index)}
+              canRemove={editArrayValue.length > 1}
+            />
           ))}
-          <button type="button" className="add-array-btn" onClick={() => {
-            setEditArrayValue(prev => [...prev, '']);
-          }}>
+          <button type="button" className="add-array-btn" onClick={addArrayItem}>
             <i className="bi bi-plus-circle"></i> Add Another
           </button>
           <div className="field-actions">
             <button className="save-btn" onClick={() => saveField(field)}>
               <i className="bi bi-check-lg"></i> Save
             </button>
-            <button className="cancel-btn" onClick={() => {
-              setEditingField(null);
-              setEditValue('');
-              setEditArrayValue([]);
-            }}>
+            <button className="cancel-btn" onClick={() => { cancelEditing(); }}>
               <i className="bi bi-x-lg"></i> Cancel
             </button>
           </div>
@@ -780,6 +760,71 @@ const AdminDashboard = () => {
       </div>
     </div>
   );
+
+  // Editable link field: shows a link + copy button when not editing, and an input when editing
+  const EditableLinkField = ({ field, value, label }) => {
+    const isEditing = editingField === field && isEditMode;
+
+    return (
+      <div className="form-field">
+        <label>{label}</label>
+        {isEditMode && isEditing ? (
+          <div className="field-edit-group">
+            <input
+              type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={() => { }}
+              autoFocus
+              className="form-input"
+            />
+            <div className="field-actions-inline">
+              <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+                <i className="bi bi-check-lg"></i>
+              </button>
+              <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isEditMode) startEditing(field, value);
+            }}
+            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+          >
+            <div className="link-field">
+              <a
+                href={value && value.startsWith('http') ? value : (value ? `https://${value}` : '#')}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (isEditMode) {
+                    // Prevent navigation while in edit mode and open the inline editor instead
+                    e.preventDefault();
+                    e.stopPropagation();
+                    startEditing(field, value);
+                  }
+                  // otherwise allow normal navigation to proceed
+                }}
+              >
+                {value || '-'}
+              </a>
+              <button
+                className="copy-btn"
+                onClick={(e) => { e.stopPropagation(); copyToClipboard(value, label); }}
+                title="Copy to clipboard"
+              >
+                <i className="bi bi-clipboard"></i>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -1189,34 +1234,18 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div className="form-row full">
-                  <div className="form-field">
-                    <label>IP Validation Link</label>
-                    <div className="link-field">
-                      <code>{selectedIntegration.primaryIpValidation}</code>
-                      <button
-                        className="copy-btn"
-                        onClick={() => copyToClipboard(selectedIntegration.primaryIpValidation, 'IP Validation')}
-                      >
-                        <i className="bi bi-clipboard"></i>
-                      </button>
-                    </div>
-                  </div>
+                  <EditableLinkField
+                    field="primaryIpValidation"
+                    value={selectedIntegration.primaryIpValidation}
+                    label="IP Validation Link"
+                  />
                 </div>
                 <div className="form-row full">
-                  <div className="form-field">
-                    <label>Admin Link</label>
-                    <div className="link-field">
-                      <a href={selectedIntegration.primaryAdminLink.startsWith('http') ? selectedIntegration.primaryAdminLink : `https://${selectedIntegration.primaryAdminLink}`} target="_blank" rel="noopener noreferrer">
-                        {selectedIntegration.primaryAdminLink}
-                      </a>
-                      <button
-                        className="copy-btn"
-                        onClick={() => copyToClipboard(selectedIntegration.primaryAdminLink, 'Admin Link')}
-                      >
-                        <i className="bi bi-clipboard"></i>
-                      </button>
-                    </div>
-                  </div>
+                  <EditableLinkField
+                    field="primaryAdminLink"
+                    value={selectedIntegration.primaryAdminLink}
+                    label="Admin Link"
+                  />
                 </div>
               </div>
 
@@ -1256,34 +1285,18 @@ const AdminDashboard = () => {
                     />
                   </div>
                   <div className="form-row full">
-                    <div className="form-field">
-                      <label>IP Validation Link</label>
-                      <div className="link-field">
-                        <code>{selectedIntegration.closerIpValidation}</code>
-                        <button
-                          className="copy-btn"
-                          onClick={() => copyToClipboard(selectedIntegration.closerIpValidation, 'IP Validation')}
-                        >
-                          <i className="bi bi-clipboard"></i>
-                        </button>
-                      </div>
-                    </div>
+                    <EditableLinkField
+                      field="closerIpValidation"
+                      value={selectedIntegration.closerIpValidation}
+                      label="IP Validation Link"
+                    />
                   </div>
                   <div className="form-row full">
-                    <div className="form-field">
-                      <label>Admin Link</label>
-                      <div className="link-field">
-                        <a href={selectedIntegration.closerAdminLink.startsWith('http') ? selectedIntegration.closerAdminLink : `https://${selectedIntegration.closerAdminLink}`} target="_blank" rel="noopener noreferrer">
-                          {selectedIntegration.closerAdminLink}
-                        </a>
-                        <button
-                          className="copy-btn"
-                          onClick={() => copyToClipboard(selectedIntegration.closerAdminLink, 'Admin Link')}
-                        >
-                          <i className="bi bi-clipboard"></i>
-                        </button>
-                      </div>
-                    </div>
+                    <EditableLinkField
+                      field="closerAdminLink"
+                      value={selectedIntegration.closerAdminLink}
+                      label="Admin Link"
+                    />
                   </div>
                 </div>
               )}
