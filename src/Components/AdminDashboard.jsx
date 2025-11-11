@@ -87,6 +87,26 @@ const AdminDashboard = () => {
     disposition: false
   });
 
+  // Campaign configuration
+  const campaignConfig = {
+    'Medicare': ['Basic', 'Advanced'],
+    'Final Expense': ['Basic', 'Advanced'],
+    'MVA': ['Basic'],
+    'Auto Insurance': ['Advanced'],
+    'Auto Warranty': ['Advanced']
+  };
+
+  const basicTransferOptions = [
+    { value: 'high-quality', label: 'High-Quality Transfers' },
+    { value: 'balanced', label: 'Balanced Transfers' },
+    { value: 'broader', label: 'Broader Transfers' }
+  ];
+
+  const advancedTransferOptions = [
+    { value: 'balanced-broad', label: 'Balanced Broad' },
+    { value: 'balanced-qualified', label: 'Balanced Qualified' }
+  ];
+
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
     if (!isAuthenticated) {
@@ -503,7 +523,7 @@ const AdminDashboard = () => {
     return labels[value] || value;
   };
 
-  const EditableField = ({ field, value, label, type = 'text', isTextarea = false }) => {
+  const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
     const isEditing = editingField === field && isEditMode;
 
     if (isTextarea) {
@@ -526,6 +546,57 @@ const AdminDashboard = () => {
                 </button>
                 <button className="cancel-btn" onClick={cancelEditing}>
                   <i className="bi bi-x-lg"></i> Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditMode) startEditing(field, value);
+              }}
+              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+            >
+              {isEditMode ? (
+                <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+                  {value || '-'}
+                </p>
+              ) : (
+                <p className="field-value">{value || '-'}</p>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Render dropdown if options are provided
+    if (options) {
+      return (
+        <div className="form-field">
+          <label>{label}</label>
+          {isEditMode && isEditing ? (
+            <div className="field-edit-group">
+              <select
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onBlur={() => { }}
+                autoFocus
+                className="form-select"
+              >
+                <option value="">Select {label}</option>
+                {options.map((option) => (
+                  <option key={option.value || option} value={option.value || option}>
+                    {option.label || option}
+                  </option>
+                ))}
+              </select>
+              <div className="field-actions-inline">
+                <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+                  <i className="bi bi-check-lg"></i>
+                </button>
+                <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+                  <i className="bi bi-x-lg"></i>
                 </button>
               </div>
             </div>
@@ -1032,6 +1103,7 @@ const AdminDashboard = () => {
                       field="campaign"
                       value={selectedIntegration.campaign}
                       label="Campaign Type"
+                      options={Object.keys(campaignConfig)}
                     />
                   </div>
                   <div className="form-row">
@@ -1039,6 +1111,7 @@ const AdminDashboard = () => {
                       field="model"
                       value={selectedIntegration.model}
                       label="Bot Model"
+                      options={campaignConfig[selectedIntegration.campaign] || []}
                     />
                     <EditableField
                       field="numberOfBots"
@@ -1055,8 +1128,13 @@ const AdminDashboard = () => {
                     />
                     <EditableField
                       field="transferSettings"
-                      value={getTransferSettingsLabel(selectedIntegration.transferSettings)}
+                      value={selectedIntegration.transferSettings}
                       label="Transfer Settings"
+                      options={
+                        selectedIntegration.model === 'Basic'
+                          ? basicTransferOptions
+                          : advancedTransferOptions
+                      }
                     />
                   </div>
                   <div className="form-row full">
