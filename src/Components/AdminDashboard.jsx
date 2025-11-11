@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
 import '../assets/css/AdminDashboard.css';
 
 // Environment detection
@@ -11,6 +12,42 @@ const getApiUrl = () => {
 };
 
 const API_URL = getApiUrl();
+const ArrayInputRow = React.memo(({ value, index, label, onChange, onRemove, canRemove }) => {
+  const [localValue, setLocalValue] = React.useState(value);
+
+  // Sync local value when prop changes (important for initial load)
+  React.useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+    setLocalValue(newValue);
+    onChange(index, newValue);
+  };
+
+  return (
+    <div className="array-edit-row">
+      <input
+        type="text"
+        value={localValue}
+        onChange={handleChange}
+        placeholder={`${label} ${index + 1}`}
+        className="form-input"
+        autoComplete="off"
+      />
+      {canRemove && (
+        <button
+          type="button"
+          className="remove-array-btn"
+          onClick={onRemove}
+        >
+          <i className="bi bi-trash"></i>
+        </button>
+      )}
+    </div>
+  );
+});
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -21,6 +58,7 @@ const AdminDashboard = () => {
   const [selectedIntegration, setSelectedIntegration] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showResourceModal, setShowResourceModal] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
   const [campaignFilter, setCampaignFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,6 +66,7 @@ const AdminDashboard = () => {
   const [editValue, setEditValue] = useState('');
   const [editArrayValue, setEditArrayValue] = useState([]);
   const [copyFeedback, setCopyFeedback] = useState('');
+  const [arrayItemIds, setArrayItemIds] = useState([]);
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
     clientDashboard: '',
@@ -124,7 +163,7 @@ const AdminDashboard = () => {
   const viewDetails = (integration) => {
     setSelectedIntegration(integration);
     setShowModal(true);
-    
+
     // Load completion checks
     if (integration.completionRequirements) {
       setCompletionChecks(integration.completionRequirements);
@@ -144,11 +183,7 @@ const AdminDashboard = () => {
     setEditingField(null);
     setEditValue('');
     setEditArrayValue([]);
-    setCampaignResources({
-      longScript: '',
-      clientDashboard: '',
-      disposition: ''
-    });
+    setIsEditMode(false);
   };
 
   const copyToClipboard = async (text, label) => {
@@ -165,19 +200,20 @@ const AdminDashboard = () => {
 
   const startEditing = (field, currentValue) => {
     setEditingField(field);
-    // Check if the field is meant to be an array
     const isArrayField = ['extensions', 'serverIPs'].includes(field);
-    
+
     if (isArrayField) {
-      // Handle array fields
-      const arrayValue = Array.isArray(currentValue) ? currentValue : [];
-      setEditArrayValue(arrayValue.length > 0 ? arrayValue : ['']);
-      setEditValue(''); // Reset single value
+      // Properly handle array values - create a copy
+      const arrayValue = Array.isArray(currentValue) && currentValue.length > 0
+        ? [...currentValue]  // Create a copy of the existing array
+        : [''];  // Start with one empty field if no values
+
+      setEditArrayValue(arrayValue);
+      setEditValue('');
     } else {
-      // Handle single value fields
       const stringValue = Array.isArray(currentValue) ? '' : (currentValue || '');
       setEditValue(stringValue);
-      setEditArrayValue([]); // Reset array value
+      setEditArrayValue([]);
     }
   };
 
@@ -197,21 +233,20 @@ const AdminDashboard = () => {
     }
   };
 
-  const updateArrayItem = (index, value) => {
-    const newArray = [...editArrayValue];
-    newArray[index] = value;
-    setEditArrayValue(newArray);
-  };
+  const updateArrayItem = useCallback((index, value) => {
+    setEditArrayValue(prev => {
+      const newArray = [...prev];
+      newArray[index] = value;
+      return newArray;
+    });
+  }, []);
 
   const saveField = async (field) => {
     if (!selectedIntegration) return;
 
-    // Check if the field is meant to be an array
     const isArrayField = ['extensions', 'serverIPs'].includes(field);
-    
-    // Use the appropriate value based on field type
-    const valueToSave = isArrayField ? 
-      editArrayValue.filter(item => item.trim() !== '') : 
+    const valueToSave = isArrayField ?
+      editArrayValue.filter(item => item.trim() !== '') :
       editValue;
 
     try {
@@ -226,20 +261,18 @@ const AdminDashboard = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Update the integrations list
         const updatedIntegrations = integrations.map(item =>
           item._id === selectedIntegration._id ? { ...item, [field]: valueToSave } : item
         );
         setIntegrations(updatedIntegrations);
-        setFilteredIntegrations(updatedIntegrations); // Also update filtered list
-        
-        // Update the selected integration
+        setFilteredIntegrations(updatedIntegrations);
         setSelectedIntegration({ ...selectedIntegration, [field]: valueToSave });
-        
-        // Reset edit state
+
+        // Reset all edit states
         setEditingField(null);
         setEditValue('');
         setEditArrayValue([]);
+        setArrayItemIds([]);
       } else {
         throw new Error(data.message || 'Failed to save changes');
       }
@@ -247,12 +280,12 @@ const AdminDashboard = () => {
       console.error('Error updating field:', err);
       const errorMessage = err.message || 'Failed to update field';
       setError(errorMessage);
-      setTimeout(() => setError(''), 3000); // Clear error after 3 seconds
-      
-      // Reset edit state
+      setTimeout(() => setError(''), 3000);
+
       setEditingField(null);
       setEditValue('');
       setEditArrayValue([]);
+      setArrayItemIds([]);
     }
   };
 
@@ -276,11 +309,11 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === selectedIntegration._id ? 
-            { ...item, completionRequirements: newChecks } : item
+            item._id === selectedIntegration._id ?
+              { ...item, completionRequirements: newChecks } : item
           )
         );
-        
+
         setSelectedIntegration({ ...selectedIntegration, completionRequirements: newChecks });
       }
     } catch (err) {
@@ -289,9 +322,9 @@ const AdminDashboard = () => {
   };
 
   const allCompletionChecksMet = () => {
-    return completionChecks.longScript && 
-           completionChecks.clientDashboard && 
-           completionChecks.disposition;
+    return completionChecks.longScript &&
+      completionChecks.clientDashboard &&
+      completionChecks.disposition;
   };
 
   const openResourceModal = () => {
@@ -320,11 +353,11 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === selectedIntegration._id ? 
-            { ...item, campaignResources } : item
+            item._id === selectedIntegration._id ?
+              { ...item, campaignResources } : item
           )
         );
-        
+
         setSelectedIntegration({ ...selectedIntegration, campaignResources });
         setShowResourceModal(false);
         setCopyFeedback('Campaign resources updated!');
@@ -337,75 +370,75 @@ const AdminDashboard = () => {
   };
 
   const updateStatus = async (id, newStatus) => {
-  // Check if trying to set to completed
-  if (newStatus === 'completed' && !allCompletionChecksMet()) {
-    alert('Cannot mark as completed! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
-    return;
-  }
-
-  // Check if clientId is set when marking as completed
-  if (newStatus === 'completed' && (!selectedIntegration.clientId || selectedIntegration.clientId.trim() === '')) {
-    alert('Cannot mark as completed! Please assign a Client ID first.');
-    return;
-  }
-
-  try {
-    const updateData = { status: newStatus };
-    
-    // Automatically enable client access when marking as completed
-    if (newStatus === 'completed') {
-      updateData.clientAccessEnabled = true;
+    // Check if trying to set to completed
+    if (newStatus === 'completed' && !allCompletionChecksMet()) {
+      alert('Cannot mark as completed! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
+      return;
     }
 
-    const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updateData)
-    });
+    // Check if clientId is set when marking as completed
+    if (newStatus === 'completed' && (!selectedIntegration.clientId || selectedIntegration.clientId.trim() === '')) {
+      alert('Cannot mark as completed! Please assign a Client ID first.');
+      return;
+    }
 
-    const data = await response.json();
+    try {
+      const updateData = { status: newStatus };
 
-    if (data.success) {
-      setIntegrations(prev =>
-        prev.map(item =>
-          item._id === id ? { 
-            ...item, 
+      // Automatically enable client access when marking as completed
+      if (newStatus === 'completed') {
+        updateData.clientAccessEnabled = true;
+      }
+
+      const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIntegrations(prev =>
+          prev.map(item =>
+            item._id === id ? {
+              ...item,
+              status: newStatus,
+              clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
+            } : item
+          )
+        );
+
+        if (selectedIntegration && selectedIntegration._id === id) {
+          setSelectedIntegration({
+            ...selectedIntegration,
+            status: newStatus,
+            clientAccessEnabled: newStatus === 'completed' ? true : selectedIntegration.clientAccessEnabled
+          });
+        }
+
+        const updatedIntegrations = integrations.map(item =>
+          item._id === id ? {
+            ...item,
             status: newStatus,
             clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
           } : item
-        )
-      );
-      
-      if (selectedIntegration && selectedIntegration._id === id) {
-        setSelectedIntegration({ 
-          ...selectedIntegration, 
-          status: newStatus,
-          clientAccessEnabled: newStatus === 'completed' ? true : selectedIntegration.clientAccessEnabled
-        });
-      }
+        );
+        calculateStats(updatedIntegrations);
 
-      const updatedIntegrations = integrations.map(item =>
-        item._id === id ? { 
-          ...item, 
-          status: newStatus,
-          clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
-        } : item
-      );
-      calculateStats(updatedIntegrations);
-
-      // Show success message
-      if (newStatus === 'completed') {
-        setCopyFeedback('Status updated to Completed! Client access enabled.');
-        setTimeout(() => setCopyFeedback(''), 3000);
+        // Show success message
+        if (newStatus === 'completed') {
+          setCopyFeedback('Status updated to Completed! Client access enabled.');
+          setTimeout(() => setCopyFeedback(''), 3000);
+        }
       }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Failed to update status. Please try again.');
     }
-  } catch (err) {
-    console.error('Error updating status:', err);
-    alert('Failed to update status. Please try again.');
-  }
-};
+  };
 
   const deleteIntegration = async (id) => {
     if (!window.confirm('Are you sure you want to delete this integration request?')) {
@@ -471,127 +504,182 @@ const AdminDashboard = () => {
   };
 
   const EditableField = ({ field, value, label, type = 'text', isTextarea = false }) => {
-    const isEditing = editingField === field;
+    const isEditing = editingField === field && isEditMode;
 
-    return (
-      <div className="detail-item editable-field">
-        <label>
-          {label}
-          {!isEditing && (
-            <button 
-              className="edit-icon-btn"
-              onClick={() => startEditing(field, value)}
-              title="Edit"
-            >
-              <i className="bi bi-pencil"></i>
-            </button>
-          )}
-        </label>
-        {isEditing ? (
-          <div className="edit-mode">
-            {isTextarea ? (
+    if (isTextarea) {
+      return (
+        <div className="form-field full-width">
+          <label>{label}</label>
+          {isEditMode && isEditing ? (
+            <div className="edit-mode">
               <textarea
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                rows="3"
+                onBlur={() => { }}
+                rows="4"
                 autoFocus
+                className="form-textarea"
               />
-            ) : (
-              <input
-                type={type}
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                onBlur={(e) => e.target.focus()}
-                autoFocus
-              />
-            )}
-            <div className="edit-actions">
-              <button className="save-btn" onClick={() => saveField(field)}>
-                <i className="bi bi-check-lg"></i> Save
+              <div className="field-actions">
+                <button className="save-btn" onClick={() => saveField(field)}>
+                  <i className="bi bi-check-lg"></i> Save
+                </button>
+                <button className="cancel-btn" onClick={cancelEditing}>
+                  <i className="bi bi-x-lg"></i> Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditMode) startEditing(field, value);
+              }}
+              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+            >
+              {isEditMode ? (
+                <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+                  {value || '-'}
+                </p>
+              ) : (
+                <p className="field-value">{value || '-'}</p>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="form-field">
+        <label>{label}</label>
+        {isEditMode && isEditing ? (
+          <div className="field-edit-group">
+            <input
+              type={type}
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={() => { }}
+              autoFocus
+              className="form-input"
+            />
+            <div className="field-actions-inline">
+              <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+                <i className="bi bi-check-lg"></i>
               </button>
-              <button className="cancel-btn" onClick={cancelEditing}>
-                <i className="bi bi-x-lg"></i> Cancel
+              <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+                <i className="bi bi-x-lg"></i>
               </button>
             </div>
           </div>
         ) : (
-          <p>{value || '-'}</p>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isEditMode) startEditing(field, value);
+            }}
+            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+          >
+            {isEditMode ? (
+              <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+                {value || '-'}
+              </p>
+            ) : (
+              <p className="field-value">{value || '-'}</p>
+            )}
+          </div>
         )}
       </div>
     );
   };
 
   const EditableArrayField = ({ field, value, label }) => {
-    const isEditing = editingField === field;
+  const isEditing = editingField === field && isEditMode;
 
-    return (
-      <div className="detail-item editable-field">
-        <label>
-          {label}
-          {!isEditing && (
-            <button 
-              className="edit-icon-btn"
-              onClick={() => startEditing(field, value)}
-              title="Edit"
-            >
-              <i className="bi bi-pencil"></i>
-            </button>
-          )}
-        </label>
-        {isEditing ? (
-          <div className="edit-mode">
-            {editArrayValue.map((item, index) => (
-              <div key={index} className="array-edit-row">
-                <input
-                  type="text"
-                  value={item}
-                  onChange={(e) => updateArrayItem(index, e.target.value)}
-                  placeholder={`${label} ${index + 1}`}
-                />
-                {editArrayValue.length > 1 && (
-                  <button
-                    type="button"
-                    className="remove-array-btn"
-                    onClick={() => removeArrayItem(index)}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                )}
-              </div>
-            ))}
-            <button type="button" className="add-array-btn" onClick={addArrayItem}>
-              <i className="bi bi-plus-circle"></i> Add Another
-            </button>
-            <div className="edit-actions">
-              <button className="save-btn" onClick={() => saveField(field)}>
-                <i className="bi bi-check-lg"></i> Save
-              </button>
-              <button className="cancel-btn" onClick={cancelEditing}>
-                <i className="bi bi-x-lg"></i> Cancel
-              </button>
+  return (
+    <div className="form-field full-width">
+      <label>{label}</label>
+      {isEditMode && isEditing ? (
+        <div className="edit-mode">
+          {editArrayValue.map((item, index) => (
+            <div key={index} className="array-edit-row">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  setEditArrayValue(prev => {
+                    const newArray = [...prev];
+                    newArray[index] = newValue;
+                    return newArray;
+                  });
+                }}
+                placeholder={`${label} ${index + 1}`}
+                className="form-input"
+                autoComplete="off"
+              />
+              {editArrayValue.length > 1 && (
+                <button
+                  type="button"
+                  className="remove-array-btn"
+                  onClick={() => {
+                    if (editArrayValue.length > 1) {
+                      setEditArrayValue(prev => prev.filter((_, i) => i !== index));
+                    }
+                  }}
+                >
+                  <i className="bi bi-trash"></i>
+                </button>
+              )}
             </div>
+          ))}
+          <button type="button" className="add-array-btn" onClick={() => {
+            setEditArrayValue(prev => [...prev, '']);
+          }}>
+            <i className="bi bi-plus-circle"></i> Add Another
+          </button>
+          <div className="field-actions">
+            <button className="save-btn" onClick={() => saveField(field)}>
+              <i className="bi bi-check-lg"></i> Save
+            </button>
+            <button className="cancel-btn" onClick={() => {
+              setEditingField(null);
+              setEditValue('');
+              setEditArrayValue([]);
+            }}>
+              <i className="bi bi-x-lg"></i> Cancel
+            </button>
           </div>
-        ) : (
+        </div>
+      ) : (
+        <div 
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isEditMode) startEditing(field, value);
+          }}
+          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+        >
           <div className="array-display">
             {value && value.length > 0 ? (
               value.map((item, index) => (
                 <span key={index} className="array-item-badge">{item}</span>
               ))
             ) : (
-              <p>-</p>
+              <p className="field-value">-</p>
             )}
           </div>
-        )}
-      </div>
-    );
-  };
+        </div>
+      )}
+    </div>
+  );
+};
 
   const CopyableField = ({ value, label }) => (
     <div className="detail-item copyable-field">
       <label>{label}</label>
       <div className="copyable-content">
         <p><code>{value}</code></p>
-        <button 
+        <button
           className="copy-btn"
           onClick={() => copyToClipboard(value, label)}
           title="Copy to clipboard"
@@ -611,7 +699,7 @@ const AdminDashboard = () => {
             {value}
           </a>
         </p>
-        <button 
+        <button
           className="copy-btn"
           onClick={() => copyToClipboard(value, label)}
           title="Copy to clipboard"
@@ -734,7 +822,7 @@ const AdminDashboard = () => {
             </button>
           </div>
 
-          <select 
+          <select
             className="campaign-filter"
             value={campaignFilter}
             onChange={(e) => setCampaignFilter(e.target.value)}
@@ -783,7 +871,7 @@ const AdminDashboard = () => {
             </thead>
             <tbody>
               {filteredIntegrations.map((integration) => (
-                <tr 
+                <tr
                   key={integration._id}
                   onClick={() => viewDetails(integration)}
                   style={{ cursor: 'pointer' }}
@@ -855,11 +943,11 @@ const AdminDashboard = () => {
               </button>
             </div>
 
-            <div className="modal-body">
-              {/* Status Update with Completion Requirements */}
-              <div className="detail-section">
-                <h3><i className="bi bi-flag-fill"></i> Status & Completion Requirements</h3>
-                
+            <div className="modal-body simple-form">
+              {/* Status Section */}
+              <div className="form-section">
+                <h3>Status & Requirements</h3>
+
                 <div className="completion-requirements">
                   <div className="requirement-header">
                     <p><strong>Mark complete before setting to "Completed" status:</strong></p>
@@ -876,7 +964,7 @@ const AdminDashboard = () => {
                         <i className="bi bi-check-circle-fill text-success" title="Added"></i>
                       )}
                     </label>
-                    
+
                     <label className="requirement-checkbox">
                       <input
                         type="checkbox"
@@ -888,7 +976,7 @@ const AdminDashboard = () => {
                         <i className="bi bi-check-circle-fill text-success" title="Added"></i>
                       )}
                     </label>
-                    
+
                     <label className="requirement-checkbox">
                       <input
                         type="checkbox"
@@ -901,8 +989,8 @@ const AdminDashboard = () => {
                       )}
                     </label>
                   </div>
-                  
-                  <button 
+
+                  <button
                     className="manage-resources-btn"
                     onClick={openResourceModal}
                   >
@@ -932,9 +1020,9 @@ const AdminDashboard = () => {
 
               {/* Campaign Configuration */}
               {selectedIntegration.campaign && (
-                <div className="detail-section">
-                  <h3><i className="bi bi-robot"></i> Campaign Configuration</h3>
-                  <div className="detail-grid">
+                <div className="form-section">
+                  <h3>Campaign Configuration</h3>
+                  <div className="form-row">
                     <EditableField
                       field="clientId"
                       value={selectedIntegration.clientId}
@@ -945,6 +1033,8 @@ const AdminDashboard = () => {
                       value={selectedIntegration.campaign}
                       label="Campaign Type"
                     />
+                  </div>
+                  <div className="form-row">
                     <EditableField
                       field="model"
                       value={selectedIntegration.model}
@@ -956,16 +1046,8 @@ const AdminDashboard = () => {
                       label="Number of Bots"
                       type="number"
                     />
-                    <EditableArrayField
-                      field="extensions"
-                      value={selectedIntegration.extensions}
-                      label="Extensions"
-                    />
-                    <EditableArrayField
-                      field="serverIPs"
-                      value={selectedIntegration.serverIPs}
-                      label="Server IPs"
-                    />
+                  </div>
+                  <div className="form-row">
                     <EditableField
                       field="dialplan"
                       value={selectedIntegration.dialplan}
@@ -977,91 +1059,161 @@ const AdminDashboard = () => {
                       label="Transfer Settings"
                     />
                   </div>
+                  <div className="form-row full">
+                    <EditableArrayField
+                      field="extensions"
+                      value={selectedIntegration.extensions}
+                      label="Extensions"
+                    />
+                  </div>
+                  <div className="form-row full">
+                    <EditableArrayField
+                      field="serverIPs"
+                      value={selectedIntegration.serverIPs}
+                      label="Server IPs"
+                    />
+                  </div>
                 </div>
               )}
 
               {/* Primary Dialler Settings */}
-              <div className="detail-section">
-                <h3><i className="bi bi-hdd-network"></i> Primary Dialler Settings</h3>
-                <div className="detail-grid">
-                  <CopyableField
-                    value={selectedIntegration.primaryIpValidation}
-                    label="IP Validation Link"
-                  />
-                  <CopyableLinkField
-                    value={selectedIntegration.primaryAdminLink}
-                    label="Admin Link"
-                  />
-                  <CopyableField
+              <div className="form-section">
+                <h3>Primary Dialler</h3>
+                <div className="form-row">
+                  <EditableField
+                    field="primaryUser"
                     value={selectedIntegration.primaryUser}
                     label="Username"
                   />
-                  <CopyableField
+                  <EditableField
+                    field="primaryPassword"
                     value={selectedIntegration.primaryPassword}
                     label="Password"
+                  />
+                </div>
+                <div className="form-row">
+                  <EditableField
+                    field="primaryPort"
+                    value={selectedIntegration.primaryPort}
+                    label="Port"
                   />
                   <EditableField
                     field="primaryBotsCampaign"
                     value={selectedIntegration.primaryBotsCampaign}
                     label="Fronting Campaign"
                   />
+                </div>
+                <div className="form-row">
                   <EditableField
                     field="primaryUserSeries"
                     value={selectedIntegration.primaryUserSeries}
                     label="Verifier Campaign"
                   />
-                  <EditableField
-                    field="primaryPort"
-                    value={selectedIntegration.primaryPort}
-                    label="Port"
-                  />
+                </div>
+                <div className="form-row full">
+                  <div className="form-field">
+                    <label>IP Validation Link</label>
+                    <div className="link-field">
+                      <code>{selectedIntegration.primaryIpValidation}</code>
+                      <button
+                        className="copy-btn"
+                        onClick={() => copyToClipboard(selectedIntegration.primaryIpValidation, 'IP Validation')}
+                      >
+                        <i className="bi bi-clipboard"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row full">
+                  <div className="form-field">
+                    <label>Admin Link</label>
+                    <div className="link-field">
+                      <a href={selectedIntegration.primaryAdminLink.startsWith('http') ? selectedIntegration.primaryAdminLink : `https://${selectedIntegration.primaryAdminLink}`} target="_blank" rel="noopener noreferrer">
+                        {selectedIntegration.primaryAdminLink}
+                      </a>
+                      <button
+                        className="copy-btn"
+                        onClick={() => copyToClipboard(selectedIntegration.primaryAdminLink, 'Admin Link')}
+                      >
+                        <i className="bi bi-clipboard"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Closer Dialler Settings */}
               {selectedIntegration.setupType === 'separate' && (
-                <div className="detail-section closer-detail">
-                  <h3><i className="bi bi-diagram-3"></i> Closer Dialler Settings</h3>
-                  <div className="detail-grid">
-                    <CopyableField
-                      value={selectedIntegration.closerIpValidation}
-                      label="IP Validation Link"
-                    />
-                    <CopyableLinkField
-                      value={selectedIntegration.closerAdminLink}
-                      label="Admin Link"
-                    />
-                    <CopyableField
+                <div className="form-section">
+                  <h3>Closer Dialler</h3>
+                  <div className="form-row">
+                    <EditableField
+                      field="closerUser"
                       value={selectedIntegration.closerUser}
                       label="Username"
                     />
-                    <CopyableField
+                    <EditableField
+                      field="closerPassword"
                       value={selectedIntegration.closerPassword}
                       label="Password"
+                    />
+                  </div>
+                  <div className="form-row">
+                    <EditableField
+                      field="closerPort"
+                      value={selectedIntegration.closerPort}
+                      label="Port"
                     />
                     <EditableField
                       field="closerCampaign"
                       value={selectedIntegration.closerCampaign}
                       label="Campaign"
                     />
+                  </div>
+                  <div className="form-row">
                     <EditableField
                       field="closerIngroup"
                       value={selectedIntegration.closerIngroup}
                       label="Ingroup"
                     />
-                    <EditableField
-                      field="closerPort"
-                      value={selectedIntegration.closerPort}
-                      label="Port"
-                    />
+                  </div>
+                  <div className="form-row full">
+                    <div className="form-field">
+                      <label>IP Validation Link</label>
+                      <div className="link-field">
+                        <code>{selectedIntegration.closerIpValidation}</code>
+                        <button
+                          className="copy-btn"
+                          onClick={() => copyToClipboard(selectedIntegration.closerIpValidation, 'IP Validation')}
+                        >
+                          <i className="bi bi-clipboard"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-row full">
+                    <div className="form-field">
+                      <label>Admin Link</label>
+                      <div className="link-field">
+                        <a href={selectedIntegration.closerAdminLink.startsWith('http') ? selectedIntegration.closerAdminLink : `https://${selectedIntegration.closerAdminLink}`} target="_blank" rel="noopener noreferrer">
+                          {selectedIntegration.closerAdminLink}
+                        </a>
+                        <button
+                          className="copy-btn"
+                          onClick={() => copyToClipboard(selectedIntegration.closerAdminLink, 'Admin Link')}
+                        >
+                          <i className="bi bi-clipboard"></i>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
 
               {/* Contact Information */}
-              <div className="detail-section">
-                <h3><i className="bi bi-person-fill"></i> Contact Information</h3>
-                <div className="detail-grid">
+              <div className="form-section">
+                <h3>Contact Information</h3>
+                <div className="form-row">
                   <EditableField
                     field="companyName"
                     value={selectedIntegration.companyName}
@@ -1072,6 +1224,8 @@ const AdminDashboard = () => {
                     value={selectedIntegration.contactPerson}
                     label="Contact Person"
                   />
+                </div>
+                <div className="form-row">
                   <EditableField
                     field="email"
                     value={selectedIntegration.email}
@@ -1087,34 +1241,41 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Custom Requirements */}
-              <div className="detail-section">
-                <h3><i className="bi bi-chat-square-text"></i> Current Bots</h3>
+              {/* Notes */}
+              <div className="form-section">
+                <h3>Notes</h3>
                 <EditableField
                   field="customRequirements"
                   value={selectedIntegration.customRequirements}
-                  label="Notes"
+                  label="Current Bots / Notes"
                   isTextarea={true}
                 />
               </div>
 
               {/* Timestamps */}
-              <div className="detail-section">
-                <h3><i className="bi bi-clock-fill"></i> Timestamps</h3>
-                <div className="detail-grid">
-                  <div className="detail-item">
+              <div className="form-section">
+                <h3>Timestamps</h3>
+                <div className="form-row">
+                  <div className="form-field">
                     <label>Submitted At</label>
-                    <p>{formatDate(selectedIntegration.submittedAt)}</p>
+                    <p className="field-value">{formatDate(selectedIntegration.submittedAt)}</p>
                   </div>
-                  <div className="detail-item">
+                  <div className="form-field">
                     <label>Last Updated</label>
-                    <p>{formatDate(selectedIntegration.updatedAt)}</p>
+                    <p className="field-value">{formatDate(selectedIntegration.updatedAt)}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="modal-footer">
+              <button
+                className="edit-toggle-btn"
+                onClick={() => setIsEditMode(!isEditMode)}
+              >
+                <i className={`bi bi-${isEditMode ? 'x' : 'pencil'}`}></i>
+                {isEditMode ? 'Done Editing' : 'Edit Details'}
+              </button>
               <button
                 className="delete-btn"
                 onClick={() => deleteIntegration(selectedIntegration._id)}
