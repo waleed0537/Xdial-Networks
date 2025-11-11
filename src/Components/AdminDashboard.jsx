@@ -1219,25 +1219,7 @@ const AdminDashboard = () => {
                     value={selectedIntegration.companyName}
                     label="Company Name"
                   />
-                  <EditableField
-                    field="contactPerson"
-                    value={selectedIntegration.contactPerson}
-                    label="Contact Person"
-                  />
-                </div>
-                <div className="form-row">
-                  <EditableField
-                    field="email"
-                    value={selectedIntegration.email}
-                    label="Email"
-                    type="email"
-                  />
-                  <EditableField
-                    field="phone"
-                    value={selectedIntegration.phone}
-                    label="Phone"
-                    type="tel"
-                  />
+                  
                 </div>
               </div>
 
