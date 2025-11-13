@@ -63,7 +63,7 @@ const Login = () => {
     ) {
       localStorage.setItem('isClientAuthenticated', 'true');
       localStorage.setItem('clientId', 'onboarding');
-      navigate('/client/dashboard');
+      navigate('/onboarding');
       return;
     }
 
