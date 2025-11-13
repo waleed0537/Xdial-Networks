@@ -443,9 +443,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 /* RTL support */
-.ui-datepicker-rtl {
-	direction: rtl;
-}
+
 .ui-datepicker-rtl .ui-datepicker-prev {
 	right: 2px;
 	left: auto;

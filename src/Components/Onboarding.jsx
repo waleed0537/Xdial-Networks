@@ -212,7 +212,7 @@ const Onboarding = () => {
         <div className="header-content">
           <div className="header-title">
             <h1>XDial Networks</h1>
-            <p>Client Portal</p>
+            <p>Onboarding Portal</p>
           </div>
           <div className="header-actions">
             <button className="logout-btn" onClick={handleLogout}>

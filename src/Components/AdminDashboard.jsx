@@ -645,28 +645,61 @@ const AdminDashboard = () => {
   const EditableArrayField = ({ field, value, label }) => {
   const isEditing = editingField === field && isEditMode;
 
+  // Convert value array to plain text for display
+  const valueAsText = Array.isArray(value) && value.length > 0 
+    ? value.join('\n') 
+    : '';
+
   return (
     <div className="form-field full-width">
       <label>{label}</label>
       {isEditMode && isEditing ? (
         <div className="edit-mode">
-          <textarea
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            rows="4"
-            autoFocus
-            className="form-textarea"
-            placeholder="Enter one value per line"
-            style={{ 
-              direction: 'ltr !important', 
-              textAlign: 'left !important',
-              unicodeBidi: 'bidi-override !important',
-              fontFamily: 'monospace !important',
-              writingMode: 'horizontal-tb !important',
-              WebkitAppearance: 'none'
-            }}
-          />
-          <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+          <div style={{
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+            overflow: 'hidden',
+            backgroundColor: '#fff'
+          }}>
+            <pre style={{
+              margin: 0,
+              padding: '12px',
+              fontFamily: '"Courier New", monospace',
+              fontSize: '14px',
+              lineHeight: '1.5',
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word',
+              direction: 'ltr',
+              textAlign: 'left',
+              unicodeBidi: 'bidi-override',
+              color: '#000',
+              backgroundColor: '#f9fafb'
+            }}>
+              <textarea
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                rows="4"
+                autoFocus
+                placeholder="Enter one value per line"
+                style={{ 
+                  border: 'none',
+                  outline: 'none',
+                  width: '100%',
+                  fontFamily: '"Courier New", monospace',
+                  fontSize: '14px',
+                  direction: 'ltr',
+                  textAlign: 'left',
+                  unicodeBidi: 'bidi-override',
+                  backgroundColor: '#f9fafb',
+                  color: '#000',
+                  resize: 'vertical',
+                  padding: '0',
+                  margin: '0'
+                }}
+              />
+            </pre>
+          </div>
+          <small style={{ display: 'block', marginTop: '5px', color: '#666', direction: 'ltr' }}>
             Enter one {label.toLowerCase().replace(/s$/, '')} per line
           </small>
           <div className="field-actions">
@@ -688,9 +721,25 @@ const AdminDashboard = () => {
         >
           <div className="array-display">
             {value && value.length > 0 ? (
-              value.map((item, index) => (
-                <span key={index} className="array-item-badge">{item}</span>
-              ))
+              <pre style={{
+                margin: '0',
+                padding: '8px',
+                backgroundColor: '#f9fafb',
+                borderRadius: '4px',
+                border: '1px solid #e5e7eb',
+                fontFamily: '"Courier New", monospace',
+                fontSize: '13px',
+                direction: 'ltr',
+                textAlign: 'left',
+                unicodeBidi: 'bidi-override',
+                whiteSpace: 'pre-wrap',
+                wordWrap: 'break-word',
+                color: '#000',
+                maxHeight: '150px',
+                overflow: 'auto'
+              }}>
+                {valueAsText}
+              </pre>
             ) : (
               <p className="field-value">-</p>
             )}
