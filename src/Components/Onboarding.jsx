@@ -177,9 +177,7 @@ const Onboarding = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isClientAuthenticated');
-    localStorage.removeItem('clientId');
-    navigate('/admin/login');
+    navigate('/admin/dashboard');
   };
 
   // Count campaigns by expiration status for notifications
@@ -217,7 +215,7 @@ const Onboarding = () => {
           <div className="header-actions">
             <button className="logout-btn" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right"></i>
-              Logout
+              Admin Dashboard
             </button>
           </div>
         </div>

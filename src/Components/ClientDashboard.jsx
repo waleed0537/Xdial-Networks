@@ -53,9 +53,8 @@ const ClientDashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isClientAuthenticated');
-    localStorage.removeItem('clientId');
-    navigate('/admin/login');
+  
+    navigate('/onboarding');
   };
 
   const viewCampaignDetails = (campaign) => {
@@ -130,7 +129,7 @@ const ClientDashboard = () => {
           <div className="header-actions">
             <button className="logout-btn" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right"></i>
-              Logout
+              Onboarding
             </button>
           </div>
         </div>

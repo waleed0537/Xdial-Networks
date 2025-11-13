@@ -137,9 +137,7 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdminAuthenticated');
-    localStorage.removeItem('adminUsername');
-    navigate('/admin/login');
+    navigate('/onboarding');
   };
 
   const viewDetails = (integration) => {
@@ -836,7 +834,7 @@ const AdminDashboard = () => {
           </div>
           <button className="logout-btn" onClick={handleLogout}>
             <i className="bi bi-box-arrow-right"></i>
-            Logout
+            Onboarding
           </button>
         </div>
       </header>
