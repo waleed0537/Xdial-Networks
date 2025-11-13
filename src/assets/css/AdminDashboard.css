@@ -511,9 +511,45 @@
 .detail-section:last-child {
   border-bottom: none;
   margin-bottom: 0;
-  padding-bottom: 0;
+  padding: 2rem;
+}
+.duration-info {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f0f9ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
 }
 
+.duration-info p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.duration-info i {
+  font-size: 1.125rem;
+}
+
+/* Date Input Styling */
+input[type="date"].form-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+input[type="date"].form-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: opacity(0.6);
+  transition: filter 0.2s;
+}
+
+input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
+  filter: opacity(1);
+}
 .detail-section h3 {
   font-size: 1rem;
   font-weight: 600;
@@ -1588,6 +1624,7 @@
 .detail-section:last-child {
   border-bottom: none;
   margin-bottom: 0;
+  padding: 2rem;
 }
 
 .detail-section h3 {
@@ -1952,6 +1989,13 @@
   min-height: 100px;
   transition: all 0.2s ease;
   line-height: 1.6;
+  
+}
+
+.admin-form-textarea {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: bidi-override !important;
 }
 
 .form-textarea:hover {

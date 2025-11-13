@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import '../assets/css/AdminDashboard.css';
 
 // Environment detection
@@ -12,42 +12,6 @@ const getApiUrl = () => {
 };
 
 const API_URL = getApiUrl();
-const ArrayInputRow = React.memo(({ value, index, label, onChange, onRemove, canRemove }) => {
-  const [localValue, setLocalValue] = React.useState(value);
-
-  // Sync local value when prop changes (important for initial load)
-  React.useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
-
-  const handleChange = (e) => {
-    const newValue = e.target.value;
-    setLocalValue(newValue);
-    onChange(index, newValue);
-  };
-
-  return (
-    <div className="array-edit-row">
-      <input
-        type="text"
-        value={localValue}
-        onChange={handleChange}
-        placeholder={""}
-        className="form-input"
-        autoComplete="off"
-      />
-      {canRemove && (
-        <button
-          type="button"
-          className="remove-array-btn"
-          onClick={onRemove}
-        >
-          <i className="bi bi-trash"></i>
-        </button>
-      )}
-    </div>
-  );
-});
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -64,11 +28,7 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
-  const [editArrayValue, setEditArrayValue] = useState([]);
   const [copyFeedback, setCopyFeedback] = useState('');
-  const [arrayItemIds, setArrayItemIds] = useState([]);
-  // Utility to generate short stable ids for array items so keys don't change on re-render
-  const generateId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`;
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
     clientDashboard: '',
@@ -204,7 +164,6 @@ const AdminDashboard = () => {
     setSelectedIntegration(null);
     setEditingField(null);
     setEditValue('');
-    setEditArrayValue([]);
     setIsEditMode(false);
   };
 
@@ -225,56 +184,40 @@ const AdminDashboard = () => {
     const isArrayField = ['extensions', 'serverIPs'].includes(field);
 
     if (isArrayField) {
-      // Properly handle array values - create a copy
-      const arrayValue = Array.isArray(currentValue) && currentValue.length > 0
-        ? [...currentValue]  // Create a copy of the existing array
-        : [];  // Start empty if no values
-
-      setEditArrayValue(arrayValue);
-      // create stable ids for each array item to use as keys
-      setArrayItemIds(arrayValue.map(() => generateId()));
-      setEditValue('');
+      // Convert array to newline-separated string
+      const textValue = Array.isArray(currentValue) && currentValue.length > 0
+        ? currentValue.join('\n')
+        : '';
+      setEditValue(textValue);
     } else {
       const stringValue = Array.isArray(currentValue) ? '' : (currentValue || '');
       setEditValue(stringValue);
-      setEditArrayValue([]);
     }
   };
 
   const cancelEditing = () => {
     setEditingField(null);
     setEditValue('');
-    setEditArrayValue([]);
-    setArrayItemIds([]);
   };
-
-  const addArrayItem = () => {
-    setEditArrayValue(prev => [...prev, '']);
-    setArrayItemIds(prev => [...prev, generateId()]);
-  };
-
-  const removeArrayItem = (index) => {
-    // Allow removing any item; empty state is permitted
-    setEditArrayValue(prev => prev.filter((_, i) => i !== index));
-    setArrayItemIds(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const updateArrayItem = useCallback((index, value) => {
-    setEditArrayValue(prev => {
-      const newArray = [...prev];
-      newArray[index] = value;
-      return newArray;
-    });
-  }, []);
-
 
   const saveField = async (field) => {
     if (!selectedIntegration) return;
 
     const isArrayField = ['extensions', 'serverIPs'].includes(field);
-    const valueToSave = isArrayField ?
-      editArrayValue.filter(item => item.trim() !== '') :
-      editValue;
+    const isDateField = ['startDate', 'endDate'].includes(field);
+    
+    let valueToSave;
+    if (isArrayField) {
+      // Convert newline-separated string to array
+      valueToSave = editValue
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item !== '');
+    } else if (isDateField) {
+      valueToSave = editValue ? new Date(editValue).toISOString() : null;
+    } else {
+      valueToSave = editValue;
+    }
 
     try {
       const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
@@ -295,11 +238,8 @@ const AdminDashboard = () => {
         setFilteredIntegrations(updatedIntegrations);
         setSelectedIntegration({ ...selectedIntegration, [field]: valueToSave });
 
-        // Reset all edit states
         setEditingField(null);
         setEditValue('');
-        setEditArrayValue([]);
-        setArrayItemIds([]);
       } else {
         throw new Error(data.message || 'Failed to save changes');
       }
@@ -311,8 +251,6 @@ const AdminDashboard = () => {
 
       setEditingField(null);
       setEditValue('');
-      setEditArrayValue([]);
-      setArrayItemIds([]);
     }
   };
 
@@ -397,13 +335,11 @@ const AdminDashboard = () => {
   };
 
   const updateStatus = async (id, newStatus) => {
-    // Check if trying to set to completed
     if (newStatus === 'completed' && !allCompletionChecksMet()) {
       alert('Cannot mark as completed! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
       return;
     }
 
-    // Check if clientId is set when marking as completed
     if (newStatus === 'completed' && (!selectedIntegration.clientId || selectedIntegration.clientId.trim() === '')) {
       alert('Cannot mark as completed! Please assign a Client ID first.');
       return;
@@ -412,7 +348,6 @@ const AdminDashboard = () => {
     try {
       const updateData = { status: newStatus };
 
-      // Automatically enable client access when marking as completed
       if (newStatus === 'completed') {
         updateData.clientAccessEnabled = true;
       }
@@ -455,7 +390,6 @@ const AdminDashboard = () => {
         );
         calculateStats(updatedIntegrations);
 
-        // Show success message
         if (newStatus === 'completed') {
           setCopyFeedback('Status updated to Completed! Client access enabled.');
           setTimeout(() => setCopyFeedback(''), 3000);
@@ -499,6 +433,15 @@ const AdminDashboard = () => {
     });
   };
 
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const getStatusBadgeClass = (status) => {
     const statusMap = {
       'pending': 'status-pending',
@@ -519,19 +462,51 @@ const AdminDashboard = () => {
     return labelMap[status] || status;
   };
 
-  const getTransferSettingsLabel = (value) => {
-    const labels = {
-      'high-quality': 'High-Quality Transfers',
-      'balanced': 'Balanced Transfers',
-      'broader': 'Broader Transfers',
-      'balanced-broad': 'Balanced Broad',
-      'balanced-qualified': 'Balanced Qualified'
-    };
-    return labels[value] || value;
-  };
-
   const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
     const isEditing = editingField === field && isEditMode;
+    
+    if (type === 'date') {
+      return (
+        <div className="form-field">
+          <label>{label}</label>
+          {isEditMode && isEditing ? (
+            <div className="field-edit-group">
+              <input
+                type="date"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                autoFocus
+                className="form-input"
+              />
+              <div className="field-actions-inline">
+                <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+                  <i className="bi bi-check-lg"></i>
+                </button>
+                <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+                  <i className="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditMode) startEditing(field, value);
+              }}
+              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+            >
+              {isEditMode ? (
+                <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+                  {value || 'Not set'}
+                </p>
+              ) : (
+                <p className="field-value">{value ? formatDate(new Date(value)) : 'Not set'}</p>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
 
     if (isTextarea) {
       return (
@@ -542,7 +517,6 @@ const AdminDashboard = () => {
               <textarea
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                onBlur={() => { }}
                 rows="4"
                 autoFocus
                 className="form-textarea"
@@ -577,7 +551,6 @@ const AdminDashboard = () => {
       );
     }
 
-    // Render dropdown if options are provided
     if (options) {
       return (
         <div className="form-field">
@@ -587,7 +560,6 @@ const AdminDashboard = () => {
               <select
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
-                onBlur={() => { }}
                 autoFocus
                 className="form-select"
               >
@@ -637,7 +609,6 @@ const AdminDashboard = () => {
               type={type}
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              onBlur={() => { }}
               autoFocus
               className="form-input"
             />
@@ -679,31 +650,36 @@ const AdminDashboard = () => {
       <label>{label}</label>
       {isEditMode && isEditing ? (
         <div className="edit-mode">
-          {editArrayValue.map((item, index) => (
-            <ArrayInputRow
-              key={arrayItemIds[index] || `item-${index}`}
-              value={item}
-              index={index}
-              label={label}
-              onChange={updateArrayItem}
-              onRemove={() => removeArrayItem(index)}
-              canRemove={editArrayValue.length > 1}
-            />
-          ))}
-          <button type="button" className="add-array-btn" onClick={addArrayItem}>
-            <i className="bi bi-plus-circle"></i> Add Another
-          </button>
+          <textarea
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            rows="4"
+            autoFocus
+            className="form-textarea"
+            placeholder="Enter one value per line"
+            style={{ 
+              direction: 'ltr !important', 
+              textAlign: 'left !important',
+              unicodeBidi: 'bidi-override !important',
+              fontFamily: 'monospace !important',
+              writingMode: 'horizontal-tb !important',
+              WebkitAppearance: 'none'
+            }}
+          />
+          <small style={{ display: 'block', marginTop: '5px', color: '#666' }}>
+            Enter one {label.toLowerCase().replace(/s$/, '')} per line
+          </small>
           <div className="field-actions">
             <button className="save-btn" onClick={() => saveField(field)}>
               <i className="bi bi-check-lg"></i> Save
             </button>
-            <button className="cancel-btn" onClick={() => { cancelEditing(); }}>
+            <button className="cancel-btn" onClick={cancelEditing}>
               <i className="bi bi-x-lg"></i> Cancel
             </button>
           </div>
         </div>
       ) : (
-        <div 
+        <div
           onClick={(e) => {
             e.stopPropagation();
             if (isEditMode) startEditing(field, value);
@@ -724,44 +700,6 @@ const AdminDashboard = () => {
     </div>
   );
 };
-
-  const CopyableField = ({ value, label }) => (
-    <div className="detail-item copyable-field">
-      <label>{label}</label>
-      <div className="copyable-content">
-        <p><code>{value}</code></p>
-        <button
-          className="copy-btn"
-          onClick={() => copyToClipboard(value, label)}
-          title="Copy to clipboard"
-        >
-          <i className="bi bi-clipboard"></i>
-        </button>
-      </div>
-    </div>
-  );
-
-  const CopyableLinkField = ({ value, label }) => (
-    <div className="detail-item copyable-field">
-      <label>{label}</label>
-      <div className="copyable-content">
-        <p>
-          <a href={value.startsWith('http') ? value : `https://${value}`} target="_blank" rel="noopener noreferrer">
-            {value}
-          </a>
-        </p>
-        <button
-          className="copy-btn"
-          onClick={() => copyToClipboard(value, label)}
-          title="Copy to clipboard"
-        >
-          <i className="bi bi-clipboard"></i>
-        </button>
-      </div>
-    </div>
-  );
-
-  // Editable link field: shows a link + copy button when not editing, and an input when editing
   const EditableLinkField = ({ field, value, label }) => {
     const isEditing = editingField === field && isEditMode;
 
@@ -774,7 +712,6 @@ const AdminDashboard = () => {
               type="text"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              onBlur={() => { }}
               autoFocus
               className="form-input"
             />
@@ -802,12 +739,10 @@ const AdminDashboard = () => {
                 rel="noopener noreferrer"
                 onClick={(e) => {
                   if (isEditMode) {
-                    // Prevent navigation while in edit mode and open the inline editor instead
                     e.preventDefault();
                     e.stopPropagation();
                     startEditing(field, value);
                   }
-                  // otherwise allow normal navigation to proceed
                 }}
               >
                 {value || '-'}
@@ -994,9 +929,7 @@ const AdminDashboard = () => {
                 >
                   <td>
                     <strong>{integration.companyName}</strong>
-                    {integration.clientId && (
-                      <div className="client-id-badge">ID: {integration.clientId}</div>
-                    )}
+                    
                   </td>
                   <td>
                     {integration.extensions && integration.extensions.length > 0 ? (
@@ -1048,7 +981,6 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Main Details Modal */}
       {showModal && selectedIntegration && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content large-modal" onClick={(e) => e.stopPropagation()}>
@@ -1060,7 +992,6 @@ const AdminDashboard = () => {
             </div>
 
             <div className="modal-body simple-form">
-              {/* Status Section */}
               <div className="form-section">
                 <h3>Status & Requirements</h3>
 
@@ -1134,7 +1065,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Campaign Configuration */}
               {selectedIntegration.campaign && (
                 <div className="form-section">
                   <h3>Campaign Configuration</h3>
@@ -1182,6 +1112,33 @@ const AdminDashboard = () => {
                       }
                     />
                   </div>
+                  {selectedIntegration.campaign && (
+                    <div className="form-section">
+                      <h3>Campaign Duration</h3>
+                      <div className="form-row">
+                        <EditableField
+                          field="startDate"
+                          value={formatDateForInput(selectedIntegration.startDate)}
+                          label="Start Date"
+                          type="date"
+                        />
+                        <EditableField
+                          field="endDate"
+                          value={formatDateForInput(selectedIntegration.endDate)}
+                          label="End Date"
+                          type="date"
+                        />
+                      </div>
+                      {selectedIntegration.endDate && (
+                        <div className="duration-info">
+                          <p>
+                            <i className="bi bi-calendar-range"></i>
+                            Campaign will expire on {formatDate(selectedIntegration.endDate)}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="form-row full">
                     <EditableArrayField
                       field="extensions"
@@ -1199,7 +1156,6 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* Primary Dialler Settings */}
               <div className="form-section">
                 <h3>Primary Dialler</h3>
                 <div className="form-row">
@@ -1249,7 +1205,6 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Closer Dialler Settings */}
               {selectedIntegration.setupType === 'separate' && (
                 <div className="form-section">
                   <h3>Closer Dialler</h3>
@@ -1301,7 +1256,6 @@ const AdminDashboard = () => {
                 </div>
               )}
 
-              {/* Contact Information */}
               <div className="form-section">
                 <h3>Contact Information</h3>
                 <div className="form-row">
@@ -1310,11 +1264,9 @@ const AdminDashboard = () => {
                     value={selectedIntegration.companyName}
                     label="Company Name"
                   />
-                  
                 </div>
               </div>
 
-              {/* Notes */}
               <div className="form-section">
                 <h3>Notes</h3>
                 <EditableField
@@ -1325,7 +1277,6 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              {/* Timestamps */}
               <div className="form-section">
                 <h3>Timestamps</h3>
                 <div className="form-row">
@@ -1364,7 +1315,6 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Campaign Resources Modal */}
       {showResourceModal && selectedIntegration && (
         <div className="modal-overlay" onClick={() => setShowResourceModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>

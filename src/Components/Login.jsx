@@ -21,10 +21,15 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Hard-coded admin credentials
+  // Hard-coded credentials
   const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: 'xdial2024'
+    password: 'xdial2025'
+  };
+
+  const CLIENT_CREDENTIALS = {
+    username: 'xdial',
+    password: 'xdial2025'
   };
 
   const handleChange = (e) => {
@@ -41,48 +46,28 @@ const Login = () => {
     setIsLoading(true);
     setError('');
 
-    // Check if it's admin login
+    // Check if it's admin credentials
     if (
       credentials.username === ADMIN_CREDENTIALS.username &&
       credentials.password === ADMIN_CREDENTIALS.password
     ) {
       localStorage.setItem('isAdminAuthenticated', 'true');
-      localStorage.setItem('adminUsername', credentials.username);
       navigate('/admin/dashboard');
       return;
     }
 
-    // Check if it's a client login (numeric username)
-    const isNumeric = /^\d+$/.test(credentials.username);
-    if (isNumeric) {
-      const expectedPassword = `xdial${credentials.username}`;
-      
-      if (credentials.password === expectedPassword) {
-        try {
-          // Verify client exists in backend
-          const response = await fetch(`${API_URL}/api/client/verify/${credentials.username}`);
-          const data = await response.json();
-
-          if (data.success) {
-            localStorage.setItem('isClientAuthenticated', 'true');
-            localStorage.setItem('clientId', credentials.username);
-            navigate('/client/dashboard');
-            return;
-          } else {
-            setError('Client ID not found or not activated');
-            setIsLoading(false);
-            return;
-          }
-        } catch (err) {
-          console.error('Error verifying client:', err);
-          setError('Failed to verify client credentials');
-          setIsLoading(false);
-          return;
-        }
-      }
+    // Check if it's client credentials
+    if (
+      credentials.username === CLIENT_CREDENTIALS.username &&
+      credentials.password === CLIENT_CREDENTIALS.password
+    ) {
+      localStorage.setItem('isClientAuthenticated', 'true');
+      localStorage.setItem('clientId', 'onboarding');
+      navigate('/client/dashboard');
+      return;
     }
 
-    // If neither admin nor valid client
+    // Invalid credentials
     setError('Invalid username or password');
     setIsLoading(false);
   };
@@ -110,7 +95,7 @@ const Login = () => {
             <div className="form-group">
               <label htmlFor="username">
                 <i className="bi bi-person-fill"></i>
-                Username / Client ID
+                Username
               </label>
               <input
                 type="text"
@@ -118,13 +103,10 @@ const Login = () => {
                 name="username"
                 value={credentials.username}
                 onChange={handleChange}
-                placeholder="Enter admin username or client ID"
+                placeholder="Enter username"
                 required
                 autoFocus
               />
-              <small className="form-hint">
-                Admin: Use your username | Client: Use your Client ID
-              </small>
             </div>
 
             <div className="form-group">

@@ -1,5 +1,5 @@
 // ============================================================================
-// xDial Integration Backend - Updated Server (Admin-only fields)
+// xDial Integration Backend - Updated Server (Admin-only fields + Date Management)
 // ============================================================================
 
 const express = require('express');
@@ -252,6 +252,16 @@ const integrationSchema = new mongoose.Schema({
   clientAccessEnabled: {
     type: Boolean,
     default: false
+  },
+  
+  // Campaign Duration
+  startDate: {
+    type: Date,
+    default: null
+  },
+  endDate: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true
@@ -269,6 +279,7 @@ integrationSchema.index({ campaign: 1 });
 integrationSchema.index({ status: 1 });
 integrationSchema.index({ submittedAt: -1 });
 integrationSchema.index({ clientId: 1 });
+integrationSchema.index({ endDate: 1 });
 
 const Integration = mongoose.model('Integration', integrationSchema);
 
@@ -324,7 +335,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Submit Integration Request (Client-facing form)
 // Submit Integration Request (Client-facing form)
 app.post('/api/integration/submit', async (req, res) => {
   try {
@@ -430,7 +440,9 @@ app.post('/api/integration/submit', async (req, res) => {
         clientDashboard: '',
         disposition: ''
       },
-      clientAccessEnabled: false
+      clientAccessEnabled: false,
+      startDate: null,
+      endDate: null
     });
 
     const savedIntegration = await integration.save();
@@ -752,6 +764,7 @@ app.get('/api/client/verify/:clientId', async (req, res) => {
     });
   }
 });
+
 // Get Client Campaigns
 app.get('/api/client/:clientId/campaigns', async (req, res) => {
   try {
