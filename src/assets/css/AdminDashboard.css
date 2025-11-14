@@ -1093,9 +1093,9 @@ color: #6A6A6A;
 }
 
 .manage-resources-btn {
-  width: 100%;
-  background: #3b82f6;
-  color: white;
+  width: 50%;
+  background:#ebebeb;
+  color: black;
   border: none;
   padding: 12px 20px;
   border-radius: 8px;
@@ -1106,13 +1106,12 @@ color: #6A6A6A;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: medium;
+  font-size: small;
+  margin: 0 auto; /* This centers the button */
 }
 
 .manage-resources-btn:hover {
-  background: #2563eb;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .status-selector {
