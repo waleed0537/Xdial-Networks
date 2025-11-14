@@ -242,8 +242,7 @@ const Onboarding = () => {
         <div className="content-wrapper">
           <div className="page-header">
             <div>
-              <h2>Completed Campaigns</h2>
-              <p>Manage completed onboarding campaigns</p>
+              <h2>Manage Clients</h2>
             </div>
           </div>
 
