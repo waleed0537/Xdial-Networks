@@ -18,7 +18,7 @@ const IntegrationForm = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
-  
+
   // Campaign configuration
   const campaignConfig = {
     'Medicare': ['Basic', 'Advanced'],
@@ -42,10 +42,10 @@ const IntegrationForm = () => {
   const [formData, setFormData] = useState({
     // Campaign Configuration
     campaign: '',
-  model: '', // This will now be auto-set based on transferSettings
-  numberOfBots: '',
-  transferSettings: 'balanced', // Set default to balanced
-    
+    model: '', // This will now be auto-set based on transferSettings
+    numberOfBots: '',
+    transferSettings: 'balanced', // Set default to balanced
+
     // Integration Settings - Primary Dialler
     setupType: 'same',
     primaryIpValidation: '',
@@ -55,7 +55,7 @@ const IntegrationForm = () => {
     primaryBotsCampaign: '',
     primaryUserSeries: '',
     primaryPort: '5060',
-    
+
     // Separate Closer Dialler (if applicable)
     closerIpValidation: '',
     closerAdminLink: '',
@@ -64,11 +64,11 @@ const IntegrationForm = () => {
     closerCampaign: '',
     closerIngroup: '',
     closerPort: '5060',
-    
+
     // Contact Info
     companyName: '',
-   
-    
+
+
     // Custom Requirements
     customRequirements: ''
   });
@@ -84,20 +84,20 @@ const IntegrationForm = () => {
     '178.156.174.132'
   ];
 
-// Auto-set model based on transfer settings
-useEffect(() => {
-  if (formData.transferSettings) {
-    const model = formData.transferSettings === 'quality' ? 'Advanced' : 'Basic';
-    setFormData(prev => ({ ...prev, model }));
-  }
-}, [formData.transferSettings]);
+  // Auto-set model based on transfer settings
+  useEffect(() => {
+    if (formData.transferSettings) {
+      const model = formData.transferSettings === 'quality' ? 'Advanced' : 'Basic';
+      setFormData(prev => ({ ...prev, model }));
+    }
+  }, [formData.transferSettings]);
 
-// Reset transferSettings when campaign changes
-useEffect(() => {
-  if (formData.campaign) {
-    setFormData(prev => ({ ...prev, transferSettings: 'balanced', model: 'Basic' }));
-  }
-}, [formData.campaign]);
+  // Reset transferSettings when campaign changes
+  useEffect(() => {
+    if (formData.campaign) {
+      setFormData(prev => ({ ...prev, transferSettings: 'balanced', model: 'Basic' }));
+    }
+  }, [formData.campaign]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -145,11 +145,11 @@ useEffect(() => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSubmitMessage({ 
-          type: 'success', 
-          text: 'Integration request submitted successfully! We will contact you shortly.' 
+        setSubmitMessage({
+          type: 'success',
+          text: 'Integration request submitted successfully! We will contact you shortly.'
         });
-        
+
         // Reset form after successful submission
         setTimeout(() => {
           setFormData({
@@ -179,16 +179,16 @@ useEffect(() => {
           setSubmitMessage({ type: '', text: '' });
         }, 3000);
       } else {
-        setSubmitMessage({ 
-          type: 'error', 
-          text: data.message || 'Failed to submit the form. Please try again.' 
+        setSubmitMessage({
+          type: 'error',
+          text: data.message || 'Failed to submit the form. Please try again.'
         });
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitMessage({ 
-        type: 'error', 
-        text: 'An error occurred while submitting the form. Please check your connection and try again.' 
+      setSubmitMessage({
+        type: 'error',
+        text: 'An error occurred while submitting the form. Please check your connection and try again.'
       });
     } finally {
       setIsSubmitting(false);
@@ -230,7 +230,7 @@ useEffect(() => {
               </div>
             </div>
 
-          
+
           </section>
           {/* Campaign Configuration Section */}
           <section className="form-section">
@@ -238,7 +238,7 @@ useEffect(() => {
               <i className="bi bi-robot"></i>
               <h2>Campaign Configuration</h2>
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="campaign">
                 Campaign Type <span className="required">*</span>
@@ -258,80 +258,95 @@ useEffect(() => {
             </div>
 
             {formData.campaign && (
-  <div className="form-group">
-    <label>
-      Transfer Quality Settings <span className="required">*</span>
-    </label>
-    <div className="slider-container">
-      <input
-        type="range"
-        min="0"
-        max="3"
-        value={
-          formData.transferSettings === 'quality' ? 0 :
-          formData.transferSettings === 'balanced' ? 1 :
-          formData.transferSettings === 'high-volume' ? 2 : 3
-        }
-        onChange={(e) => {
-          const values = ['quality', 'balanced', 'high-volume', 'max-volume'];
-          setFormData(prev => ({
-            ...prev,
-            transferSettings: values[e.target.value]
-          }));
-        }}
-        className="quality-slider"
-        required
-      />
-      <div className="slider-labels">
-        <span className={formData.transferSettings === 'quality' ? 'active' : ''}>Quality</span>
-        <span className={formData.transferSettings === 'balanced' ? 'active' : ''}>Balanced</span>
-        <span className={formData.transferSettings === 'high-volume' ? 'active' : ''}>High Volume</span>
-        <span className={formData.transferSettings === 'max-volume' ? 'active' : ''}>Max Volume</span>
-      </div>
-    </div>
+              <div className="form-group">
+                <label>
+                  Transfer Quality Settings <span className="required">*</span>
+                </label>
+                <div className="slider-container">
+                  <input
+                    type="range"
+                    min="0"
+                    max="3"
+                    value={
+                      formData.transferSettings === 'quality' ? 0 :
+                        formData.transferSettings === 'balanced' ? 1 :
+                          formData.transferSettings === 'high-volume' ? 2 : 3
+                    }
+                    onChange={(e) => {
+                      const values = ['quality', 'balanced', 'high-volume', 'max-volume'];
+                      setFormData(prev => ({
+                        ...prev,
+                        transferSettings: values[e.target.value]
+                      }));
+                    }}
+                    className="quality-slider"
+                    required
+                  />
+                  <div className="slider-labels">
+                    <span className={formData.transferSettings === 'quality' ? 'active' : ''}>Quality</span>
+                    <span className={formData.transferSettings === 'balanced' ? 'active' : ''}>Balanced</span>
+                    <span className={formData.transferSettings === 'high-volume' ? 'active' : ''}>High Volume</span>
+                    <span className={formData.transferSettings === 'max-volume' ? 'active' : ''}>Max Volume</span>
+                  </div>
+                </div>
 
-    {formData.transferSettings && (
-      <div className="transfer-info-box">
-        {formData.transferSettings === 'quality' && (
-          <>
-            <div className="info-header">
-              <strong>Model: Advanced</strong>
-              <span className="badge">Quality</span>
-            </div>
-            <p>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
-          </>
-        )}
-        {formData.transferSettings === 'balanced' && (
-          <>
-            <div className="info-header">
-              <strong>Model: Basic</strong>
-              <span className="badge recommended">Balanced (Recommended)</span>
-            </div>
-            <p>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
-          </>
-        )}
-        {formData.transferSettings === 'high-volume' && (
-          <>
-            <div className="info-header">
-              <strong>Model: Basic</strong>
-              <span className="badge">High Volume</span>
-            </div>
-            <p>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
-          </>
-        )}
-        {formData.transferSettings === 'max-volume' && (
-          <>
-            <div className="info-header">
-              <strong>Model: Basic</strong>
-              <span className="badge">Max Volume</span>
-            </div>
-            <p>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
-          </>
-        )}
-      </div>
-    )}
-  </div>
-)}
+                {formData.transferSettings && (
+                  <div className="transfer-info-box">
+                    {formData.transferSettings === 'quality' && (
+                      <>
+                        <div className="info-header">
+                          <p style={{ fontSize: "20px" }}>
+  <strong>Model: </strong>
+  <span style={{ fontSize: "14px" }}>Advanced</span>
+</p>
+                          
+                        </div>
+                        <span className="badge">Quality</span>
+                        <p>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
+                      </>
+                    )}
+                    {formData.transferSettings === 'balanced' && (
+                      <>
+                        <div className="info-header">
+                          <p style={{ fontSize: "20px" }}>
+  <strong>Model: </strong>
+  <span style={{ fontSize: "14px" }}>Basic</span>
+</p>
+
+
+                                                 </div>
+                        <span className="badge recommended">Balanced (Recommended)</span>
+                        <p>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
+                      </>
+                    )}
+                    {formData.transferSettings === 'high-volume' && (
+                      <>
+                        <div className="info-header">
+                          <p style={{ fontSize: "20px" }}>
+  <strong>Model: </strong>
+  <span style={{ fontSize: "14px" }}>Basic</span>
+</p>
+                                </div>
+                         <span className="badge">High Volume</span>
+                        <p>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
+                      </>
+                    )}
+                    {formData.transferSettings === 'max-volume' && (
+                      <>
+                        <div className="info-header">
+                          <p style={{ fontSize: "20px" }}>
+  <strong>Model: </strong>
+  <span style={{ fontSize: "14px" }}>Basic</span>
+</p>
+                                </div>
+                         <span className="badge">Max Volume</span>
+                        <p>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="numberOfBots">
                 Number of Remote Agents <span className="required">*</span>
@@ -613,7 +628,7 @@ useEffect(() => {
                     id="closerPort"
                     name="closerPort"
                     // value={formData.closerPort}
-                    
+
                     onChange={handleChange}
                     placeholder=" e.g., 7788"
                   />
@@ -624,7 +639,7 @@ useEffect(() => {
           </section>
 
           {/* Contact Information Section */}
-          
+
 
           {/* Custom Requirements Section */}
           <section className="form-section">

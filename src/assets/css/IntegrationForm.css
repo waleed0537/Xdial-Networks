@@ -714,8 +714,10 @@ select:focus-visible {
 }
 /* Slider Styles */
 .slider-container {
-  margin-top: 1rem;
+  width: 80%;
+  margin: 1rem auto;   /* centers horizontally */
 }
+
 
 .quality-slider {
   width: 100%;
@@ -776,7 +778,20 @@ select:focus-visible {
   transition: all 0.2s ease;
   text-align: center;
   flex: 1;
+  padding: 0 60px; /* spacing for middle labels */
 }
+
+/* Remove left padding for the first label */
+.slider-labels span:first-child {
+  padding-left: 0;
+}
+
+/* Optional: Remove right padding for the last label */
+.slider-labels span:last-child {
+  padding-right: 0;
+}
+
+
 
 .slider-labels span.active {
   color: #7c3aed;
@@ -807,13 +822,16 @@ select:focus-visible {
 }
 
 .badge {
-  display: inline-block;
-  padding: 0.375rem 0.75rem;
+  display: flex;
+  padding: 0.375rem 1rem;
+  text-align: left;
   background: #7c3aed;
   color: white;
   border-radius: 6px;
   font-size: 0.8125rem;
   font-weight: 500;
+  margin-bottom: 1rem;
+  width: fit-content;
 }
 
 .badge.recommended {
