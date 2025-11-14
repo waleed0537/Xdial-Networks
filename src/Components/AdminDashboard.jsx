@@ -1064,7 +1064,18 @@ const AdminDashboard = () => {
             </div>
 
             <div className="modal-body simple-form">
-              
+
+
+              <div className="form-section">
+                <h3>Company Name</h3>
+                <div className="form-row">
+                  <EditableField
+                    field="companyName"
+                    value={selectedIntegration.companyName}
+                  
+                  />
+                </div>
+              </div>
 
               {selectedIntegration.campaign && (
                 <div className="form-section">
@@ -1229,17 +1240,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               )}
-
-              <div className="form-section">
-                <h3>Contact Information</h3>
-                <div className="form-row">
-                  <EditableField
-                    field="companyName"
-                    value={selectedIntegration.companyName}
-                    label="Company Name"
-                  />
-                </div>
-              </div>
 
               <div className="form-section">
                 <h3>Notes</h3>
