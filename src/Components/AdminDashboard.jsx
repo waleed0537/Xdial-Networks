@@ -139,7 +139,7 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    navigate('/onboarding');
+    navigate('/client-management');
   };
 
   const viewDetails = (integration) => {

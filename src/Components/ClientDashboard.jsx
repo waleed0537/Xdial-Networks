@@ -54,7 +54,7 @@ const ClientDashboard = () => {
 
   const handleLogout = () => {
   
-    navigate('/onboarding');
+    navigate('/client-management');
   };
 
   const viewCampaignDetails = (campaign) => {

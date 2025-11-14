@@ -35,11 +35,11 @@ function App() {
         <Route path="/auto-dialer" element={<AutoDialer />} />
         <Route path="/voip-solutions" element={<VoIPSolutions />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/client-onboarding" element={<AdminDashboard />} />
         
         {/* Integration Form Route */}
         <Route path="/integration-form" element={<IntegrationForm />} />
-        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/client-management" element={<Onboarding />} />
       </Routes>
     </Router>
   );

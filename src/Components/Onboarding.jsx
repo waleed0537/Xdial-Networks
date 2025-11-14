@@ -194,7 +194,7 @@ const Onboarding = () => {
   };
 
   const handleLogout = () => {
-    navigate('/admin/dashboard');
+    navigate('/client-onboarding');
   };
 
   // Count campaigns by expiration status for notifications

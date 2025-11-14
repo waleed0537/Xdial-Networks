@@ -52,7 +52,7 @@ const Login = () => {
       credentials.password === ADMIN_CREDENTIALS.password
     ) {
       localStorage.setItem('isAdminAuthenticated', 'true');
-      navigate('/admin/dashboard');
+      navigate('/client-onboarding');
       return;
     }
 
@@ -63,7 +63,7 @@ const Login = () => {
     ) {
       localStorage.setItem('isClientAuthenticated', 'true');
       localStorage.setItem('clientId', 'onboarding');
-      navigate('/onboarding');
+      navigate('/client-management');
       return;
     }
 
