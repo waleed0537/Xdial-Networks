@@ -42,9 +42,9 @@ const IntegrationForm = () => {
   const [formData, setFormData] = useState({
     // Campaign Configuration
     campaign: '',
-    model: '',
-    numberOfBots: '',
-    transferSettings: '',
+  model: '', // This will now be auto-set based on transferSettings
+  numberOfBots: '',
+  transferSettings: 'balanced', // Set default to balanced
     
     // Integration Settings - Primary Dialler
     setupType: 'same',
@@ -84,22 +84,20 @@ const IntegrationForm = () => {
     '178.156.174.132'
   ];
 
-  // Update available models when campaign changes
-  useEffect(() => {
-    if (formData.campaign) {
-      setAvailableModels(campaignConfig[formData.campaign] || []);
-      setFormData(prev => ({ ...prev, model: '', transferSettings: '' }));
-    }
-  }, [formData.campaign]);
+// Auto-set model based on transfer settings
+useEffect(() => {
+  if (formData.transferSettings) {
+    const model = formData.transferSettings === 'quality' ? 'Advanced' : 'Basic';
+    setFormData(prev => ({ ...prev, model }));
+  }
+}, [formData.transferSettings]);
 
-  // Update available transfer options when model changes
-  useEffect(() => {
-    if (formData.model) {
-      const transfers = formData.model === 'Basic' ? basicTransferOptions : advancedTransferOptions;
-      setAvailableTransfers(transfers);
-      setFormData(prev => ({ ...prev, transferSettings: '' }));
-    }
-  }, [formData.model]);
+// Reset transferSettings when campaign changes
+useEffect(() => {
+  if (formData.campaign) {
+    setFormData(prev => ({ ...prev, transferSettings: 'balanced', model: 'Basic' }));
+  }
+}, [formData.campaign]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -260,52 +258,80 @@ const IntegrationForm = () => {
             </div>
 
             {formData.campaign && (
-              <div className="form-group">
-                <label htmlFor="model">
-                  Bot Model <span className="required">*</span>
-                </label>
-                <select
-                  id="model"
-                  name="model"
-                  value={formData.model}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Model</option>
-                  {availableModels.map(model => (
-                    <option key={model} value={model}>{model}</option>
-                  ))}
-                </select>
-          
-              </div>
-            )}
+  <div className="form-group">
+    <label>
+      Transfer Quality Settings <span className="required">*</span>
+    </label>
+    <div className="slider-container">
+      <input
+        type="range"
+        min="0"
+        max="3"
+        value={
+          formData.transferSettings === 'quality' ? 0 :
+          formData.transferSettings === 'balanced' ? 1 :
+          formData.transferSettings === 'high-volume' ? 2 : 3
+        }
+        onChange={(e) => {
+          const values = ['quality', 'balanced', 'high-volume', 'max-volume'];
+          setFormData(prev => ({
+            ...prev,
+            transferSettings: values[e.target.value]
+          }));
+        }}
+        className="quality-slider"
+        required
+      />
+      <div className="slider-labels">
+        <span className={formData.transferSettings === 'quality' ? 'active' : ''}>Quality</span>
+        <span className={formData.transferSettings === 'balanced' ? 'active' : ''}>Balanced</span>
+        <span className={formData.transferSettings === 'high-volume' ? 'active' : ''}>High Volume</span>
+        <span className={formData.transferSettings === 'max-volume' ? 'active' : ''}>Max Volume</span>
+      </div>
+    </div>
 
-            {formData.model && (
-              <div className="form-group">
-                <label>
-                  Transfer Settings <span className="required">*</span>
-                </label>
-                <div className="radio-group-vertical">
-                  {availableTransfers.map(option => (
-                    <label key={option.value} className="radio-card">
-                      <input
-                        type="radio"
-                        name="transferSettings"
-                        value={option.value}
-                        checked={formData.transferSettings === option.value}
-                        onChange={handleChange}
-                        required
-                      />
-                      <div className="radio-card-content">
-                        <span className="radio-card-title">{option.label}</span>
-                        <span className="radio-card-description">{option.description}</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
+    {formData.transferSettings && (
+      <div className="transfer-info-box">
+        {formData.transferSettings === 'quality' && (
+          <>
+            <div className="info-header">
+              <strong>Model: Advanced</strong>
+              <span className="badge">Quality</span>
+            </div>
+            <p>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
+          </>
+        )}
+        {formData.transferSettings === 'balanced' && (
+          <>
+            <div className="info-header">
+              <strong>Model: Basic</strong>
+              <span className="badge recommended">Balanced (Recommended)</span>
+            </div>
+            <p>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
+          </>
+        )}
+        {formData.transferSettings === 'high-volume' && (
+          <>
+            <div className="info-header">
+              <strong>Model: Basic</strong>
+              <span className="badge">High Volume</span>
+            </div>
+            <p>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
+          </>
+        )}
+        {formData.transferSettings === 'max-volume' && (
+          <>
+            <div className="info-header">
+              <strong>Model: Basic</strong>
+              <span className="badge">Max Volume</span>
+            </div>
+            <p>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
+          </>
+        )}
+      </div>
+    )}
+  </div>
+)}
             <div className="form-group">
               <label htmlFor="numberOfBots">
                 Number of Remote Agents <span className="required">*</span>

@@ -29,6 +29,8 @@ const AdminDashboard = () => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
+    const [testingStatus, setTestingStatus] = useState(false);
+
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
     clientDashboard: '',
@@ -143,6 +145,7 @@ const AdminDashboard = () => {
   const viewDetails = (integration) => {
     setSelectedIntegration(integration);
     setShowModal(true);
+    setTestingStatus(integration.testing || false);
 
     // Load completion checks
     if (integration.completionRequirements) {
@@ -153,6 +156,36 @@ const AdminDashboard = () => {
         clientDashboard: false,
         disposition: false
       });
+    }
+  };
+  const updateTestingStatus = async (value) => {
+    if (!selectedIntegration) return;
+
+    setTestingStatus(value);
+
+    try {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ testing: value })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIntegrations(prev =>
+          prev.map(item =>
+            item._id === selectedIntegration._id ?
+              { ...item, testing: value } : item
+          )
+        );
+
+        setSelectedIntegration({ ...selectedIntegration, testing: value });
+      }
+    } catch (err) {
+      console.error('Error updating testing status:', err);
     }
   };
 
@@ -841,9 +874,7 @@ const AdminDashboard = () => {
 
       <div className="stats-container">
         <div className="stat-card stat-total">
-          <div className="stat-icon">
-            <i className="bi bi-list-check"></i>
-          </div>
+         
           <div className="stat-info">
             <p className="stat-label">Total Requests</p>
             <h3 className="stat-value">{stats.total}</h3>
@@ -851,9 +882,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card stat-pending">
-          <div className="stat-icon">
-            <i className="bi bi-clock-history"></i>
-          </div>
+      
           <div className="stat-info">
             <p className="stat-label">Pending</p>
             <h3 className="stat-value">{stats.pending}</h3>
@@ -861,9 +890,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card stat-progress">
-          <div className="stat-icon">
-            <i className="bi bi-arrow-repeat"></i>
-          </div>
+     
           <div className="stat-info">
             <p className="stat-label">In Progress</p>
             <h3 className="stat-value">{stats.inProgress}</h3>
@@ -871,9 +898,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card stat-completed">
-          <div className="stat-icon">
-            <i className="bi bi-check-circle"></i>
-          </div>
+      
           <div className="stat-info">
             <p className="stat-label">Completed</p>
             <h3 className="stat-value">{stats.completed}</h3>
@@ -964,7 +989,7 @@ const AdminDashboard = () => {
                 <th>Campaign + Model</th>
                 <th>Remote Agents</th>
                 <th>Status</th>
-                <th>Submitted</th>
+              
               </tr>
             </thead>
             <tbody>
@@ -1014,13 +1039,13 @@ const AdminDashboard = () => {
                       <span className="legacy-badge">Legacy</span>
                     )}
                   </td>
-                  <td><strong>{integration.numberOfBots || '-'}</strong></td>
+                  <td>{integration.numberOfBots || '-'}</td>
                   <td>
                     <span className={`status-badge ${getStatusBadgeClass(integration.status)}`}>
                       {getStatusLabel(integration.status)}
                     </span>
                   </td>
-                  <td>{formatDate(integration.submittedAt)}</td>
+                
                 </tr>
               ))}
             </tbody>
@@ -1109,6 +1134,22 @@ const AdminDashboard = () => {
                       ⚠️ All requirements must be checked before marking as completed
                     </small>
                   )}
+                </div>
+              </div>
+              <div className="form-section">
+                <h3>Testing Phase</h3>
+                <div className="testing-toggle">
+                  <label className="requirement-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={testingStatus}
+                      onChange={(e) => updateTestingStatus(e.target.checked)}
+                    />
+                    <span>Campaign is in Testing Phase</span>
+                  </label>
+                  <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
+                    When enabled, a "Testing" badge will appear on the client portal
+                  </small>
                 </div>
               </div>
 

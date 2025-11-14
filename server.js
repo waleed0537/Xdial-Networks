@@ -49,6 +49,10 @@ const integrationSchema = new mongoose.Schema({
     enum: ['Medicare', 'Final Expense', 'MVA', 'Auto Insurance', 'Auto Warranty'],
     trim: true
   },
+  testing: {
+    type: Boolean,
+    default: false
+  },
   model: {
     type: String,
     required: true,
