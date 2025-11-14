@@ -1232,6 +1232,7 @@ color: #6A6A6A;
 }
 
 .modal-footer button {
+  font-size: small;
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -1243,8 +1244,8 @@ color: #6A6A6A;
 }
 
 .edit-toggle-btn {
-  background: #3b82f6;
-  color: white;
+  background: #ebebeb;
+  color: black;
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
@@ -1258,29 +1259,22 @@ color: #6A6A6A;
 }
 
 .edit-toggle-btn:hover {
-  background: #2563eb;
   transform: translateY(-1px);
 }
 
 .delete-btn {
-  background: #dc2626;
-  color: white;
+  background: #ebebeb;
+  color: black;
   border: none;
 }
 
-.delete-btn:hover {
-  background: #b91c1c;
-}
 
 .close-btn {
-  background: #f3f4f6;
-  color: #374151;
+  background: #ebebeb;
+  color: black;
   border: none;
 }
 
-.close-btn:hover {
-  background: #e5e7eb;
-}
 
 /* Copy Toast */
 .copy-toast {
