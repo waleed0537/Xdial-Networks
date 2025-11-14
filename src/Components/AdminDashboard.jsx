@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
-    const [testingStatus, setTestingStatus] = useState(false);
+  const [testingStatus, setTestingStatus] = useState(false);
 
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
@@ -236,7 +236,7 @@ const AdminDashboard = () => {
 
     const isArrayField = ['extensions', 'serverIPs'].includes(field);
     const isDateField = ['startDate', 'endDate'].includes(field);
-    
+
     let valueToSave;
     if (isArrayField) {
       // Convert newline-separated string to array
@@ -495,7 +495,7 @@ const AdminDashboard = () => {
 
   const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
     const isEditing = editingField === field && isEditMode;
-    
+
     if (type === 'date') {
       return (
         <div className="form-field">
@@ -674,112 +674,112 @@ const AdminDashboard = () => {
   };
 
   const EditableArrayField = ({ field, value, label }) => {
-  const isEditing = editingField === field && isEditMode;
+    const isEditing = editingField === field && isEditMode;
 
-  // Convert value array to plain text for display
-  const valueAsText = Array.isArray(value) && value.length > 0 
-    ? value.join('\n') 
-    : '';
+    // Convert value array to plain text for display
+    const valueAsText = Array.isArray(value) && value.length > 0
+      ? value.join('\n')
+      : '';
 
-  return (
-    <div className="form-field full-width">
-      <label>{label}</label>
-      {isEditMode && isEditing ? (
-        <div className="edit-mode">
-          <div style={{
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-            overflow: 'hidden',
-            backgroundColor: '#fff'
-          }}>
-            <pre style={{
-              margin: 0,
-              padding: '12px',
-              fontFamily: '"Courier New", monospace',
-              fontSize: '14px',
-              lineHeight: '1.5',
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word',
-              direction: 'ltr',
-              textAlign: 'left',
-              unicodeBidi: 'bidi-override',
-              color: '#000',
-              backgroundColor: '#f9fafb'
+    return (
+      <div className="form-field full-width">
+        <label>{label}</label>
+        {isEditMode && isEditing ? (
+          <div className="edit-mode">
+            <div style={{
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              overflow: 'hidden',
+              backgroundColor: '#fff'
             }}>
-              <textarea
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                rows="4"
-                autoFocus
-                placeholder="Enter one value per line"
-                style={{ 
-                  border: 'none',
-                  outline: 'none',
-                  width: '100%',
-                  fontFamily: '"Courier New", monospace',
-                  fontSize: '14px',
-                  direction: 'ltr',
-                  textAlign: 'left',
-                  unicodeBidi: 'bidi-override',
-                  backgroundColor: '#f9fafb',
-                  color: '#000',
-                  resize: 'vertical',
-                  padding: '0',
-                  margin: '0'
-                }}
-              />
-            </pre>
-          </div>
-          <small style={{ display: 'block', marginTop: '5px', color: '#666', direction: 'ltr' }}>
-            Enter one {label.toLowerCase().replace(/s$/, '')} per line
-          </small>
-          <div className="field-actions">
-            <button className="save-btn" onClick={() => saveField(field)}>
-              <i className="bi bi-check-lg"></i> Save
-            </button>
-            <button className="cancel-btn" onClick={cancelEditing}>
-              <i className="bi bi-x-lg"></i> Cancel
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            if (isEditMode) startEditing(field, value);
-          }}
-          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-        >
-          <div className="array-display">
-            {value && value.length > 0 ? (
               <pre style={{
-                margin: '0',
-                padding: '8px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '4px',
-                border: '1px solid #e5e7eb',
+                margin: 0,
+                padding: '12px',
                 fontFamily: '"Courier New", monospace',
-                fontSize: '13px',
+                fontSize: '14px',
+                lineHeight: '1.5',
+                whiteSpace: 'pre-wrap',
+                wordWrap: 'break-word',
                 direction: 'ltr',
                 textAlign: 'left',
                 unicodeBidi: 'bidi-override',
-                whiteSpace: 'pre-wrap',
-                wordWrap: 'break-word',
                 color: '#000',
-                maxHeight: '150px',
-                overflow: 'auto'
+                backgroundColor: '#f9fafb'
               }}>
-                {valueAsText}
+                <textarea
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  rows="4"
+                  autoFocus
+                  placeholder="Enter one value per line"
+                  style={{
+                    border: 'none',
+                    outline: 'none',
+                    width: '100%',
+                    fontFamily: '"Courier New", monospace',
+                    fontSize: '14px',
+                    direction: 'ltr',
+                    textAlign: 'left',
+                    unicodeBidi: 'bidi-override',
+                    backgroundColor: '#f9fafb',
+                    color: '#000',
+                    resize: 'vertical',
+                    padding: '0',
+                    margin: '0'
+                  }}
+                />
               </pre>
-            ) : (
-              <p className="field-value">-</p>
-            )}
+            </div>
+            <small style={{ display: 'block', marginTop: '5px', color: '#666', direction: 'ltr' }}>
+              Enter one {label.toLowerCase().replace(/s$/, '')} per line
+            </small>
+            <div className="field-actions">
+              <button className="save-btn" onClick={() => saveField(field)}>
+                <i className="bi bi-check-lg"></i> Save
+              </button>
+              <button className="cancel-btn" onClick={cancelEditing}>
+                <i className="bi bi-x-lg"></i> Cancel
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+        ) : (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isEditMode) startEditing(field, value);
+            }}
+            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+          >
+            <div className="array-display">
+              {value && value.length > 0 ? (
+                <pre style={{
+                  margin: '0',
+                  padding: '8px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '4px',
+                  border: '1px solid #e5e7eb',
+                  fontFamily: '"Courier New", monospace',
+                  fontSize: '13px',
+                  direction: 'ltr',
+                  textAlign: 'left',
+                  unicodeBidi: 'bidi-override',
+                  whiteSpace: 'pre-wrap',
+                  wordWrap: 'break-word',
+                  color: '#000',
+                  maxHeight: '150px',
+                  overflow: 'auto'
+                }}>
+                  {valueAsText}
+                </pre>
+              ) : (
+                <p className="field-value">-</p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
   const EditableLinkField = ({ field, value, label }) => {
     const isEditing = editingField === field && isEditMode;
 
@@ -874,7 +874,7 @@ const AdminDashboard = () => {
 
       <div className="stats-container">
         <div className="stat-card stat-total">
-         
+
           <div className="stat-info">
             <p className="stat-label">Total Requests</p>
             <h3 className="stat-value">{stats.total}</h3>
@@ -882,7 +882,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card stat-pending">
-      
+
           <div className="stat-info">
             <p className="stat-label">Pending</p>
             <h3 className="stat-value">{stats.pending}</h3>
@@ -890,7 +890,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card stat-progress">
-     
+
           <div className="stat-info">
             <p className="stat-label">In Progress</p>
             <h3 className="stat-value">{stats.inProgress}</h3>
@@ -898,7 +898,7 @@ const AdminDashboard = () => {
         </div>
 
         <div className="stat-card stat-completed">
-      
+
           <div className="stat-info">
             <p className="stat-label">Completed</p>
             <h3 className="stat-value">{stats.completed}</h3>
@@ -989,7 +989,7 @@ const AdminDashboard = () => {
                 <th>Campaign + Model</th>
                 <th>Remote Agents</th>
                 <th>Status</th>
-              
+
               </tr>
             </thead>
             <tbody>
@@ -1001,7 +1001,7 @@ const AdminDashboard = () => {
                 >
                   <td>
                     <strong>{integration.companyName}</strong>
-                    
+
                   </td>
                   <td>
                     {integration.extensions && integration.extensions.length > 0 ? (
@@ -1045,7 +1045,7 @@ const AdminDashboard = () => {
                       {getStatusLabel(integration.status)}
                     </span>
                   </td>
-                
+
                 </tr>
               ))}
             </tbody>
@@ -1064,335 +1064,336 @@ const AdminDashboard = () => {
             </div>
 
             <div className="modal-body simple-form">
-  <div className="form-section">
-    <h3>Status & Requirements</h3>
+              
 
-    <div className="completion-requirements">
-      <div className="requirement-header">
-        <p><strong>Mark complete before setting to "Completed" status:</strong></p>
-      </div>
-      <div className="requirements-grid">
-        <label className="requirement-checkbox">
-          <input
-            type="checkbox"
-            checked={completionChecks.longScript}
-            onChange={(e) => updateCompletionCheck('longScript', e.target.checked)}
-          />
-          <span>Long Script</span>
-          {selectedIntegration.campaignResources?.longScript && (
-            <i className="bi bi-check-circle-fill text-success" title="Added"></i>
-          )}
-        </label>
+              {selectedIntegration.campaign && (
+                <div className="form-section">
+                  <h3>Campaign Configuration</h3>
+                  <div className="form-row">
+                    <EditableField
+                      field="clientId"
+                      value={selectedIntegration.clientId}
+                      label="Client ID"
+                    />
+                    <EditableField
+                      field="campaign"
+                      value={selectedIntegration.campaign}
+                      label="Campaign Type"
+                      options={Object.keys(campaignConfig)}
+                    />
+                  </div>
+                  <div className="form-row">
+                    <EditableField
+                      field="model"
+                      value={selectedIntegration.model}
+                      label="Bot Model"
+                      options={campaignConfig[selectedIntegration.campaign] || []}
+                    />
+                    <EditableField
+                      field="numberOfBots"
+                      value={selectedIntegration.numberOfBots}
+                      label="Number of Bots"
+                      type="number"
+                    />
+                  </div>
+                  <div className="form-row">
+                    <EditableField
+                      field="dialplan"
+                      value={selectedIntegration.dialplan}
+                      label="Dialplan"
+                    />
+                    <EditableField
+                      field="transferSettings"
+                      value={selectedIntegration.transferSettings}
+                      label="Transfer Settings"
+                      options={
+                        selectedIntegration.model === 'Basic'
+                          ? basicTransferOptions
+                          : advancedTransferOptions
+                      }
+                    />
+                  </div>
+                  <div className="form-row full">
+                    <EditableArrayField
+                      field="extensions"
+                      value={selectedIntegration.extensions}
+                      label="Extensions"
+                    />
+                  </div>
+                  <div className="form-row full">
+                    <EditableArrayField
+                      field="serverIPs"
+                      value={selectedIntegration.serverIPs}
+                      label="Server IPs"
+                    />
+                  </div>
+                </div>
+              )}
 
-        <label className="requirement-checkbox">
-          <input
-            type="checkbox"
-            checked={completionChecks.clientDashboard}
-            onChange={(e) => updateCompletionCheck('clientDashboard', e.target.checked)}
-          />
-          <span>Client Dashboard</span>
-          {selectedIntegration.campaignResources?.clientDashboard && (
-            <i className="bi bi-check-circle-fill text-success" title="Added"></i>
-          )}
-        </label>
+              <div className="form-section">
+                <h3>Primary Dialler</h3>
+                <div className="form-row">
+                  <EditableField
+                    field="primaryUser"
+                    value={selectedIntegration.primaryUser}
+                    label="Username"
+                  />
+                  <EditableField
+                    field="primaryPassword"
+                    value={selectedIntegration.primaryPassword}
+                    label="Password"
+                  />
+                </div>
+                <div className="form-row">
+                  <EditableField
+                    field="primaryPort"
+                    value={selectedIntegration.primaryPort}
+                    label="Port"
+                  />
+                  <EditableField
+                    field="primaryBotsCampaign"
+                    value={selectedIntegration.primaryBotsCampaign}
+                    label="Fronting Campaign"
+                  />
+                </div>
+                <div className="form-row">
+                  <EditableField
+                    field="primaryUserSeries"
+                    value={selectedIntegration.primaryUserSeries}
+                    label="Verifier Campaign"
+                  />
+                </div>
+                <div className="form-row full">
+                  <EditableLinkField
+                    field="primaryIpValidation"
+                    value={selectedIntegration.primaryIpValidation}
+                    label="IP Validation Link"
+                  />
+                </div>
+                <div className="form-row full">
+                  <EditableLinkField
+                    field="primaryAdminLink"
+                    value={selectedIntegration.primaryAdminLink}
+                    label="Admin Link"
+                  />
+                </div>
+              </div>
 
-        <label className="requirement-checkbox">
-          <input
-            type="checkbox"
-            checked={completionChecks.disposition}
-            onChange={(e) => updateCompletionCheck('disposition', e.target.checked)}
-          />
-          <span>Disposition</span>
-          {selectedIntegration.campaignResources?.disposition && (
-            <i className="bi bi-check-circle-fill text-success" title="Added"></i>
-          )}
-        </label>
-      </div>
+              {selectedIntegration.setupType === 'separate' && (
+                <div className="form-section">
+                  <h3>Closer Dialler</h3>
+                  <div className="form-row">
+                    <EditableField
+                      field="closerUser"
+                      value={selectedIntegration.closerUser}
+                      label="Username"
+                    />
+                    <EditableField
+                      field="closerPassword"
+                      value={selectedIntegration.closerPassword}
+                      label="Password"
+                    />
+                  </div>
+                  <div className="form-row">
+                    <EditableField
+                      field="closerPort"
+                      value={selectedIntegration.closerPort}
+                      label="Port"
+                    />
+                    <EditableField
+                      field="closerCampaign"
+                      value={selectedIntegration.closerCampaign}
+                      label="Campaign"
+                    />
+                  </div>
+                  <div className="form-row">
+                    <EditableField
+                      field="closerIngroup"
+                      value={selectedIntegration.closerIngroup}
+                      label="Ingroup"
+                    />
+                  </div>
+                  <div className="form-row full">
+                    <EditableLinkField
+                      field="closerIpValidation"
+                      value={selectedIntegration.closerIpValidation}
+                      label="IP Validation Link"
+                    />
+                  </div>
+                  <div className="form-row full">
+                    <EditableLinkField
+                      field="closerAdminLink"
+                      value={selectedIntegration.closerAdminLink}
+                      label="Admin Link"
+                    />
+                  </div>
+                </div>
+              )}
 
-      <button
-        className="manage-resources-btn"
-        onClick={openResourceModal}
-      >
-        <i className="bi bi-gear"></i> Manage Campaign Resources
-      </button>
-    </div>
+              <div className="form-section">
+                <h3>Contact Information</h3>
+                <div className="form-row">
+                  <EditableField
+                    field="companyName"
+                    value={selectedIntegration.companyName}
+                    label="Company Name"
+                  />
+                </div>
+              </div>
 
-    <div className="status-selector">
-      <label>Update Status:</label>
-      <select
-        value={selectedIntegration.status}
-        onChange={(e) => updateStatus(selectedIntegration._id, e.target.value)}
-        className="status-dropdown"
-      >
-        <option value="pending">Pending</option>
-        <option value="in-progress">In Progress</option>
-        <option value="completed">Completed</option>
-        <option value="cancelled">Cancelled</option>
-      </select>
-      {!allCompletionChecksMet() && (
-        <small className="warning-text">
-          ⚠️ All requirements must be checked before marking as completed
-        </small>
-      )}
-    </div>
-  </div>
+              <div className="form-section">
+                <h3>Notes</h3>
+                <EditableField
+                  field="customRequirements"
+                  value={selectedIntegration.customRequirements}
+                  label="Current Bots / Notes"
+                  isTextarea={true}
+                />
+              </div>
 
-  {selectedIntegration.campaign && (
-    <div className="form-section">
-      <h3>Campaign Configuration</h3>
-      <div className="form-row">
-        <EditableField
-          field="clientId"
-          value={selectedIntegration.clientId}
-          label="Client ID"
-        />
-        <EditableField
-          field="campaign"
-          value={selectedIntegration.campaign}
-          label="Campaign Type"
-          options={Object.keys(campaignConfig)}
-        />
-      </div>
-      <div className="form-row">
-        <EditableField
-          field="model"
-          value={selectedIntegration.model}
-          label="Bot Model"
-          options={campaignConfig[selectedIntegration.campaign] || []}
-        />
-        <EditableField
-          field="numberOfBots"
-          value={selectedIntegration.numberOfBots}
-          label="Number of Bots"
-          type="number"
-        />
-      </div>
-      <div className="form-row">
-        <EditableField
-          field="dialplan"
-          value={selectedIntegration.dialplan}
-          label="Dialplan"
-        />
-        <EditableField
-          field="transferSettings"
-          value={selectedIntegration.transferSettings}
-          label="Transfer Settings"
-          options={
-            selectedIntegration.model === 'Basic'
-              ? basicTransferOptions
-              : advancedTransferOptions
-          }
-        />
-      </div>
-      <div className="form-row full">
-        <EditableArrayField
-          field="extensions"
-          value={selectedIntegration.extensions}
-          label="Extensions"
-        />
-      </div>
-      <div className="form-row full">
-        <EditableArrayField
-          field="serverIPs"
-          value={selectedIntegration.serverIPs}
-          label="Server IPs"
-        />
-      </div>
-    </div>
-  )}
+              {selectedIntegration.campaign && (
+                <div className="form-section">
+                  <h3>Time Duration</h3>
+                  <div className="form-row">
+                    <EditableField
+                      field="startDate"
+                      value={formatDateForInput(selectedIntegration.startDate)}
+                      label="Start Date"
+                      type="date"
+                    />
+                    <EditableField
+                      field="endDate"
+                      value={formatDateForInput(selectedIntegration.endDate)}
+                      label="End Date"
+                      type="date"
+                    />
+                  </div>
+                  {selectedIntegration.endDate && (
+                    <div className="duration-info">
+                      <p>
+                        <i className="bi bi-calendar-range"></i>
+                        Campaign will expire on {formatDate(selectedIntegration.endDate)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
 
-  <div className="form-section">
-    <h3>Primary Dialler</h3>
-    <div className="form-row">
-      <EditableField
-        field="primaryUser"
-        value={selectedIntegration.primaryUser}
-        label="Username"
-      />
-      <EditableField
-        field="primaryPassword"
-        value={selectedIntegration.primaryPassword}
-        label="Password"
-      />
-    </div>
-    <div className="form-row">
-      <EditableField
-        field="primaryPort"
-        value={selectedIntegration.primaryPort}
-        label="Port"
-      />
-      <EditableField
-        field="primaryBotsCampaign"
-        value={selectedIntegration.primaryBotsCampaign}
-        label="Fronting Campaign"
-      />
-    </div>
-    <div className="form-row">
-      <EditableField
-        field="primaryUserSeries"
-        value={selectedIntegration.primaryUserSeries}
-        label="Verifier Campaign"
-      />
-    </div>
-    <div className="form-row full">
-      <EditableLinkField
-        field="primaryIpValidation"
-        value={selectedIntegration.primaryIpValidation}
-        label="IP Validation Link"
-      />
-    </div>
-    <div className="form-row full">
-      <EditableLinkField
-        field="primaryAdminLink"
-        value={selectedIntegration.primaryAdminLink}
-        label="Admin Link"
-      />
-    </div>
-  </div>
+              <div className="form-section">
+                <h3>Testing Phase</h3>
+                <div className="testing-toggle">
+                  <label className="requirement-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={testingStatus}
+                      onChange={(e) => updateTestingStatus(e.target.checked)}
+                    />
+                    <span>Campaign is in Testing Phase</span>
+                  </label>
+                  <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
+                    When enabled, a "Testing" badge will appear on the client portal
+                  </small>
+                </div>
+              </div>
+              <div className="form-section">
+                <h3>Status & Requirements</h3>
 
-  {selectedIntegration.setupType === 'separate' && (
-    <div className="form-section">
-      <h3>Closer Dialler</h3>
-      <div className="form-row">
-        <EditableField
-          field="closerUser"
-          value={selectedIntegration.closerUser}
-          label="Username"
-        />
-        <EditableField
-          field="closerPassword"
-          value={selectedIntegration.closerPassword}
-          label="Password"
-        />
-      </div>
-      <div className="form-row">
-        <EditableField
-          field="closerPort"
-          value={selectedIntegration.closerPort}
-          label="Port"
-        />
-        <EditableField
-          field="closerCampaign"
-          value={selectedIntegration.closerCampaign}
-          label="Campaign"
-        />
-      </div>
-      <div className="form-row">
-        <EditableField
-          field="closerIngroup"
-          value={selectedIntegration.closerIngroup}
-          label="Ingroup"
-        />
-      </div>
-      <div className="form-row full">
-        <EditableLinkField
-          field="closerIpValidation"
-          value={selectedIntegration.closerIpValidation}
-          label="IP Validation Link"
-        />
-      </div>
-      <div className="form-row full">
-        <EditableLinkField
-          field="closerAdminLink"
-          value={selectedIntegration.closerAdminLink}
-          label="Admin Link"
-        />
-      </div>
-    </div>
-  )}
+                <div className="completion-requirements">
+                  <div className="requirement-header">
+                    <p><strong>Mark complete before setting to "Completed" status:</strong></p>
+                  </div>
+                  <div className="requirements-grid">
+                    <label className="requirement-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={completionChecks.longScript}
+                        onChange={(e) => updateCompletionCheck('longScript', e.target.checked)}
+                      />
+                      <span>Long Script</span>
+                      {selectedIntegration.campaignResources?.longScript && (
+                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+                      )}
+                    </label>
 
-  <div className="form-section">
-    <h3>Contact Information</h3>
-    <div className="form-row">
-      <EditableField
-        field="companyName"
-        value={selectedIntegration.companyName}
-        label="Company Name"
-      />
-    </div>
-  </div>
+                    <label className="requirement-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={completionChecks.clientDashboard}
+                        onChange={(e) => updateCompletionCheck('clientDashboard', e.target.checked)}
+                      />
+                      <span>Client Dashboard</span>
+                      {selectedIntegration.campaignResources?.clientDashboard && (
+                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+                      )}
+                    </label>
 
-  <div className="form-section">
-    <h3>Notes</h3>
-    <EditableField
-      field="customRequirements"
-      value={selectedIntegration.customRequirements}
-      label="Current Bots / Notes"
-      isTextarea={true}
-    />
-  </div>
+                    <label className="requirement-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={completionChecks.disposition}
+                        onChange={(e) => updateCompletionCheck('disposition', e.target.checked)}
+                      />
+                      <span>Disposition</span>
+                      {selectedIntegration.campaignResources?.disposition && (
+                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+                      )}
+                    </label>
+                  </div>
 
-  {selectedIntegration.campaign && (
-    <div className="form-section">
-      <h3>Campaign Duration</h3>
-      <div className="form-row">
-        <EditableField
-          field="startDate"
-          value={formatDateForInput(selectedIntegration.startDate)}
-          label="Start Date"
-          type="date"
-        />
-        <EditableField
-          field="endDate"
-          value={formatDateForInput(selectedIntegration.endDate)}
-          label="End Date"
-          type="date"
-        />
-      </div>
-      {selectedIntegration.endDate && (
-        <div className="duration-info">
-          <p>
-            <i className="bi bi-calendar-range"></i>
-            Campaign will expire on {formatDate(selectedIntegration.endDate)}
-          </p>
-        </div>
-      )}
-    </div>
-  )}
+                  <button
+                    className="manage-resources-btn"
+                    onClick={openResourceModal}
+                  >
+                    <i className="bi bi-gear"></i> Manage Campaign Resources
+                  </button>
+                </div>
 
-  <div className="form-section">
-    <h3>Testing Phase</h3>
-    <div className="testing-toggle">
-      <label className="requirement-checkbox">
-        <input
-          type="checkbox"
-          checked={testingStatus}
-          onChange={(e) => updateTestingStatus(e.target.checked)}
-        />
-        <span>Campaign is in Testing Phase</span>
-      </label>
-      <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
-        When enabled, a "Testing" badge will appear on the client portal
-      </small>
-    </div>
-  </div>
+                <div className="status-selector">
+                  <label>Update Status:</label>
+                  <select
+                    value={selectedIntegration.status}
+                    onChange={(e) => updateStatus(selectedIntegration._id, e.target.value)}
+                    className="status-dropdown"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  {!allCompletionChecksMet() && (
+                    <small className="warning-text">
+                      ⚠️ All requirements must be checked before marking as completed
+                    </small>
+                  )}
+                </div>
+              </div>
 
-  <div style={{ 
-    padding: '16px 0', 
-    borderTop: '1px solid #e5e7eb', 
-    marginTop: '8px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '12px'
-  }}>
-    <p style={{ 
-      margin: 0, 
-      fontSize: '0.875rem', 
-      color: '#6b7280' 
-    }}>
-      <strong>Submitted:</strong> {formatDate(selectedIntegration.submittedAt)}
-    </p>
-    <p style={{ 
-      margin: 0, 
-      fontSize: '0.875rem', 
-      color: '#6b7280' 
-    }}>
-      <strong>Last Updated:</strong> {formatDate(selectedIntegration.updatedAt)}
-    </p>
-  </div>
-</div>
+              <div style={{
+                padding: '16px 0',
+                borderTop: '1px solid #e5e7eb',
+                marginTop: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '12px'
+              }}>
+                <p style={{
+                  margin: 0,
+                  fontSize: '0.875rem',
+                  color: '#6b7280'
+                }}>
+                  <strong>Submitted:</strong> {formatDate(selectedIntegration.submittedAt)}
+                </p>
+                <p style={{
+                  margin: 0,
+                  fontSize: '0.875rem',
+                  color: '#6b7280'
+                }}>
+                  <strong>Last Updated:</strong> {formatDate(selectedIntegration.updatedAt)}
+                </p>
+              </div>
+            </div>
 
             <div className="modal-footer">
               <button
