@@ -295,12 +295,12 @@ const IntegrationForm = () => {
     {formData.transferSettings === 'quality' && (
       <>
         <div className="info-header">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', width: '100%' }}>
-            <div className="model-tag">Advanced Model</div>
-            <span className="badge">Quality</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Advanced Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Quality</span>
           </div>
         </div>
-        <p>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
+        <p style={{ marginTop: '-30px' }}>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
         <div className="metrics-grid">
           <div className="metric-card">
             <div className="metric-circle">
@@ -328,12 +328,12 @@ const IntegrationForm = () => {
     {formData.transferSettings === 'balanced' && (
       <>
         <div className="info-header">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', width: '100%' }}>
-            <div className="model-tag">Basic Model</div>
-            <span className="badge recommended">Balanced (Recommended)</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Balanced (Recommended)</span>
           </div>
         </div>
-        <p>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
+        <p style={{ marginTop: '-30px' }}>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
         <div className="metrics-grid">
           <div className="metric-card">
             <div className="metric-circle">
@@ -361,12 +361,12 @@ const IntegrationForm = () => {
     {formData.transferSettings === 'high-volume' && (
       <>
         <div className="info-header">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', width: '100%' }}>
-            <div className="model-tag">Basic Model</div>
-            <span className="badge">High Volume</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>High Volume</span>
           </div>
         </div>
-        <p>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
+        <p style={{ marginTop: '-30px' }}>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
         <div className="metrics-grid">
           <div className="metric-card">
             <div className="metric-circle">
@@ -394,12 +394,12 @@ const IntegrationForm = () => {
     {formData.transferSettings === 'max-volume' && (
       <>
         <div className="info-header">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start', width: '100%' }}>
-            <div className="model-tag">Basic Model</div>
-            <span className="badge">Max Volume</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Max Volume</span>
           </div>
         </div>
-        <p>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
+        <p style={{ marginTop: '-30px' }}>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
         <div className="metrics-grid">
           <div className="metric-card">
             <div className="metric-circle">
