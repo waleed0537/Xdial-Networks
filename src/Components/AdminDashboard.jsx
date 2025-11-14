@@ -1064,321 +1064,335 @@ const AdminDashboard = () => {
             </div>
 
             <div className="modal-body simple-form">
-              <div className="form-section">
-                <h3>Status & Requirements</h3>
+  <div className="form-section">
+    <h3>Status & Requirements</h3>
 
-                <div className="completion-requirements">
-                  <div className="requirement-header">
-                    <p><strong>Mark complete before setting to "Completed" status:</strong></p>
-                  </div>
-                  <div className="requirements-grid">
-                    <label className="requirement-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={completionChecks.longScript}
-                        onChange={(e) => updateCompletionCheck('longScript', e.target.checked)}
-                      />
-                      <span>Long Script</span>
-                      {selectedIntegration.campaignResources?.longScript && (
-                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
-                      )}
-                    </label>
+    <div className="completion-requirements">
+      <div className="requirement-header">
+        <p><strong>Mark complete before setting to "Completed" status:</strong></p>
+      </div>
+      <div className="requirements-grid">
+        <label className="requirement-checkbox">
+          <input
+            type="checkbox"
+            checked={completionChecks.longScript}
+            onChange={(e) => updateCompletionCheck('longScript', e.target.checked)}
+          />
+          <span>Long Script</span>
+          {selectedIntegration.campaignResources?.longScript && (
+            <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+          )}
+        </label>
 
-                    <label className="requirement-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={completionChecks.clientDashboard}
-                        onChange={(e) => updateCompletionCheck('clientDashboard', e.target.checked)}
-                      />
-                      <span>Client Dashboard</span>
-                      {selectedIntegration.campaignResources?.clientDashboard && (
-                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
-                      )}
-                    </label>
+        <label className="requirement-checkbox">
+          <input
+            type="checkbox"
+            checked={completionChecks.clientDashboard}
+            onChange={(e) => updateCompletionCheck('clientDashboard', e.target.checked)}
+          />
+          <span>Client Dashboard</span>
+          {selectedIntegration.campaignResources?.clientDashboard && (
+            <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+          )}
+        </label>
 
-                    <label className="requirement-checkbox">
-                      <input
-                        type="checkbox"
-                        checked={completionChecks.disposition}
-                        onChange={(e) => updateCompletionCheck('disposition', e.target.checked)}
-                      />
-                      <span>Disposition</span>
-                      {selectedIntegration.campaignResources?.disposition && (
-                        <i className="bi bi-check-circle-fill text-success" title="Added"></i>
-                      )}
-                    </label>
-                  </div>
+        <label className="requirement-checkbox">
+          <input
+            type="checkbox"
+            checked={completionChecks.disposition}
+            onChange={(e) => updateCompletionCheck('disposition', e.target.checked)}
+          />
+          <span>Disposition</span>
+          {selectedIntegration.campaignResources?.disposition && (
+            <i className="bi bi-check-circle-fill text-success" title="Added"></i>
+          )}
+        </label>
+      </div>
 
-                  <button
-                    className="manage-resources-btn"
-                    onClick={openResourceModal}
-                  >
-                    <i className="bi bi-gear"></i> Manage Campaign Resources
-                  </button>
-                </div>
+      <button
+        className="manage-resources-btn"
+        onClick={openResourceModal}
+      >
+        <i className="bi bi-gear"></i> Manage Campaign Resources
+      </button>
+    </div>
 
-                <div className="status-selector">
-                  <label>Update Status:</label>
-                  <select
-                    value={selectedIntegration.status}
-                    onChange={(e) => updateStatus(selectedIntegration._id, e.target.value)}
-                    className="status-dropdown"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                  {!allCompletionChecksMet() && (
-                    <small className="warning-text">
-                      ⚠️ All requirements must be checked before marking as completed
-                    </small>
-                  )}
-                </div>
-              </div>
-              <div className="form-section">
-                <h3>Testing Phase</h3>
-                <div className="testing-toggle">
-                  <label className="requirement-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={testingStatus}
-                      onChange={(e) => updateTestingStatus(e.target.checked)}
-                    />
-                    <span>Campaign is in Testing Phase</span>
-                  </label>
-                  <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
-                    When enabled, a "Testing" badge will appear on the client portal
-                  </small>
-                </div>
-              </div>
+    <div className="status-selector">
+      <label>Update Status:</label>
+      <select
+        value={selectedIntegration.status}
+        onChange={(e) => updateStatus(selectedIntegration._id, e.target.value)}
+        className="status-dropdown"
+      >
+        <option value="pending">Pending</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+      {!allCompletionChecksMet() && (
+        <small className="warning-text">
+          ⚠️ All requirements must be checked before marking as completed
+        </small>
+      )}
+    </div>
+  </div>
 
-              {selectedIntegration.campaign && (
-                <div className="form-section">
-                  <h3>Campaign Configuration</h3>
-                  <div className="form-row">
-                    <EditableField
-                      field="clientId"
-                      value={selectedIntegration.clientId}
-                      label="Client ID"
-                    />
-                    <EditableField
-                      field="campaign"
-                      value={selectedIntegration.campaign}
-                      label="Campaign Type"
-                      options={Object.keys(campaignConfig)}
-                    />
-                  </div>
-                  <div className="form-row">
-                    <EditableField
-                      field="model"
-                      value={selectedIntegration.model}
-                      label="Bot Model"
-                      options={campaignConfig[selectedIntegration.campaign] || []}
-                    />
-                    <EditableField
-                      field="numberOfBots"
-                      value={selectedIntegration.numberOfBots}
-                      label="Number of Bots"
-                      type="number"
-                    />
-                  </div>
-                  <div className="form-row">
-                    <EditableField
-                      field="dialplan"
-                      value={selectedIntegration.dialplan}
-                      label="Dialplan"
-                    />
-                    <EditableField
-                      field="transferSettings"
-                      value={selectedIntegration.transferSettings}
-                      label="Transfer Settings"
-                      options={
-                        selectedIntegration.model === 'Basic'
-                          ? basicTransferOptions
-                          : advancedTransferOptions
-                      }
-                    />
-                  </div>
-                  {selectedIntegration.campaign && (
-                    <div className="form-section">
-                      <h3>Campaign Duration</h3>
-                      <div className="form-row">
-                        <EditableField
-                          field="startDate"
-                          value={formatDateForInput(selectedIntegration.startDate)}
-                          label="Start Date"
-                          type="date"
-                        />
-                        <EditableField
-                          field="endDate"
-                          value={formatDateForInput(selectedIntegration.endDate)}
-                          label="End Date"
-                          type="date"
-                        />
-                      </div>
-                      {selectedIntegration.endDate && (
-                        <div className="duration-info">
-                          <p>
-                            <i className="bi bi-calendar-range"></i>
-                            Campaign will expire on {formatDate(selectedIntegration.endDate)}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  <div className="form-row full">
-                    <EditableArrayField
-                      field="extensions"
-                      value={selectedIntegration.extensions}
-                      label="Extensions"
-                    />
-                  </div>
-                  <div className="form-row full">
-                    <EditableArrayField
-                      field="serverIPs"
-                      value={selectedIntegration.serverIPs}
-                      label="Server IPs"
-                    />
-                  </div>
-                </div>
-              )}
+  {selectedIntegration.campaign && (
+    <div className="form-section">
+      <h3>Campaign Configuration</h3>
+      <div className="form-row">
+        <EditableField
+          field="clientId"
+          value={selectedIntegration.clientId}
+          label="Client ID"
+        />
+        <EditableField
+          field="campaign"
+          value={selectedIntegration.campaign}
+          label="Campaign Type"
+          options={Object.keys(campaignConfig)}
+        />
+      </div>
+      <div className="form-row">
+        <EditableField
+          field="model"
+          value={selectedIntegration.model}
+          label="Bot Model"
+          options={campaignConfig[selectedIntegration.campaign] || []}
+        />
+        <EditableField
+          field="numberOfBots"
+          value={selectedIntegration.numberOfBots}
+          label="Number of Bots"
+          type="number"
+        />
+      </div>
+      <div className="form-row">
+        <EditableField
+          field="dialplan"
+          value={selectedIntegration.dialplan}
+          label="Dialplan"
+        />
+        <EditableField
+          field="transferSettings"
+          value={selectedIntegration.transferSettings}
+          label="Transfer Settings"
+          options={
+            selectedIntegration.model === 'Basic'
+              ? basicTransferOptions
+              : advancedTransferOptions
+          }
+        />
+      </div>
+      <div className="form-row full">
+        <EditableArrayField
+          field="extensions"
+          value={selectedIntegration.extensions}
+          label="Extensions"
+        />
+      </div>
+      <div className="form-row full">
+        <EditableArrayField
+          field="serverIPs"
+          value={selectedIntegration.serverIPs}
+          label="Server IPs"
+        />
+      </div>
+    </div>
+  )}
 
-              <div className="form-section">
-                <h3>Primary Dialler</h3>
-                <div className="form-row">
-                  <EditableField
-                    field="primaryUser"
-                    value={selectedIntegration.primaryUser}
-                    label="Username"
-                  />
-                  <EditableField
-                    field="primaryPassword"
-                    value={selectedIntegration.primaryPassword}
-                    label="Password"
-                  />
-                </div>
-                <div className="form-row">
-                  <EditableField
-                    field="primaryPort"
-                    value={selectedIntegration.primaryPort}
-                    label="Port"
-                  />
-                  <EditableField
-                    field="primaryBotsCampaign"
-                    value={selectedIntegration.primaryBotsCampaign}
-                    label="Fronting Campaign"
-                  />
-                </div>
-                <div className="form-row">
-                  <EditableField
-                    field="primaryUserSeries"
-                    value={selectedIntegration.primaryUserSeries}
-                    label="Verifier Campaign"
-                  />
-                </div>
-                <div className="form-row full">
-                  <EditableLinkField
-                    field="primaryIpValidation"
-                    value={selectedIntegration.primaryIpValidation}
-                    label="IP Validation Link"
-                  />
-                </div>
-                <div className="form-row full">
-                  <EditableLinkField
-                    field="primaryAdminLink"
-                    value={selectedIntegration.primaryAdminLink}
-                    label="Admin Link"
-                  />
-                </div>
-              </div>
+  <div className="form-section">
+    <h3>Primary Dialler</h3>
+    <div className="form-row">
+      <EditableField
+        field="primaryUser"
+        value={selectedIntegration.primaryUser}
+        label="Username"
+      />
+      <EditableField
+        field="primaryPassword"
+        value={selectedIntegration.primaryPassword}
+        label="Password"
+      />
+    </div>
+    <div className="form-row">
+      <EditableField
+        field="primaryPort"
+        value={selectedIntegration.primaryPort}
+        label="Port"
+      />
+      <EditableField
+        field="primaryBotsCampaign"
+        value={selectedIntegration.primaryBotsCampaign}
+        label="Fronting Campaign"
+      />
+    </div>
+    <div className="form-row">
+      <EditableField
+        field="primaryUserSeries"
+        value={selectedIntegration.primaryUserSeries}
+        label="Verifier Campaign"
+      />
+    </div>
+    <div className="form-row full">
+      <EditableLinkField
+        field="primaryIpValidation"
+        value={selectedIntegration.primaryIpValidation}
+        label="IP Validation Link"
+      />
+    </div>
+    <div className="form-row full">
+      <EditableLinkField
+        field="primaryAdminLink"
+        value={selectedIntegration.primaryAdminLink}
+        label="Admin Link"
+      />
+    </div>
+  </div>
 
-              {selectedIntegration.setupType === 'separate' && (
-                <div className="form-section">
-                  <h3>Closer Dialler</h3>
-                  <div className="form-row">
-                    <EditableField
-                      field="closerUser"
-                      value={selectedIntegration.closerUser}
-                      label="Username"
-                    />
-                    <EditableField
-                      field="closerPassword"
-                      value={selectedIntegration.closerPassword}
-                      label="Password"
-                    />
-                  </div>
-                  <div className="form-row">
-                    <EditableField
-                      field="closerPort"
-                      value={selectedIntegration.closerPort}
-                      label="Port"
-                    />
-                    <EditableField
-                      field="closerCampaign"
-                      value={selectedIntegration.closerCampaign}
-                      label="Campaign"
-                    />
-                  </div>
-                  <div className="form-row">
-                    <EditableField
-                      field="closerIngroup"
-                      value={selectedIntegration.closerIngroup}
-                      label="Ingroup"
-                    />
-                  </div>
-                  <div className="form-row full">
-                    <EditableLinkField
-                      field="closerIpValidation"
-                      value={selectedIntegration.closerIpValidation}
-                      label="IP Validation Link"
-                    />
-                  </div>
-                  <div className="form-row full">
-                    <EditableLinkField
-                      field="closerAdminLink"
-                      value={selectedIntegration.closerAdminLink}
-                      label="Admin Link"
-                    />
-                  </div>
-                </div>
-              )}
+  {selectedIntegration.setupType === 'separate' && (
+    <div className="form-section">
+      <h3>Closer Dialler</h3>
+      <div className="form-row">
+        <EditableField
+          field="closerUser"
+          value={selectedIntegration.closerUser}
+          label="Username"
+        />
+        <EditableField
+          field="closerPassword"
+          value={selectedIntegration.closerPassword}
+          label="Password"
+        />
+      </div>
+      <div className="form-row">
+        <EditableField
+          field="closerPort"
+          value={selectedIntegration.closerPort}
+          label="Port"
+        />
+        <EditableField
+          field="closerCampaign"
+          value={selectedIntegration.closerCampaign}
+          label="Campaign"
+        />
+      </div>
+      <div className="form-row">
+        <EditableField
+          field="closerIngroup"
+          value={selectedIntegration.closerIngroup}
+          label="Ingroup"
+        />
+      </div>
+      <div className="form-row full">
+        <EditableLinkField
+          field="closerIpValidation"
+          value={selectedIntegration.closerIpValidation}
+          label="IP Validation Link"
+        />
+      </div>
+      <div className="form-row full">
+        <EditableLinkField
+          field="closerAdminLink"
+          value={selectedIntegration.closerAdminLink}
+          label="Admin Link"
+        />
+      </div>
+    </div>
+  )}
 
-              <div className="form-section">
-                <h3>Contact Information</h3>
-                <div className="form-row">
-                  <EditableField
-                    field="companyName"
-                    value={selectedIntegration.companyName}
-                    label="Company Name"
-                  />
-                </div>
-              </div>
+  <div className="form-section">
+    <h3>Contact Information</h3>
+    <div className="form-row">
+      <EditableField
+        field="companyName"
+        value={selectedIntegration.companyName}
+        label="Company Name"
+      />
+    </div>
+  </div>
 
-              <div className="form-section">
-                <h3>Notes</h3>
-                <EditableField
-                  field="customRequirements"
-                  value={selectedIntegration.customRequirements}
-                  label="Current Bots / Notes"
-                  isTextarea={true}
-                />
-              </div>
+  <div className="form-section">
+    <h3>Notes</h3>
+    <EditableField
+      field="customRequirements"
+      value={selectedIntegration.customRequirements}
+      label="Current Bots / Notes"
+      isTextarea={true}
+    />
+  </div>
 
-              <div className="form-section">
-                <h3>Timestamps</h3>
-                <div className="form-row">
-                  <div className="form-field">
-                    <label>Submitted At</label>
-                    <p className="field-value">{formatDate(selectedIntegration.submittedAt)}</p>
-                  </div>
-                  <div className="form-field">
-                    <label>Last Updated</label>
-                    <p className="field-value">{formatDate(selectedIntegration.updatedAt)}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+  {selectedIntegration.campaign && (
+    <div className="form-section">
+      <h3>Campaign Duration</h3>
+      <div className="form-row">
+        <EditableField
+          field="startDate"
+          value={formatDateForInput(selectedIntegration.startDate)}
+          label="Start Date"
+          type="date"
+        />
+        <EditableField
+          field="endDate"
+          value={formatDateForInput(selectedIntegration.endDate)}
+          label="End Date"
+          type="date"
+        />
+      </div>
+      {selectedIntegration.endDate && (
+        <div className="duration-info">
+          <p>
+            <i className="bi bi-calendar-range"></i>
+            Campaign will expire on {formatDate(selectedIntegration.endDate)}
+          </p>
+        </div>
+      )}
+    </div>
+  )}
+
+  <div className="form-section">
+    <h3>Testing Phase</h3>
+    <div className="testing-toggle">
+      <label className="requirement-checkbox">
+        <input
+          type="checkbox"
+          checked={testingStatus}
+          onChange={(e) => updateTestingStatus(e.target.checked)}
+        />
+        <span>Campaign is in Testing Phase</span>
+      </label>
+      <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
+        When enabled, a "Testing" badge will appear on the client portal
+      </small>
+    </div>
+  </div>
+
+  <div style={{ 
+    padding: '16px 0', 
+    borderTop: '1px solid #e5e7eb', 
+    marginTop: '8px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: '12px'
+  }}>
+    <p style={{ 
+      margin: 0, 
+      fontSize: '0.875rem', 
+      color: '#6b7280' 
+    }}>
+      <strong>Submitted:</strong> {formatDate(selectedIntegration.submittedAt)}
+    </p>
+    <p style={{ 
+      margin: 0, 
+      fontSize: '0.875rem', 
+      color: '#6b7280' 
+    }}>
+      <strong>Last Updated:</strong> {formatDate(selectedIntegration.updatedAt)}
+    </p>
+  </div>
+</div>
 
             <div className="modal-footer">
               <button
