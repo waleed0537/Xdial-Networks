@@ -867,7 +867,7 @@ const AdminDashboard = () => {
           </div>
           <button className="logout-btn" onClick={handleLogout}>
             <i className="bi bi-box-arrow-right"></i>
-            Onboarding
+            Client Management
           </button>
         </div>
       </header>

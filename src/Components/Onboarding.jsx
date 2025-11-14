@@ -227,12 +227,12 @@ const Onboarding = () => {
         <div className="header-content">
           <div className="header-title">
             <h1>XDial Networks</h1>
-            <p>Onboarding Portal</p>
+            <p>Client Management</p>
           </div>
           <div className="header-actions">
             <button className="logout-btn" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right"></i>
-              Admin Dashboard
+              Client Onboarding
             </button>
           </div>
         </div>
