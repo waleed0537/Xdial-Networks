@@ -1,12 +1,15 @@
 // ============================================================================
-// xDial Integration Backend - Updated Server (Admin-only fields + Date Management)
+// xDial Integration Backend - PostgreSQL Version
 // ============================================================================
 
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const app = express();
+
+// Import database and model
+const { sequelize, Client, Integration } = require('./models');
+
 
 // ============================================================================
 // Middleware Configuration
@@ -18,17 +21,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ============================================================================
-// MongoDB Connection
+// Initialize Database
 // ============================================================================
 
-const MONGODB_URI = 'mongodb+srv://hrmsmongo:YWCuBGMkletJv65z@cluster0.hrtxh.mongodb.net/xDial';
-
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✓ Connected to MongoDB - xDial database'))
-.catch((err) => console.error('✗ MongoDB connection error:', err));
+// Sync database (creates tables if they don't exist)
+// Initialize Database
+sequelize.sync({ alter: true })  // Use alter to add foreign key constraint
+  .then(() => console.log('✅ Database synchronized'))
+  .catch(err => console.error('❌ Database sync error:', err));
 
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
@@ -36,256 +36,6 @@ app.get('*', (req, res, next) => {
   }
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
-
-// ============================================================================
-// MongoDB Schema & Model Definition
-// ============================================================================
-
-const integrationSchema = new mongoose.Schema({
-  // Campaign Configuration
-  campaign: {
-    type: String,
-    required: true,
-    enum: ['Medicare', 'Final Expense', 'MVA', 'Auto Insurance', 'Auto Warranty'],
-    trim: true
-  },
-  testing: {
-    type: Boolean,
-    default: false
-  },
-  model: {
-    type: String,
-    required: true,
-    enum: ['Basic', 'Advanced'],
-    trim: true
-  },
-  numberOfBots: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 1000
-  },
-  transferSettings: {
-    type: String,
-    required: true,
-    enum: ['high-quality', 'balanced', 'broader', 'balanced-broad', 'balanced-qualified'],
-    trim: true
-  },
-  
-  // Admin-only Fields (not required on submission, filled by admin)
-  clientId: {
-    type: String,
-    trim: true,
-    index: true,
-    default: ''
-  },
-  extensions: {
-    type: [String],
-    default: []
-  },
-  serverIPs: {
-    type: [String],
-    default: []
-  },
-  dialplan: {
-    type: String,
-    trim: true,
-    default: ''
-  },
-  
-  // Completion Requirements (checkboxes)
-  completionRequirements: {
-    longScript: {
-      type: Boolean,
-      default: false
-    },
-    clientDashboard: {
-      type: Boolean,
-      default: false
-    },
-    disposition: {
-      type: Boolean,
-      default: false
-    }
-  },
-  
-  // Campaign Resources (URLs added by admin)
-  campaignResources: {
-    longScript: {
-      type: String,
-      trim: true,
-      default: ''
-    },
-    clientDashboard: {
-      type: String,
-      trim: true,
-      default: ''
-    },
-    disposition: {
-      type: String,
-      trim: true,
-      default: ''
-    }
-  },
-  
-  // Integration Settings
-  setupType: {
-    type: String,
-    enum: ['same', 'separate'],
-    required: true,
-    default: 'same'
-  },
-  
-  // Primary Dialler Settings
-  primaryIpValidation: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  primaryAdminLink: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  primaryUser: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  primaryPassword: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  primaryBotsCampaign: {
-    type: String,
-    required: false,
-    trim: true
-  },
-  primaryUserSeries: {
-    type: String,
-    required: false,
-    trim: true
-  },
-  primaryPort: {
-    type: String,
-    default: '5060',
-    trim: true
-  },
-  
-  // Closer Dialler Settings (for separate setup)
-  closerIpValidation: {
-    type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'separate';
-    }
-  },
-  closerAdminLink: {
-    type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'separate';
-    }
-  },
-  closerUser: {
-    type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'separate';
-    }
-  },
-  closerPassword: {
-    type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'separate';
-    }
-  },
-  closerCampaign: {
-    type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'separate';
-    }
-  },
-  closerIngroup: {
-    type: String,
-    trim: true,
-    required: function() {
-      return this.setupType === 'separate';
-    }
-  },
-  closerPort: {
-    type: String,
-    default: '5060',
-    trim: true
-  },
-  
-  // Contact Info
-  companyName: {
-    type: String,
-    required: true,
-    trim: true
-  },
- 
-  
-  // Custom Requirements
-  customRequirements: {
-    type: String,
-    trim: true,
-    default: ''
-  },
-  
-  // Metadata
-  status: {
-    type: String,
-    enum: ['pending', 'in-progress', 'completed', 'cancelled'],
-    default: 'pending'
-  },
-  submittedAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  },
-  
-  // Client Access Control
-  clientAccessEnabled: {
-    type: Boolean,
-    default: false
-  },
-  
-  // Campaign Duration
-  startDate: {
-    type: Date,
-    default: null
-  },
-  endDate: {
-    type: Date,
-    default: null
-  }
-}, {
-  timestamps: true
-});
-
-// Update the updatedAt timestamp before saving
-integrationSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-// Create indexes for faster queries
-integrationSchema.index({ companyName: 1 });
-integrationSchema.index({ campaign: 1 });
-integrationSchema.index({ status: 1 });
-integrationSchema.index({ submittedAt: -1 });
-integrationSchema.index({ clientId: 1 });
-integrationSchema.index({ endDate: 1 });
-
-const Integration = mongoose.model('Integration', integrationSchema);
 
 // ============================================================================
 // CORS Configuration
@@ -331,12 +81,21 @@ app.use((req, res, next) => {
 // ============================================================================
 
 // Health Check
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Server is running',
-    database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected'
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({ 
+      status: 'OK', 
+      message: 'Server is running',
+      database: 'Connected'
+    });
+  } catch (error) {
+    res.json({ 
+      status: 'OK', 
+      message: 'Server is running',
+      database: 'Disconnected'
+    });
+  }
 });
 
 // Submit Integration Request (Client-facing form)
@@ -408,7 +167,7 @@ app.post('/api/integration/submit', async (req, res) => {
       }
     }
 
-    const integration = new Integration({
+    const integration = await Integration.create({
       campaign,
       model,
       numberOfBots,
@@ -449,19 +208,17 @@ app.post('/api/integration/submit', async (req, res) => {
       endDate: null
     });
 
-    const savedIntegration = await integration.save();
-
     res.status(201).json({
       success: true,
       message: 'Integration request submitted successfully',
-      data: savedIntegration
+      data: integration
     });
 
   } catch (error) {
     console.error('Error submitting integration request:', error);
     
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
+    if (error.name === 'SequelizeValidationError') {
+      const errors = error.errors.map(err => err.message);
       return res.status(400).json({
         success: false,
         message: 'Validation error',
@@ -482,26 +239,26 @@ app.get('/api/integration/all', async (req, res) => {
   try {
     const { status, campaign, page = 1, limit = 10 } = req.query;
     
-    const query = {};
-    if (status) query.status = status;
-    if (campaign) query.campaign = campaign;
+    const where = {};
+    if (status) where.status = status;
+    if (campaign) where.campaign = campaign;
     
-    const skip = (page - 1) * limit;
+    const offset = (page - 1) * limit;
 
-    const integrations = await Integration.find(query)
-      .sort({ submittedAt: -1 })
-      .limit(parseInt(limit))
-      .skip(skip);
-
-    const total = await Integration.countDocuments(query);
+    const { count, rows } = await Integration.findAndCountAll({
+      where,
+      order: [['submittedAt', 'DESC']],
+      limit: parseInt(limit),
+      offset: offset
+    });
 
     res.json({
       success: true,
-      data: integrations,
+      data: rows,
       pagination: {
-        total,
+        total: count,
         page: parseInt(page),
-        pages: Math.ceil(total / limit)
+        pages: Math.ceil(count / limit)
       }
     });
 
@@ -518,7 +275,7 @@ app.get('/api/integration/all', async (req, res) => {
 // Get Single Integration Request by ID
 app.get('/api/integration/:id', async (req, res) => {
   try {
-    const integration = await Integration.findById(req.params.id);
+    const integration = await Integration.findByPk(req.params.id);
 
     if (!integration) {
       return res.status(404).json({
@@ -554,21 +311,7 @@ app.patch('/api/integration/:id/status', async (req, res) => {
       });
     }
 
-    const updateData = { 
-      status, 
-      updatedAt: Date.now() 
-    };
-
-    // If clientAccessEnabled is provided, update it
-    if (clientAccessEnabled !== undefined) {
-      updateData.clientAccessEnabled = clientAccessEnabled;
-    }
-
-    const integration = await Integration.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    );
+    const integration = await Integration.findByPk(req.params.id);
 
     if (!integration) {
       return res.status(404).json({
@@ -576,6 +319,14 @@ app.patch('/api/integration/:id/status', async (req, res) => {
         message: 'Integration request not found'
       });
     }
+
+    integration.status = status;
+    if (clientAccessEnabled !== undefined) {
+      integration.clientAccessEnabled = clientAccessEnabled;
+    }
+    integration.updatedAt = new Date();
+
+    await integration.save();
 
     res.json({
       success: true,
@@ -594,15 +345,10 @@ app.patch('/api/integration/:id/status', async (req, res) => {
 });
 
 // Update Integration Field (Generic Update) - Admin only
+// Update Integration Field (Generic Update) - Admin only
 app.patch('/api/integration/:id', async (req, res) => {
   try {
-    const updateData = { ...req.body, updatedAt: Date.now() };
-
-    const integration = await Integration.findByIdAndUpdate(
-      req.params.id,
-      { $set: updateData },
-      { new: true, runValidators: false }
-    );
+    const integration = await Integration.findByPk(req.params.id);
 
     if (!integration) {
       return res.status(404).json({
@@ -610,6 +356,39 @@ app.patch('/api/integration/:id', async (req, res) => {
         message: 'Integration request not found'
       });
     }
+
+    // Handle nested JSONB updates for completionRequirements
+    if (req.body.completionRequirements) {
+      integration.completionRequirements = {
+        ...integration.completionRequirements,
+        ...req.body.completionRequirements
+      };
+      delete req.body.completionRequirements;
+    }
+
+    // Handle nested JSONB updates for campaignResources
+    if (req.body.campaignResources) {
+      integration.campaignResources = {
+        ...integration.campaignResources,
+        ...req.body.campaignResources
+      };
+      delete req.body.campaignResources;
+    }
+
+    // Update all other fields
+    Object.keys(req.body).forEach(key => {
+      integration[key] = req.body[key];
+    });
+
+    // Mark JSONB fields as changed (important for Sequelize)
+    integration.changed('completionRequirements', true);
+    integration.changed('campaignResources', true);
+
+    // Save changes
+    await integration.save();
+
+    // Reload to get fresh data
+    await integration.reload();
 
     res.json({
       success: true,
@@ -619,18 +398,21 @@ app.patch('/api/integration/:id', async (req, res) => {
 
   } catch (error) {
     console.error('Error updating integration:', error);
+    console.error('Request body:', req.body);
+    console.error('Full error:', error);
+    
     res.status(500).json({
       success: false,
       message: 'Failed to update integration',
-      error: error.message
+      error: error.message,
+      details: error.toString()
     });
   }
 });
-
 // Complete Integration (Enable Client Access)
 app.patch('/api/integration/:id/complete', async (req, res) => {
   try {
-    const integration = await Integration.findById(req.params.id);
+    const integration = await Integration.findByPk(req.params.id);
 
     if (!integration) {
       return res.status(404).json({
@@ -682,7 +464,7 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
     // Update status to completed and enable client access
     integration.status = 'completed';
     integration.clientAccessEnabled = true;
-    integration.updatedAt = Date.now();
+    integration.updatedAt = new Date();
     
     await integration.save();
 
@@ -705,7 +487,7 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
 // Delete Integration Request
 app.delete('/api/integration/:id', async (req, res) => {
   try {
-    const integration = await Integration.findByIdAndDelete(req.params.id);
+    const integration = await Integration.findByPk(req.params.id);
 
     if (!integration) {
       return res.status(404).json({
@@ -713,6 +495,8 @@ app.delete('/api/integration/:id', async (req, res) => {
         message: 'Integration request not found'
       });
     }
+
+    await integration.destroy();
 
     res.json({
       success: true,
@@ -738,9 +522,11 @@ app.get('/api/client/verify/:clientId', async (req, res) => {
   try {
     const { clientId } = req.params;
 
-    const campaigns = await Integration.find({ 
-      clientId: clientId,
-      clientAccessEnabled: true 
+    const campaigns = await Integration.findAll({ 
+      where: {
+        clientId: clientId,
+        clientAccessEnabled: true
+      }
     });
 
     if (campaigns.length === 0) {
@@ -774,10 +560,13 @@ app.get('/api/client/:clientId/campaigns', async (req, res) => {
   try {
     const { clientId } = req.params;
 
-    const campaigns = await Integration.find({ 
-      clientId: clientId,
-      clientAccessEnabled: true 
-    }).sort({ submittedAt: -1 });
+    const campaigns = await Integration.findAll({ 
+      where: {
+        clientId: clientId,
+        clientAccessEnabled: true
+      },
+      order: [['submittedAt', 'DESC']]
+    });
 
     if (campaigns.length === 0) {
       return res.json({

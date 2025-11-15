@@ -165,7 +165,7 @@ const ClientDashboard = () => {
             <div className="campaigns-grid">
               {campaigns.map((campaign) => (
                 <div 
-                  key={campaign._id} 
+                  key={campaign.id} 
                   className="campaign-card"
                   onClick={() => viewCampaignDetails(campaign)}
                 >

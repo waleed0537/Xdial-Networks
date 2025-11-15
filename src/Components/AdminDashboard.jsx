@@ -164,7 +164,7 @@ const AdminDashboard = () => {
     setTestingStatus(value);
 
     try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === selectedIntegration._id ?
+            item.id === selectedIntegration.id ?
               { ...item, testing: value } : item
           )
         );
@@ -251,7 +251,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -263,7 +263,7 @@ const AdminDashboard = () => {
 
       if (data.success) {
         const updatedIntegrations = integrations.map(item =>
-          item._id === selectedIntegration._id ? { ...item, [field]: valueToSave } : item
+          item.id === selectedIntegration.id ? { ...item, [field]: valueToSave } : item
         );
         setIntegrations(updatedIntegrations);
         setFilteredIntegrations(updatedIntegrations);
@@ -292,7 +292,7 @@ const AdminDashboard = () => {
     setCompletionChecks(newChecks);
 
     try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === selectedIntegration._id ?
+            item.id === selectedIntegration.id ?
               { ...item, completionRequirements: newChecks } : item
           )
         );
@@ -336,7 +336,7 @@ const AdminDashboard = () => {
     if (!selectedIntegration) return;
 
     try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration._id}`, {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -349,7 +349,7 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === selectedIntegration._id ?
+            item.id === selectedIntegration.id ?
               { ...item, campaignResources } : item
           )
         );
@@ -396,7 +396,7 @@ const AdminDashboard = () => {
       if (data.success) {
         setIntegrations(prev =>
           prev.map(item =>
-            item._id === id ? {
+            item.id === id ? {
               ...item,
               status: newStatus,
               clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
@@ -404,7 +404,7 @@ const AdminDashboard = () => {
           )
         );
 
-        if (selectedIntegration && selectedIntegration._id === id) {
+        if (selectedIntegration && selectedIntegration.id === id) {
           setSelectedIntegration({
             ...selectedIntegration,
             status: newStatus,
@@ -413,7 +413,7 @@ const AdminDashboard = () => {
         }
 
         const updatedIntegrations = integrations.map(item =>
-          item._id === id ? {
+          item.id === id ? {
             ...item,
             status: newStatus,
             clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
@@ -445,8 +445,8 @@ const AdminDashboard = () => {
       const data = await response.json();
 
       if (data.success) {
-        setIntegrations(prev => prev.filter(item => item._id !== id));
-        calculateStats(integrations.filter(item => item._id !== id));
+        setIntegrations(prev => prev.filter(item => item.id !== id));
+        calculateStats(integrations.filter(item => item.id !== id));
         closeModal();
       }
     } catch (err) {
@@ -995,7 +995,7 @@ const AdminDashboard = () => {
             <tbody>
               {filteredIntegrations.map((integration) => (
                 <tr
-                  key={integration._id}
+                  key={integration.id}
                   onClick={() => viewDetails(integration)}
                   style={{ cursor: 'pointer' }}
                 >
@@ -1352,7 +1352,7 @@ const AdminDashboard = () => {
                   <label>Update Status:</label>
                   <select
                     value={selectedIntegration.status}
-                    onChange={(e) => updateStatus(selectedIntegration._id, e.target.value)}
+                    onChange={(e) => updateStatus(selectedIntegration.id, e.target.value)}
                     className="status-dropdown"
                   >
                     <option value="pending">Pending</option>
@@ -1405,7 +1405,7 @@ const AdminDashboard = () => {
               </button>
               <button
                 className="delete-btn"
-                onClick={() => deleteIntegration(selectedIntegration._id)}
+                onClick={() => deleteIntegration(selectedIntegration.id)}
               >
                 <i className="bi bi-trash-fill"></i>
                 Delete Request

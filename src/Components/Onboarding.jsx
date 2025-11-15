@@ -163,7 +163,7 @@ const Onboarding = () => {
 
       if (data.success) {
         // Update state with the server response to ensure consistency
-        setItems(prev => prev.map(it => it._id === id ? data.data : it));
+        setItems(prev => prev.map(it => it.id === id ? data.data : it));
       } else {
         console.error('Failed to update access:', data.message || data);
         // Fetch fresh data to ensure UI matches server state
@@ -289,7 +289,7 @@ const Onboarding = () => {
             {filtered.map(item => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
-                <div key={item._id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'center', minHeight: '50px' }}>
+                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'center', minHeight: '50px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
                     <span style={{ fontWeight: 600 }}>{item.companyName || '—'}</span>
                     {item.testing && (
@@ -323,7 +323,7 @@ const Onboarding = () => {
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <label className="switch" onClick={(e) => e.stopPropagation()}>
-                      <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item._id, !!item.clientAccessEnabled)} />
+                      <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
                       <span className="slider round"></span>
                     </label>
                   </div>
