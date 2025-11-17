@@ -27,7 +27,7 @@ const IntegrationForm = () => {
     'ACA': ['Basic'],
     'Final Expense': ['Advanced', 'Basic'],
     'Home': ['Basic'],
-    'Auto Warranty Advance': ['Advanced'],
+    'Auto Warranty': ['Advanced'],
     'Medalert': ['Advanced']
   };
 
@@ -88,15 +88,15 @@ const IntegrationForm = () => {
   ];
 
   // Auto-set model based on transfer settings
-  
+
 
   // Reset transferSettings when campaign changes
-// Reset transferSettings when campaign changes
-useEffect(() => {
-  if (formData.campaign) {
-    setFormData(prev => ({ ...prev, transferSettings: 'balanced' }));
-  }
-}, [formData.campaign]);
+  // Reset transferSettings when campaign changes
+  useEffect(() => {
+    if (formData.campaign) {
+      setFormData(prev => ({ ...prev, transferSettings: 'balanced' }));
+    }
+  }, [formData.campaign]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -265,13 +265,14 @@ useEffect(() => {
       <input
         type="range"
         min="0"
-        max="2"
+        max="3"
         value={
           formData.transferSettings === 'quality' ? 0 :
-            formData.transferSettings === 'balanced' ? 1 : 2
+            formData.transferSettings === 'balanced' ? 1 :
+              formData.transferSettings === 'high-volume' ? 2 : 3
         }
         onChange={(e) => {
-          const values = ['quality', 'balanced', 'high-volume'];
+          const values = ['quality', 'balanced', 'high-volume', 'max-volume'];
           setFormData(prev => ({
             ...prev,
             transferSettings: values[e.target.value]
@@ -284,8 +285,40 @@ useEffect(() => {
         <span className={formData.transferSettings === 'quality' ? 'active' : ''}>Quality</span>
         <span className={formData.transferSettings === 'balanced' ? 'active' : ''}>Balanced</span>
         <span className={formData.transferSettings === 'high-volume' ? 'active' : ''}>High Volume</span>
+        <span className={formData.transferSettings === 'max-volume' ? 'active' : ''}>Max Volume</span>
       </div>
     </div>
+
+    {/* Model Availability Notice */}
+    {formData.campaign && !campaignConfig[formData.campaign]?.includes('Advanced') && (
+      <div style={{ 
+        marginTop: '12px', 
+        padding: '12px', 
+        backgroundColor: '#fef3c7', 
+        borderLeft: '4px solid #f59e0b',
+        borderRadius: '4px'
+      }}>
+        <p style={{ margin: 0, fontSize: '0.875rem', color: '#92400e' }}>
+          <i className="bi bi-info-circle-fill" style={{ marginRight: '8px' }}></i>
+          <strong>Advanced Model not available</strong> for this campaign. Only Basic Model with all transfer settings is available.
+        </p>
+      </div>
+    )}
+
+    {formData.campaign && !campaignConfig[formData.campaign]?.includes('Basic') && (
+      <div style={{ 
+        marginTop: '12px', 
+        padding: '12px', 
+        backgroundColor: '#dbeafe', 
+        borderLeft: '4px solid #3b82f6',
+        borderRadius: '4px'
+      }}>
+        <p style={{ margin: 0, fontSize: '0.875rem', color: '#1e3a8a' }}>
+          <i className="bi bi-info-circle-fill" style={{ marginRight: '8px' }}></i>
+          <strong>Basic Model not available</strong> for this campaign. Only Advanced Model is available.
+        </p>
+      </div>
+    )}
 
     {formData.transferSettings && (
       <div className="transfer-info-box">
@@ -382,6 +415,39 @@ useEffect(() => {
                     <path className="circle volume" strokeDasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   </svg>
                   <div className="metric-number">80</div>
+                </div>
+                <span className="metric-label">Volume</span>
+              </div>
+            </div>
+          </>
+        )}
+        {formData.transferSettings === 'max-volume' && (
+          <>
+            <div className="info-header">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+                <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Max Volume</span>
+              </div>
+            </div>
+            <p style={{ marginTop: '-30px' }}>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
+            <div className="metrics-grid">
+              <div className="metric-card">
+                <div className="metric-circle">
+                  <svg viewBox="0 0 36 36" className="circular-chart">
+                    <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className="circle quality" strokeDasharray="30, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                  <div className="metric-number">30</div>
+                </div>
+                <span className="metric-label">Quality</span>
+              </div>
+              <div className="metric-card">
+                <div className="metric-circle">
+                  <svg viewBox="0 0 36 36" className="circular-chart">
+                    <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path className="circle volume" strokeDasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  </svg>
+                  <div className="metric-number">100</div>
                 </div>
                 <span className="metric-label">Volume</span>
               </div>

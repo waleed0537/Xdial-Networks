@@ -133,7 +133,7 @@ app.post('/api/integration/submit', async (req, res) => {
   'ACA': ['Basic'],
   'Final Expense': ['Advanced', 'Basic'],
   'Home': ['Basic'],
-  'Auto Warranty Advance': ['Advanced'],
+  'Auto Warranty': ['Advanced'],
   'Medalert': ['Advanced']
 };
 
@@ -145,7 +145,7 @@ if (!validCombinations[campaign]?.includes(model)) {
 }
 
 // All campaigns with Basic model use the 3 basic transfer settings
-const validTransfers = ['quality', 'balanced', 'high-volume'];
+const validTransfers = ['quality', 'balanced', 'high-volume', 'max-volume'];
 
 if (!validTransfers.includes(transferSettings)) {
   return res.status(400).json({

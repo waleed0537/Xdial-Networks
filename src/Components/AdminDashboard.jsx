@@ -59,13 +59,14 @@ const AdminDashboard = () => {
   'ACA': ['Basic'],
   'Final Expense': ['Advanced', 'Basic'],
   'Home': ['Basic'],
-  'Auto Warranty Advance': ['Advanced'],
+  'Auto Warranty': ['Advanced'],
   'Medalert': ['Advanced']
 };
 const transferOptions = [
   { value: 'quality', label: 'Quality' },
   { value: 'balanced', label: 'Balanced' },
-  { value: 'high-volume', label: 'High Volume' }
+  { value: 'high-volume', label: 'High Volume' },
+  { value: 'max-volume', label: 'Max Volume' }
 ];
   const basicTransferOptions = [
     { value: 'high-quality', label: 'High-Quality Transfers' },
@@ -963,7 +964,7 @@ const transferOptions = [
     <option value="ACA">ACA</option>
     <option value="Final Expense">Final Expense</option>
     <option value="Home">Home</option>
-    <option value="Auto Warranty Advance">Auto Warranty Advance</option>
+    <option value="Auto Warranty ">Auto Warranty</option>
     <option value="Medalert">Medalert</option>
           </select>
         </div>
