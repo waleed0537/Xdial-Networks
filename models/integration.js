@@ -1,4 +1,4 @@
-// integration.js
+// integration.js - ADD the clientsdata_id field reference at the top with client_id
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 

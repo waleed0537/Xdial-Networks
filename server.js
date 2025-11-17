@@ -348,6 +348,7 @@ app.patch('/api/integration/:id/status', async (req, res) => {
 
 // Update Integration Field (Generic Update) - Admin only
 // Update Integration Field (Generic Update) - Admin only
+// server.js - Update the PATCH endpoint with better error handling
 app.patch('/api/integration/:id', async (req, res) => {
   try {
     const integration = await Integration.findByPk(req.params.id);
@@ -359,12 +360,24 @@ app.patch('/api/integration/:id', async (req, res) => {
       });
     }
 
+    // Define allowed fields that can be updated
+    const allowedFields = [
+      'campaign', 'testing', 'model', 'numberOfBots', 'transferSettings',
+      'client_id', 'clientsdata_id', 'extensions', 'serverIPs', 'dialplan',
+      'setupType', 'primaryIpValidation', 'primaryAdminLink', 'primaryUser',
+      'primaryPassword', 'primaryBotsCampaign', 'primaryUserSeries', 'primaryPort',
+      'closerIpValidation', 'closerAdminLink', 'closerUser', 'closerPassword',
+      'closerCampaign', 'closerIngroup', 'closerPort', 'companyName',
+      'customRequirements', 'status', 'clientAccessEnabled', 'startDate', 'endDate'
+    ];
+
     // Handle nested JSONB updates for completionRequirements
     if (req.body.completionRequirements) {
       integration.completionRequirements = {
         ...integration.completionRequirements,
         ...req.body.completionRequirements
       };
+      integration.changed('completionRequirements', true);
       delete req.body.completionRequirements;
     }
 
@@ -374,21 +387,26 @@ app.patch('/api/integration/:id', async (req, res) => {
         ...integration.campaignResources,
         ...req.body.campaignResources
       };
+      integration.changed('campaignResources', true);
       delete req.body.campaignResources;
     }
 
-    // Update all other fields including clientsdata_id
+    // Update all other allowed fields
     Object.keys(req.body).forEach(key => {
-      if (key === 'clientsdata_id') {
-        integration.clientsdata_id = req.body[key] === '' ? null : req.body[key];
+      if (allowedFields.includes(key)) {
+        if (key === 'clientsdata_id') {
+          // Handle clientsdata_id specifically
+          integration.clientsdata_id = req.body[key] === '' || req.body[key] === null ? null : parseInt(req.body[key]);
+        } else if (key === 'client_id') {
+          // Handle client_id specifically
+          integration.client_id = req.body[key] === '' || req.body[key] === null ? null : parseInt(req.body[key]);
+        } else {
+          integration[key] = req.body[key];
+        }
       } else {
-        integration[key] = req.body[key];
+        console.warn(`Attempted to update non-allowed field: ${key}`);
       }
     });
-
-    // Mark JSONB fields as changed (important for Sequelize)
-    integration.changed('completionRequirements', true);
-    integration.changed('campaignResources', true);
 
     // Save changes
     await integration.save();
@@ -405,7 +423,24 @@ app.patch('/api/integration/:id', async (req, res) => {
   } catch (error) {
     console.error('Error updating integration:', error);
     console.error('Request body:', req.body);
-    console.error('Full error:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    
+    if (error.name === 'SequelizeValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: error.errors.map(e => e.message)
+      });
+    }
+
+    if (error.name === 'SequelizeDatabaseError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Database error - field may not exist',
+        error: error.message
+      });
+    }
     
     res.status(500).json({
       success: false,
