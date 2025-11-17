@@ -127,19 +127,32 @@ app.post('/api/integration/submit', async (req, res) => {
     } = req.body;
 
     const validCombinations = {
-      'Medicare': ['Basic', 'Advanced'],
-      'Final Expense': ['Basic', 'Advanced'],
-      'MVA': ['Basic'],
-      'Auto Insurance': ['Advanced'],
-      'Auto Warranty': ['Advanced']
-    };
+  'Medicare': ['Advanced', 'Basic'],
+  'Auto Insurance': ['Advanced', 'Basic'],
+  'MVA': ['Basic'],
+  'ACA': ['Basic'],
+  'Final Expense': ['Advanced', 'Basic'],
+  'Home': ['Basic'],
+  'Auto Warranty Advance': ['Advanced'],
+  'Medalert': ['Advanced']
+};
 
-    if (!validCombinations[campaign]?.includes(model)) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign]?.join(', ')}`
-      });
-    }
+if (!validCombinations[campaign]?.includes(model)) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign]?.join(', ')}`
+  });
+}
+
+// All campaigns with Basic model use the 3 basic transfer settings
+const validTransfers = ['quality', 'balanced', 'high-volume'];
+
+if (!validTransfers.includes(transferSettings)) {
+  return res.status(400).json({
+    success: false,
+    message: 'Invalid transfer settings. Valid options: quality, balanced, high-volume'
+  });
+}
 
     const basicTransfers = ['high-quality', 'balanced', 'broader'];
     const advancedTransfers = ['balanced-broad', 'balanced-qualified'];

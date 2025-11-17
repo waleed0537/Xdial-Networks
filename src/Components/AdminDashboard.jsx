@@ -53,13 +53,20 @@ const AdminDashboard = () => {
 
   // Campaign configuration
   const campaignConfig = {
-    'Medicare': ['Basic', 'Advanced'],
-    'Final Expense': ['Basic', 'Advanced'],
-    'MVA': ['Basic'],
-    'Auto Insurance': ['Advanced'],
-    'Auto Warranty': ['Advanced']
-  };
-
+  'Medicare': ['Advanced', 'Basic'],
+  'Auto Insurance': ['Advanced', 'Basic'],
+  'MVA': ['Basic'],
+  'ACA': ['Basic'],
+  'Final Expense': ['Advanced', 'Basic'],
+  'Home': ['Basic'],
+  'Auto Warranty Advance': ['Advanced'],
+  'Medalert': ['Advanced']
+};
+const transferOptions = [
+  { value: 'quality', label: 'Quality' },
+  { value: 'balanced', label: 'Balanced' },
+  { value: 'high-volume', label: 'High Volume' }
+];
   const basicTransferOptions = [
     { value: 'high-quality', label: 'High-Quality Transfers' },
     { value: 'balanced', label: 'Balanced Transfers' },
@@ -95,10 +102,8 @@ const AdminDashboard = () => {
 
     if (searchTerm) {
   filtered = filtered.filter(item =>
-    item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.campaign?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
   );
 }
@@ -952,11 +957,14 @@ const AdminDashboard = () => {
             onChange={(e) => setCampaignFilter(e.target.value)}
           >
             <option value="all">All Campaigns</option>
-            <option value="Medicare">Medicare</option>
-            <option value="Final Expense">Final Expense</option>
-            <option value="MVA">MVA</option>
-            <option value="Auto Insurance">Auto Insurance</option>
-            <option value="Auto Warranty">Auto Warranty</option>
+    <option value="Medicare">Medicare</option>
+    <option value="Auto Insurance">Auto Insurance</option>
+    <option value="MVA">MVA</option>
+    <option value="ACA">ACA</option>
+    <option value="Final Expense">Final Expense</option>
+    <option value="Home">Home</option>
+    <option value="Auto Warranty Advance">Auto Warranty Advance</option>
+    <option value="Medalert">Medalert</option>
           </select>
         </div>
 
@@ -1114,16 +1122,12 @@ const AdminDashboard = () => {
                       value={selectedIntegration.dialplan}
                       label="Dialplan"
                     />
-                    <EditableField
-                      field="transferSettings"
-                      value={selectedIntegration.transferSettings}
-                      label="Transfer Settings"
-                      options={
-                        selectedIntegration.model === 'Basic'
-                          ? basicTransferOptions
-                          : advancedTransferOptions
-                      }
-                    />
+                    <<EditableField
+  field="transferSettings"
+  value={selectedIntegration.transferSettings}
+  label="Transfer Settings"
+  options={transferOptions}
+/>
                   </div>
                   <div className="form-row full">
                     <EditableArrayField
