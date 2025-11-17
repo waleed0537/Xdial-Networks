@@ -239,13 +239,14 @@ const AdminDashboard = () => {
 
     let valueToSave;
     if (isArrayField) {
-      // Convert newline-separated string to array
       valueToSave = editValue
         .split('\n')
         .map(item => item.trim())
         .filter(item => item !== '');
     } else if (isDateField) {
       valueToSave = editValue ? new Date(editValue).toISOString() : null;
+    } else if (field === 'clientsdata_id') {
+      valueToSave = editValue === '' ? null : parseInt(editValue) || null;
     } else {
       valueToSave = editValue;
     }

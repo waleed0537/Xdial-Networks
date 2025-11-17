@@ -360,7 +360,6 @@ app.patch('/api/integration/:id', async (req, res) => {
       });
     }
 
-    // Define allowed fields that can be updated
     const allowedFields = [
       'campaign', 'testing', 'model', 'numberOfBots', 'transferSettings',
       'client_id', 'clientsdata_id', 'extensions', 'serverIPs', 'dialplan',
@@ -371,7 +370,6 @@ app.patch('/api/integration/:id', async (req, res) => {
       'customRequirements', 'status', 'clientAccessEnabled', 'startDate', 'endDate'
     ];
 
-    // Handle nested JSONB updates for completionRequirements
     if (req.body.completionRequirements) {
       integration.completionRequirements = {
         ...integration.completionRequirements,
@@ -381,7 +379,6 @@ app.patch('/api/integration/:id', async (req, res) => {
       delete req.body.completionRequirements;
     }
 
-    // Handle nested JSONB updates for campaignResources
     if (req.body.campaignResources) {
       integration.campaignResources = {
         ...integration.campaignResources,
@@ -391,27 +388,19 @@ app.patch('/api/integration/:id', async (req, res) => {
       delete req.body.campaignResources;
     }
 
-    // Update all other allowed fields
     Object.keys(req.body).forEach(key => {
       if (allowedFields.includes(key)) {
-        if (key === 'clientsdata_id') {
-          // Handle clientsdata_id specifically
-          integration.clientsdata_id = req.body[key] === '' || req.body[key] === null ? null : parseInt(req.body[key]);
-        } else if (key === 'client_id') {
-          // Handle client_id specifically
-          integration.client_id = req.body[key] === '' || req.body[key] === null ? null : parseInt(req.body[key]);
+        if (key === 'clientsdata_id' || key === 'client_id') {
+          const value = req.body[key];
+          integration[key] = value === '' || value === null || value === undefined ? null : parseInt(value);
         } else {
           integration[key] = req.body[key];
         }
-      } else {
-        console.warn(`Attempted to update non-allowed field: ${key}`);
       }
     });
 
-    // Save changes
+    integration.updatedAt = new Date();
     await integration.save();
-
-    // Reload to get fresh data
     await integration.reload();
 
     res.json({
@@ -422,9 +411,6 @@ app.patch('/api/integration/:id', async (req, res) => {
 
   } catch (error) {
     console.error('Error updating integration:', error);
-    console.error('Request body:', req.body);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
     
     if (error.name === 'SequelizeValidationError') {
       return res.status(400).json({
@@ -437,7 +423,7 @@ app.patch('/api/integration/:id', async (req, res) => {
     if (error.name === 'SequelizeDatabaseError') {
       return res.status(400).json({
         success: false,
-        message: 'Database error - field may not exist',
+        message: 'Database error',
         error: error.message
       });
     }
@@ -445,8 +431,7 @@ app.patch('/api/integration/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to update integration',
-      error: error.message,
-      details: error.toString()
+      error: error.message
     });
   }
 });

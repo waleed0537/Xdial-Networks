@@ -1,4 +1,3 @@
-// integration.js - ADD the clientsdata_id field reference at the top with client_id
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
@@ -31,20 +30,12 @@ const Integration = sequelize.define('Integration', {
   client_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    field: 'client_id',
-    references: {
-      model: 'clients',
-      key: 'client_id'
-    }
+    field: 'client_id'
   },
   clientsdata_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    field: 'clientsdata_id',
-    references: {
-      model: 'clientsData',
-      key: 'id'
-    }
+    field: 'clientsdata_id'
   },
   extensions: {
     type: DataTypes.ARRAY(DataTypes.TEXT),
@@ -165,7 +156,9 @@ const Integration = sequelize.define('Integration', {
   }
 }, {
   tableName: 'integrations',
-  timestamps: true
+  timestamps: true,
+  updatedAt: 'updatedAt',
+  createdAt: false
 });
 
 module.exports = Integration;
