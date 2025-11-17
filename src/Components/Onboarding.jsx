@@ -95,7 +95,8 @@ const Onboarding = () => {
         const company = (i.companyName || '').toLowerCase();
         const campaign = (i.campaign || '').toLowerCase();
         const model = (i.model || '').toLowerCase();
-        const clientId = (i.clientId || '').toLowerCase();
+        const clientId = (i.clientsdata_id || '').toString().toLowerCase();
+
         if (!company.includes(q) && !campaign.includes(q) && !model.includes(q) && !clientId.includes(q)) return false;
       }
       return true;
@@ -407,9 +408,9 @@ const Onboarding = () => {
                   <div className="detail-section" style={{ gridColumn: '1 / -1' }}>
                     <div className="detail-grid">
                       <div className="detail-item">
-                        <label>Client ID</label>
-                        <p>{selectedItem.clientId || '—'}</p>
-                      </div>
+  <label>Client ID</label>
+  <p>{selectedItem.clientsdata_id || '—'}</p>
+</div>
                       <div className="detail-item">
                         
                         <label>Campaign</label>

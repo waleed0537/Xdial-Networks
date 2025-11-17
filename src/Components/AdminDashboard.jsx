@@ -94,14 +94,14 @@ const AdminDashboard = () => {
     }
 
     if (searchTerm) {
-      filtered = filtered.filter(item =>
-        item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.clientId && item.clientId.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+  filtered = filtered.filter(item =>
+    item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+}
 
     setFilteredIntegrations(filtered);
   }, [statusFilter, campaignFilter, searchTerm, integrations]);
@@ -1082,10 +1082,10 @@ const AdminDashboard = () => {
                   <h3>Campaign Configuration</h3>
                   <div className="form-row">
                     <EditableField
-                      field="clientId"
-                      value={selectedIntegration.clientId}
-                      label="Client ID"
-                    />
+  field="clientsdata_id"
+  value={selectedIntegration.clientsdata_id}
+  label="Client ID"
+/>
                     <EditableField
                       field="campaign"
                       value={selectedIntegration.campaign}
