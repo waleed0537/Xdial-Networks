@@ -1122,7 +1122,7 @@ const transferOptions = [
                       value={selectedIntegration.dialplan}
                       label="Dialplan"
                     />
-                    <<EditableField
+                    <EditableField
   field="transferSettings"
   value={selectedIntegration.transferSettings}
   label="Transfer Settings"
