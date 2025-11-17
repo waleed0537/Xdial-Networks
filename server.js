@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Sync database (creates tables if they don't exist)
 // Initialize Database
-sequelize.sync({ alter: true })  // Use alter to add foreign key constraint
+sequelize.sync({ alter: false })  // Use alter to add foreign key constraint
   .then(() => console.log('✅ Database synchronized'))
   .catch(err => console.error('❌ Database sync error:', err));
 
@@ -172,7 +172,7 @@ app.post('/api/integration/submit', async (req, res) => {
       model,
       numberOfBots,
       transferSettings,
-      clientId: '',
+      client_id: '',
       extensions: [],
       serverIPs: [],
       dialplan: '',
@@ -433,7 +433,7 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
     }
 
     // Check if admin-only fields are filled
-    if (!integration.clientId || integration.clientId.trim() === '') {
+    if (!integration.client_id || integration.client_id.trim() === '') {
       return res.status(400).json({
         success: false,
         message: 'Client ID must be assigned before completing integration'
@@ -518,13 +518,13 @@ app.delete('/api/integration/:id', async (req, res) => {
 // ============================================================================
 
 // Verify Client Login
-app.get('/api/client/verify/:clientId', async (req, res) => {
+app.get('/api/client/verify/:client_id', async (req, res) => {
   try {
-    const { clientId } = req.params;
+    const { client_id } = req.params;
 
     const campaigns = await Integration.findAll({ 
       where: {
-        clientId: clientId,
+        client_id: client_id,
         clientAccessEnabled: true
       }
     });
@@ -556,13 +556,13 @@ app.get('/api/client/verify/:clientId', async (req, res) => {
 });
 
 // Get Client Campaigns
-app.get('/api/client/:clientId/campaigns', async (req, res) => {
+app.get('/api/client/:client_id/campaigns', async (req, res) => {
   try {
-    const { clientId } = req.params;
+    const { client_id } = req.params;
 
     const campaigns = await Integration.findAll({ 
       where: {
-        clientId: clientId,
+        client_id: client_id,
         clientAccessEnabled: true
       },
       order: [['submittedAt', 'DESC']]
@@ -619,5 +619,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
   console.log(`📝 Submit form: POST http://localhost:${PORT}/api/integration/submit`);
-  console.log(`👥 Client portal: GET http://localhost:${PORT}/api/client/:clientId/campaigns`);
-});
+  console.log(`👥 Client portal: GET http://localhost:${PORT}/api/client/:client_id/campaigns`);
+}); 

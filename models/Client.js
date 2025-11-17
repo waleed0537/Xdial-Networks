@@ -1,11 +1,12 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
-const Client = sequelize.define('Client', {
-  clientId: {
-    type: DataTypes.STRING,
-    primaryKey: true,  // Make clientId the primary key
-    allowNull: false
+const ClientData = sequelize.define('Client', {
+  client_id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    field: 'client_id'
   },
   companyName: {
     type: DataTypes.STRING,
@@ -13,26 +14,19 @@ const Client = sequelize.define('Client', {
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: true,
-    validate: {
-      isEmail: true
-    }
+    allowNull: true
   },
   phone: {
     type: DataTypes.STRING,
     allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('active', 'inactive', 'suspended'),
+    type: DataTypes.STRING,
     defaultValue: 'active'
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
   }
 }, {
   tableName: 'clients',
   timestamps: true
 });
 
-module.exports = Client;
+module.exports = ClientData;

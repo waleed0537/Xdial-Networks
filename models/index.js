@@ -2,16 +2,15 @@ const sequelize = require('../database');
 const Client = require('./Client');
 const Integration = require('./integration');
 
-// Define relationships
 Client.hasMany(Integration, {
-  foreignKey: 'clientId',
-  sourceKey: 'clientId',
+  foreignKey: 'client_id',
+  sourceKey: 'client_id',
   as: 'integrations'
 });
 
 Integration.belongsTo(Client, {
-  foreignKey: 'clientId',
-  targetKey: 'clientId',
+  foreignKey: 'client_id',
+  targetKey: 'client_id',
   as: 'client'
 });
 
