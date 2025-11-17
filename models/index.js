@@ -30,7 +30,6 @@ Integration.belongsTo(ClientData, {
 
 module.exports = {
   sequelize,
-  Client,
   ClientData,
   Integration
 };
