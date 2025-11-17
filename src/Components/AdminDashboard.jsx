@@ -372,7 +372,7 @@ const AdminDashboard = () => {
       return;
     }
 
-    if (newStatus === 'completed' && (!selectedIntegration.clientId || selectedIntegration.clientId.trim() === '')) {
+    if (newStatus === 'completed' && (!selectedIntegration.clientsdata_id || selectedIntegration.clientsdata_id === null)) {
       alert('Cannot mark as completed! Please assign a Client ID first.');
       return;
     }

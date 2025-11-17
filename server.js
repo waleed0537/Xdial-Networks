@@ -477,7 +477,6 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
       });
     }
 
-    // Check if all completion requirements are met
     const { completionRequirements } = integration;
     if (!completionRequirements.longScript || 
         !completionRequirements.clientDashboard || 
@@ -488,7 +487,6 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
       });
     }
 
-    // Check if admin-only fields are filled - Changed from client_id to clientsdata_id
     if (!integration.clientsdata_id) {
       return res.status(400).json({
         success: false,
@@ -517,7 +515,6 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
       });
     }
 
-    // Update status to completed and enable client access
     integration.status = 'completed';
     integration.clientAccessEnabled = true;
     integration.updatedAt = new Date();
