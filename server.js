@@ -347,9 +347,11 @@ app.patch('/api/integration/:id/status', async (req, res) => {
 });
 
 // Update Integration Field (Generic Update) - Admin only
-// Update Integration Field (Generic Update) - Admin only
-// server.js - Update the PATCH endpoint with better error handling
 app.patch('/api/integration/:id', async (req, res) => {
+  console.log('=== PATCH REQUEST DEBUG ===');
+  console.log('Request ID:', req.params.id);
+  console.log('Request Body:', JSON.stringify(req.body, null, 2));
+  
   try {
     const integration = await Integration.findByPk(req.params.id);
 
@@ -359,6 +361,8 @@ app.patch('/api/integration/:id', async (req, res) => {
         message: 'Integration request not found'
       });
     }
+
+    console.log('Current integration clientsdata_id:', integration.clientsdata_id);
 
     const allowedFields = [
       'campaign', 'testing', 'model', 'numberOfBots', 'transferSettings',
@@ -392,7 +396,9 @@ app.patch('/api/integration/:id', async (req, res) => {
       if (allowedFields.includes(key)) {
         if (key === 'clientsdata_id' || key === 'client_id') {
           const value = req.body[key];
-          integration[key] = value === '' || value === null || value === undefined ? null : parseInt(value);
+          const parsedValue = value === '' || value === null || value === undefined ? null : parseInt(value);
+          console.log(`Setting ${key} from ${value} to ${parsedValue}`);
+          integration[key] = parsedValue;
         } else {
           integration[key] = req.body[key];
         }
@@ -400,8 +406,14 @@ app.patch('/api/integration/:id', async (req, res) => {
     });
 
     integration.updatedAt = new Date();
+    
+    console.log('About to save with clientsdata_id:', integration.clientsdata_id);
+    
     await integration.save();
     await integration.reload();
+
+    console.log('After save clientsdata_id:', integration.clientsdata_id);
+    console.log('=== PATCH REQUEST SUCCESS ===');
 
     res.json({
       success: true,
@@ -410,13 +422,21 @@ app.patch('/api/integration/:id', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error updating integration:', error);
+    console.error('=== PATCH REQUEST ERROR ===');
+    console.error('Error Name:', error.name);
+    console.error('Error Message:', error.message);
+    console.error('Error Stack:', error.stack);
+    console.error('=========================');
     
     if (error.name === 'SequelizeValidationError') {
       return res.status(400).json({
         success: false,
         message: 'Validation error',
-        errors: error.errors.map(e => e.message)
+        errors: error.errors.map(e => ({
+          field: e.path,
+          message: e.message,
+          value: e.value
+        }))
       });
     }
 
@@ -424,6 +444,15 @@ app.patch('/api/integration/:id', async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Database error',
+        error: error.message,
+        sql: error.sql
+      });
+    }
+
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Foreign key constraint error - the referenced client ID may not exist',
         error: error.message
       });
     }
@@ -431,7 +460,8 @@ app.patch('/api/integration/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to update integration',
-      error: error.message
+      error: error.message,
+      errorName: error.name
     });
   }
 });
