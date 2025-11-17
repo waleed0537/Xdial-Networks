@@ -73,25 +73,25 @@ const IntegrationForm = () => {
   ];
 
   // Auto-set model and reset transferSettings when campaign changes
-  useEffect(() => {
-    if (formData.campaign) {
-      const availableModels = campaignConfig[formData.campaign];
-      // Auto-select model - prefer Basic, fallback to Advanced
-      let selectedModel = '';
-      
-      if (availableModels && availableModels.includes('Basic')) {
-        selectedModel = 'Basic';
-      } else if (availableModels && availableModels.includes('Advanced')) {
-        selectedModel = 'Advanced';
-      }
-      
-      setFormData(prev => ({ 
-        ...prev, 
-        model: selectedModel,
-        transferSettings: 'balanced' 
-      }));
+  // Auto-set model when campaign changes
+useEffect(() => {
+  if (formData.campaign) {
+    const availableModels = campaignConfig[formData.campaign];
+    let selectedModel = '';
+    
+    if (availableModels && availableModels.includes('Basic')) {
+      selectedModel = 'Basic';
+    } else if (availableModels && availableModels.includes('Advanced')) {
+      selectedModel = 'Advanced';
     }
-  }, [formData.campaign]);
+    
+    setFormData(prev => ({ 
+      ...prev, 
+      model: selectedModel,
+      transferSettings: 'balanced' 
+    }));
+  }
+}, [formData.campaign]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

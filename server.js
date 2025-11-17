@@ -127,52 +127,51 @@ app.post('/api/integration/submit', async (req, res) => {
     } = req.body;
 
   const validCombinations = {
-      'Medicare': ['Advanced', 'Basic'],
-      'Auto Insurance': ['Advanced', 'Basic'],
-      'MVA': ['Basic'],
-      'ACA': ['Basic'],
-      'Final Expense': ['Advanced', 'Basic'],
-      'Home': ['Basic'],
-      'Auto Warranty': ['Advanced'],
-      'Medalert': ['Advanced']
-    };
+  'Medicare': ['Advanced', 'Basic'],
+  'Auto Insurance': ['Advanced', 'Basic'],
+  'MVA': ['Basic'],
+  'ACA': ['Basic'],
+  'Final Expense': ['Advanced', 'Basic'],
+  'Home': ['Basic'],
+  'Auto Warranty': ['Advanced'],
+  'Medalert': ['Advanced']
+};
 
-    // Validate campaign exists
-    if (!validCombinations[campaign]) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid campaign "${campaign}"`
-      });
-    }
+// Validate campaign exists FIRST
+if (!validCombinations[campaign]) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid campaign "${campaign}"`
+  });
+}
 
-    // Validate model is valid for campaign
-    if (!model || !validCombinations[campaign].includes(model)) {
-      return res.status(400).json({
-        success: false,
-        message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign].join(', ')}`
-      });
-    }
+// Now validate model
+if (!model || !validCombinations[campaign].includes(model)) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign].join(', ')}`
+  });
+}
 
-    // Validate transfer settings - all campaigns now support all 4 transfer settings
-    const validTransfers = ['quality', 'balanced', 'high-volume', 'max-volume'];
+// Validate transfer settings
+const validTransfers = ['quality', 'balanced', 'high-volume', 'max-volume'];
+if (!validTransfers.includes(transferSettings)) {
+  return res.status(400).json({
+    success: false,
+    message: 'Invalid transfer settings'
+  });
+}
 
-    if (!validTransfers.includes(transferSettings)) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid transfer settings. Valid options: quality, balanced, high-volume, max-volume'
-      });
-    }
-
-    // Validate separate dialler requirements
-    if (setupType === 'separate') {
-      if (!closerIpValidation || !closerAdminLink || !closerUser || 
-          !closerPassword || !closerCampaign || !closerIngroup) {
-        return res.status(400).json({
-          success: false,
-          message: 'All closer dialler fields are required for separate setup'
-        });
-      }
-    }
+// Validate separate dialler if needed
+if (setupType === 'separate') {
+  if (!closerIpValidation || !closerAdminLink || !closerUser || 
+      !closerPassword || !closerCampaign || !closerIngroup) {
+    return res.status(400).json({
+      success: false,
+      message: 'All closer dialler fields are required for separate setup'
+    });
+  }
+}
 
     const integration = await Integration.create({
       campaign,
