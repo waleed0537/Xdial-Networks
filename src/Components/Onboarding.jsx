@@ -392,7 +392,7 @@ const Onboarding = () => {
                         animation: 'pulse 2s infinite'
                       }}>
                         <i className="bi bi-beaker" style={{ marginRight: '4px' }}></i>
-                        Time Duration
+                        Testing Phase
                       </span>
                     )}
                   </div>
