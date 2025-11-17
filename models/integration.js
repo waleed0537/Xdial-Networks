@@ -27,10 +27,10 @@ const Integration = sequelize.define('Integration', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  client_id: {
+  clientsdata_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    field: 'client_id'
+    field: 'clientsdata_id'
   },
   extensions: {
     type: DataTypes.ARRAY(DataTypes.TEXT),
