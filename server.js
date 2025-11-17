@@ -136,6 +136,7 @@ app.post('/api/integration/submit', async (req, res) => {
   'Auto Warranty': ['Advanced'],
   'Medalert': ['Advanced']
 };
+const validModels = validCombinations[campaign];
 
 // Validate campaign exists FIRST
 if (!validCombinations[campaign]) {
@@ -146,10 +147,10 @@ if (!validCombinations[campaign]) {
 }
 
 // Now validate model
-if (!model || !validCombinations[campaign].includes(model)) {
+if (!model || !validModels || !validModels.includes(model)) {
   return res.status(400).json({
     success: false,
-    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign].join(', ')}`
+    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validModels ? validModels.join(', ') : 'none'}`
   });
 }
 

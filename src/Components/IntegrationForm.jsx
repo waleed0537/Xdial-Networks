@@ -79,10 +79,9 @@ useEffect(() => {
     const availableModels = campaignConfig[formData.campaign];
     let selectedModel = '';
     
-    if (availableModels && availableModels.includes('Basic')) {
-      selectedModel = 'Basic';
-    } else if (availableModels && availableModels.includes('Advanced')) {
-      selectedModel = 'Advanced';
+    if (availableModels && availableModels.length > 0) {
+      // Select the first available model
+      selectedModel = availableModels[0];
     }
     
     setFormData(prev => ({ 
