@@ -122,7 +122,8 @@ app.post('/api/integration/submit', async (req, res) => {
       closerIngroup,
       closerPort,
       companyName,
-      customRequirements
+      customRequirements,
+      clientsdata_id  // Add this
     } = req.body;
 
     const validCombinations = {
@@ -172,7 +173,8 @@ app.post('/api/integration/submit', async (req, res) => {
       model,
       numberOfBots,
       transferSettings,
-      client_id: '',
+      client_id: null,
+      clientsdata_id: clientsdata_id || null,  // Add this
       extensions: [],
       serverIPs: [],
       dialplan: '',
@@ -375,9 +377,13 @@ app.patch('/api/integration/:id', async (req, res) => {
       delete req.body.campaignResources;
     }
 
-    // Update all other fields
+    // Update all other fields including clientsdata_id
     Object.keys(req.body).forEach(key => {
-      integration[key] = req.body[key];
+      if (key === 'clientsdata_id') {
+        integration.clientsdata_id = req.body[key] === '' ? null : req.body[key];
+      } else {
+        integration[key] = req.body[key];
+      }
     });
 
     // Mark JSONB fields as changed (important for Sequelize)
@@ -432,11 +438,11 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
       });
     }
 
-    // Check if admin-only fields are filled
-    if (!integration.client_id || integration.client_id.trim() === '') {
+    // Check if admin-only fields are filled - Changed from client_id to clientsdata_id
+    if (!integration.clientsdata_id) {
       return res.status(400).json({
         success: false,
-        message: 'Client ID must be assigned before completing integration'
+        message: 'Client Data ID must be assigned before completing integration'
       });
     }
 
@@ -518,13 +524,13 @@ app.delete('/api/integration/:id', async (req, res) => {
 // ============================================================================
 
 // Verify Client Login
-app.get('/api/client/verify/:client_id', async (req, res) => {
+app.get('/api/client/verify/:clientsdata_id', async (req, res) => {
   try {
-    const { client_id } = req.params;
+    const { clientsdata_id } = req.params;
 
     const campaigns = await Integration.findAll({ 
       where: {
-        client_id: client_id,
+        clientsdata_id: clientsdata_id,
         clientAccessEnabled: true
       }
     });
@@ -556,13 +562,13 @@ app.get('/api/client/verify/:client_id', async (req, res) => {
 });
 
 // Get Client Campaigns
-app.get('/api/client/:client_id/campaigns', async (req, res) => {
+app.get('/api/client/:clientsdata_id/campaigns', async (req, res) => {
   try {
-    const { client_id } = req.params;
+    const { clientsdata_id } = req.params;
 
     const campaigns = await Integration.findAll({ 
       where: {
-        client_id: client_id,
+        clientsdata_id: clientsdata_id,
         clientAccessEnabled: true
       },
       order: [['submittedAt', 'DESC']]
@@ -607,6 +613,28 @@ app.use((err, req, res, next) => {
     message: 'Something went wrong!', 
     error: err.message 
   });
+});
+
+
+app.get('/api/clientsdata/all', async (req, res) => {
+  try {
+    const { ClientData } = require('./models');
+    const clientsData = await ClientData.findAll({
+      order: [['companyName', 'ASC']]
+    });
+
+    res.json({
+      success: true,
+      data: clientsData
+    });
+  } catch (error) {
+    console.error('Error fetching clients data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch clients data',
+      error: error.message
+    });
+  }
 });
 
 // ============================================================================
