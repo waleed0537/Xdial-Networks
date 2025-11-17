@@ -1,6 +1,5 @@
 const sequelize = require('../database');
-const Client = require('./Client');
-const ClientData = require('./ClientData');
+const ClientData = require('./Client');
 const Integration = require('./integration');
 
 // Client -> ClientData relationship
