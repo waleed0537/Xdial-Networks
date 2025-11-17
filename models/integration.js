@@ -1,3 +1,4 @@
+// integration.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database');
 
@@ -27,10 +28,23 @@ const Integration = sequelize.define('Integration', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  client_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    field: 'client_id',
+    references: {
+      model: 'clients',
+      key: 'client_id'
+    }
+  },
   clientsdata_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    field: 'clientsdata_id'
+    field: 'clientsdata_id',
+    references: {
+      model: 'clientsData',
+      key: 'id'
+    }
   },
   extensions: {
     type: DataTypes.ARRAY(DataTypes.TEXT),

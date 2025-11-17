@@ -8,7 +8,7 @@ const path = require('path');
 const app = express();
 
 // Import database and model
-const { sequelize, Client, ClientData, Integration } = require('./models');
+const { sequelize, Client, Integration } = require('./models');
 
 
 // ============================================================================
@@ -172,7 +172,7 @@ app.post('/api/integration/submit', async (req, res) => {
       model,
       numberOfBots,
       transferSettings,
-      clientsdata_id: '',
+      client_id: '',
       extensions: [],
       serverIPs: [],
       dialplan: '',
@@ -433,7 +433,7 @@ app.patch('/api/integration/:id/complete', async (req, res) => {
     }
 
     // Check if admin-only fields are filled
-    if (!integration.clientsdata_id || integration.clientsdata_id.trim() === '') {
+    if (!integration.client_id || integration.client_id.trim() === '') {
       return res.status(400).json({
         success: false,
         message: 'Client ID must be assigned before completing integration'
@@ -518,13 +518,13 @@ app.delete('/api/integration/:id', async (req, res) => {
 // ============================================================================
 
 // Verify Client Login
-app.get('/api/client/verify/:clientsdata_id', async (req, res) => {
+app.get('/api/client/verify/:client_id', async (req, res) => {
   try {
-    const { clientsdata_id } = req.params;
+    const { client_id } = req.params;
 
     const campaigns = await Integration.findAll({ 
       where: {
-        clientsdata_id: clientsdata_id,
+        client_id: client_id,
         clientAccessEnabled: true
       }
     });
@@ -556,13 +556,13 @@ app.get('/api/client/verify/:clientsdata_id', async (req, res) => {
 });
 
 // Get Client Campaigns
-app.get('/api/client/:clientsdata_id/campaigns', async (req, res) => {
+app.get('/api/client/:client_id/campaigns', async (req, res) => {
   try {
-    const { clientsdata_id } = req.params;
+    const { client_id } = req.params;
 
     const campaigns = await Integration.findAll({ 
       where: {
-        clientsdata_id: clientsdata_id,
+        client_id: client_id,
         clientAccessEnabled: true
       },
       order: [['submittedAt', 'DESC']]
@@ -619,5 +619,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on port ${PORT}`);
   console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
   console.log(`📝 Submit form: POST http://localhost:${PORT}/api/integration/submit`);
-  console.log(`👥 Client portal: GET http://localhost:${PORT}/api/client/:clientsdata_id/campaigns`);
+  console.log(`👥 Client portal: GET http://localhost:${PORT}/api/client/:client_id/campaigns`);
 }); 
