@@ -53,21 +53,21 @@ const AdminDashboard = () => {
 
   // Campaign configuration
   const campaignConfig = {
-  'Medicare': ['Advanced', 'Basic'],
-  'Auto Insurance': ['Advanced', 'Basic'],
-  'MVA': ['Basic'],
-  'ACA': ['Basic'],
-  'Final Expense': ['Advanced', 'Basic'],
-  'Home': ['Basic'],
-  'Auto Warranty': ['Advanced'],
-  'Medalert': ['Advanced']
-};
-const transferOptions = [
-  { value: 'quality', label: 'Quality' },
-  { value: 'balanced', label: 'Balanced' },
-  { value: 'high-volume', label: 'High Volume' },
-  { value: 'max-volume', label: 'Max Volume' }
-];
+    'Medicare': ['Advanced', 'Basic'],
+    'Auto Insurance': ['Advanced', 'Basic'],
+    'MVA': ['Basic'],
+    'ACA': ['Basic'],
+    'Final Expense': ['Advanced', 'Basic'],
+    'Home': ['Basic'],
+    'Auto Warranty': ['Advanced'],
+    'Medalert': ['Advanced']
+  };
+  const transferOptions = [
+    { value: 'quality', label: 'Quality' },
+    { value: 'balanced', label: 'Balanced' },
+    { value: 'high-volume', label: 'High Volume' },
+    { value: 'max-volume', label: 'Max Volume' }
+  ];
   const basicTransferOptions = [
     { value: 'high-quality', label: 'High-Quality Transfers' },
     { value: 'balanced', label: 'Balanced Transfers' },
@@ -85,6 +85,7 @@ const transferOptions = [
       navigate('/admin/login');
     }
   }, [navigate]);
+  // Auto-set model when campaign changes
 
   useEffect(() => {
     fetchIntegrations();
@@ -102,12 +103,12 @@ const transferOptions = [
     }
 
     if (searchTerm) {
-  filtered = filtered.filter(item =>
-    item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.campaign?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-}
+      filtered = filtered.filter(item =>
+        item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.campaign?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
 
     setFilteredIntegrations(filtered);
   }, [statusFilter, campaignFilter, searchTerm, integrations]);
@@ -958,14 +959,14 @@ const transferOptions = [
             onChange={(e) => setCampaignFilter(e.target.value)}
           >
             <option value="all">All Campaigns</option>
-    <option value="Medicare">Medicare</option>
-    <option value="Auto Insurance">Auto Insurance</option>
-    <option value="MVA">MVA</option>
-    <option value="ACA">ACA</option>
-    <option value="Final Expense">Final Expense</option>
-    <option value="Home">Home</option>
-    <option value="Auto Warranty ">Auto Warranty</option>
-    <option value="Medalert">Medalert</option>
+            <option value="Medicare">Medicare</option>
+            <option value="Auto Insurance">Auto Insurance</option>
+            <option value="MVA">MVA</option>
+            <option value="ACA">ACA</option>
+            <option value="Final Expense">Final Expense</option>
+            <option value="Home">Home</option>
+            <option value="Auto Warranty ">Auto Warranty</option>
+            <option value="Medalert">Medalert</option>
           </select>
         </div>
 
@@ -1082,7 +1083,7 @@ const transferOptions = [
                   <EditableField
                     field="companyName"
                     value={selectedIntegration.companyName}
-                  
+
                   />
                 </div>
               </div>
@@ -1092,10 +1093,10 @@ const transferOptions = [
                   <h3>Campaign Configuration</h3>
                   <div className="form-row">
                     <EditableField
-  field="clientsdata_id"
-  value={selectedIntegration.clientsdata_id}
-  label="Client ID"
-/>
+                      field="clientsdata_id"
+                      value={selectedIntegration.clientsdata_id}
+                      label="Client ID"
+                    />
                     <EditableField
                       field="campaign"
                       value={selectedIntegration.campaign}
@@ -1124,11 +1125,11 @@ const transferOptions = [
                       label="Dialplan"
                     />
                     <EditableField
-  field="transferSettings"
-  value={selectedIntegration.transferSettings}
-  label="Transfer Settings"
-  options={transferOptions}
-/>
+                      field="transferSettings"
+                      value={selectedIntegration.transferSettings}
+                      label="Transfer Settings"
+                      options={transferOptions}
+                    />
                   </div>
                   <div className="form-row full">
                     <EditableArrayField

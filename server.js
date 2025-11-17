@@ -153,6 +153,19 @@ if (!validTransfers.includes(transferSettings)) {
     message: 'Invalid transfer settings. Valid options: quality, balanced, high-volume'
   });
 }
+if (!validCombinations[campaign]) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid campaign "${campaign}"`
+  });
+}
+
+if (!model || !validCombinations[campaign].includes(model)) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign].join(', ')}`
+  });
+}
 
     const basicTransfers = ['high-quality', 'balanced', 'broader'];
     const advancedTransfers = ['balanced-broad', 'balanced-qualified'];

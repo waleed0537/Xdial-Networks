@@ -255,6 +255,30 @@ const IntegrationForm = () => {
                 ))}
               </select>
             </div>
+            {formData.campaign && campaignConfig[formData.campaign] && (
+  <div className="form-group">
+    <label htmlFor="model">
+      Model Type <span className="required">*</span>
+    </label>
+    <select
+      id="model"
+      name="model"
+      value={formData.model}
+      onChange={handleChange}
+      required
+    >
+      <option value="">Select Model</option>
+      {campaignConfig[formData.campaign].map(model => (
+        <option key={model} value={model}>{model}</option>
+      ))}
+    </select>
+    <small className="form-hint">
+      {campaignConfig[formData.campaign].length === 1 
+        ? `Only ${campaignConfig[formData.campaign][0]} model is available for this campaign`
+        : 'Choose between Basic and Advanced models'}
+    </small>
+  </div>
+)}
 
             {formData.campaign && (
   <div className="form-group">
