@@ -126,64 +126,44 @@ app.post('/api/integration/submit', async (req, res) => {
       clientsdata_id  // Add this
     } = req.body;
 
-    const validCombinations = {
-  'Medicare': ['Advanced', 'Basic'],
-  'Auto Insurance': ['Advanced', 'Basic'],
-  'MVA': ['Basic'],
-  'ACA': ['Basic'],
-  'Final Expense': ['Advanced', 'Basic'],
-  'Home': ['Basic'],
-  'Auto Warranty': ['Advanced'],
-  'Medalert': ['Advanced']
-};
+  const validCombinations = {
+      'Medicare': ['Advanced', 'Basic'],
+      'Auto Insurance': ['Advanced', 'Basic'],
+      'MVA': ['Basic'],
+      'ACA': ['Basic'],
+      'Final Expense': ['Advanced', 'Basic'],
+      'Home': ['Basic'],
+      'Auto Warranty': ['Advanced'],
+      'Medalert': ['Advanced']
+    };
 
-if (!validCombinations[campaign]?.includes(model)) {
-  return res.status(400).json({
-    success: false,
-    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign]?.join(', ')}`
-  });
-}
-
-// All campaigns with Basic model use the 3 basic transfer settings
-const validTransfers = ['quality', 'balanced', 'high-volume', 'max-volume'];
-
-if (!validTransfers.includes(transferSettings)) {
-  return res.status(400).json({
-    success: false,
-    message: 'Invalid transfer settings. Valid options: quality, balanced, high-volume'
-  });
-}
-if (!validCombinations[campaign]) {
-  return res.status(400).json({
-    success: false,
-    message: `Invalid campaign "${campaign}"`
-  });
-}
-
-if (!model || !validCombinations[campaign].includes(model)) {
-  return res.status(400).json({
-    success: false,
-    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign].join(', ')}`
-  });
-}
-
-    const basicTransfers = ['high-quality', 'balanced', 'broader'];
-    const advancedTransfers = ['balanced-broad', 'balanced-qualified'];
-
-    if (model === 'Basic' && !basicTransfers.includes(transferSettings)) {
+    // Validate campaign exists
+    if (!validCombinations[campaign]) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid transfer settings for Basic model'
+        message: `Invalid campaign "${campaign}"`
       });
     }
 
-    if (model === 'Advanced' && !advancedTransfers.includes(transferSettings)) {
+    // Validate model is valid for campaign
+    if (!model || !validCombinations[campaign].includes(model)) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid transfer settings for Advanced model'
+        message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validCombinations[campaign].join(', ')}`
       });
     }
 
+    // Validate transfer settings - all campaigns now support all 4 transfer settings
+    const validTransfers = ['quality', 'balanced', 'high-volume', 'max-volume'];
+
+    if (!validTransfers.includes(transferSettings)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid transfer settings. Valid options: quality, balanced, high-volume, max-volume'
+      });
+    }
+
+    // Validate separate dialler requirements
     if (setupType === 'separate') {
       if (!closerIpValidation || !closerAdminLink || !closerUser || 
           !closerPassword || !closerCampaign || !closerIngroup) {
