@@ -172,27 +172,68 @@ const Onboarding = () => {
     }
   };
 
-  const handleDashboardLogin = async (item) => {
-    try {
-      if (!item.clientsdata_id) {
-        alert('Client ID not found');
-        return;
-      }
-
-      const response = await fetch(`${API_URL}/api/client/dashboard-login/${item.clientsdata_id}`);
-      const data = await response.json();
-
-      if (data.success && data.client) {
-        const dashboardUrl = `https://test.dashboard.xlite.xdialnetworks.com/login?client_id=${data.client.client_id}&password=${encodeURIComponent(data.client.password)}&auto_login=true`;
-        window.open(dashboardUrl, '_blank');
-      } else {
-        alert(data.message || 'Client not found in dashboard');
-      }
-    } catch (error) {
-      console.error('Error fetching dashboard credentials:', error);
-      alert('Failed to access dashboard');
+const handleDashboardLogin = async (item) => {
+  try {
+    if (!item.clientsdata_id) {
+      alert('Client ID not found');
+      return;
     }
-  };
+
+    // First, get the client credentials from our backend
+    const response = await fetch(`${API_URL}/api/client/dashboard-login/${item.clientsdata_id}`);
+    const data = await response.json();
+
+    if (!data.success || !data.client) {
+      alert(data.message || 'Client not found in dashboard');
+      return;
+    }
+
+    // Now authenticate with the dashboard API
+    const dashboardAuthResponse = await fetch('https://test.dashboard.xlite.xdialnetworks.com/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: data.client.client_id.toString(),
+        password: data.client.password
+      }),
+    });
+
+    const authData = await dashboardAuthResponse.json();
+
+    if (!dashboardAuthResponse.ok || !authData.success) {
+      alert(authData.error || 'Failed to authenticate with dashboard');
+      return;
+    }
+
+    // Store auth data temporarily with a timestamp-based key
+    const tempKey = `temp_auth_${Date.now()}`;
+    const authInfo = {
+      user: authData.user,
+      userType: authData.userType
+    };
+    localStorage.setItem(tempKey, JSON.stringify(authInfo));
+
+    // Open new window with dashboard URL and temp key
+    const newWindow = window.open(
+      `https://test.dashboard.xlite.xdialnetworks.com/dashboard?tempAuth=${tempKey}`, 
+      '_blank'
+    );
+
+    if (!newWindow) {
+      localStorage.removeItem(tempKey);
+      alert('Please allow popups to open client dashboard');
+      return;
+    }
+
+    console.log(`Successfully opened dashboard for client ${data.client.client_id}`);
+    
+  } catch (error) {
+    console.error('Error opening client dashboard:', error);
+    alert('Failed to open client dashboard');
+  }
+};
 
   const openModal = (item) => {
     setSelectedItem(item);
