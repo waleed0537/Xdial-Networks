@@ -5,6 +5,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
 
 // Import database and model
@@ -723,7 +724,65 @@ app.get('/api/clientsdata/all', async (req, res) => {
     });
   }
 });
+// Proxy Dashboard Login - Add this before the "Start Server" section
+app.post('/api/client/dashboard-auth/:clientsdata_id', async (req, res) => {
+  try {
+    const { clientsdata_id } = req.params;
+    
+    // Get client credentials from database
+    const [results] = await sequelize.query(
+      'SELECT client_id, password FROM clients WHERE client_id = :clientsdata_id',
+      {
+        replacements: { clientsdata_id: parseInt(clientsdata_id) },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
 
+    if (!results || !results.client_id) {
+      return res.status(404).json({
+        success: false,
+        message: 'Client not found in dashboard system'
+      });
+    }
+
+    // Authenticate with dashboard API from backend
+    const dashboardResponse = await fetch('https://test.dashboard.xlite.xdialnetworks.com/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: results.client_id.toString(),
+        password: results.password
+      }),
+    });
+
+    const authData = await dashboardResponse.json();
+
+    if (!dashboardResponse.ok || !authData.success) {
+      return res.status(401).json({
+        success: false,
+        message: authData.error || 'Failed to authenticate with dashboard'
+      });
+    }
+
+    res.json({
+      success: true,
+      authData: {
+        user: authData.user,
+        userType: authData.userType
+      }
+    });
+
+  } catch (error) {
+    console.error('Error authenticating with dashboard:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to authenticate with dashboard',
+      error: error.message
+    });
+  }
+});
 // ============================================================================
 // Start Server
 // ============================================================================

@@ -179,41 +179,24 @@ const handleDashboardLogin = async (item) => {
       return;
     }
 
-    // First, get the client credentials from our backend
-    const response = await fetch(`${API_URL}/api/client/dashboard-login/${item.clientsdata_id}`);
-    const data = await response.json();
-
-    if (!data.success || !data.client) {
-      alert(data.message || 'Client not found in dashboard');
-      return;
-    }
-
-    // Now authenticate with the dashboard API
-    const dashboardAuthResponse = await fetch('https://test.dashboard.xlite.xdialnetworks.com/api/auth/login', {
+    // Call our backend to authenticate with the dashboard
+    const response = await fetch(`${API_URL}/api/client/dashboard-auth/${item.clientsdata_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: data.client.client_id.toString(),
-        password: data.client.password
-      }),
+      }
     });
 
-    const authData = await dashboardAuthResponse.json();
+    const data = await response.json();
 
-    if (!dashboardAuthResponse.ok || !authData.success) {
-      alert(authData.error || 'Failed to authenticate with dashboard');
+    if (!data.success || !data.authData) {
+      alert(data.message || 'Failed to authenticate with dashboard');
       return;
     }
 
     // Store auth data temporarily with a timestamp-based key
     const tempKey = `temp_auth_${Date.now()}`;
-    const authInfo = {
-      user: authData.user,
-      userType: authData.userType
-    };
-    localStorage.setItem(tempKey, JSON.stringify(authInfo));
+    localStorage.setItem(tempKey, JSON.stringify(data.authData));
 
     // Open new window with dashboard URL and temp key
     const newWindow = window.open(
@@ -227,7 +210,7 @@ const handleDashboardLogin = async (item) => {
       return;
     }
 
-    console.log(`Successfully opened dashboard for client ${data.client.client_id}`);
+    console.log(`Successfully opened dashboard for client ${item.clientsdata_id}`);
     
   } catch (error) {
     console.error('Error opening client dashboard:', error);
