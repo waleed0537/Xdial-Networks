@@ -53,12 +53,15 @@ const AdminDashboard = () => {
 
   // Campaign configuration
    const campaignConfig = {
-    'Medicare': ['Basic', 'Advanced'],
-    'Final Expense': ['Basic', 'Advanced'],
-    'MVA': ['Basic'],
-    'Auto Insurance': ['Advanced'],
-    'Auto Warranty': ['Advanced']
-  };
+  'Medicare': ['Basic', 'Advanced'],
+  'Final Expense': ['Basic', 'Advanced'],
+  'MVA': ['Basic'],
+  'Auto Insurance': ['Basic', 'Advanced'],
+  'Auto Warranty': ['Advanced'],
+  'ACA': ['Basic'],
+  'Home': ['Basic'],
+  'Medalert': ['Advanced']
+};
 
   const basicTransferOptions = [
     { value: 'high-quality', label: 'High-Quality Transfers' },
@@ -948,18 +951,20 @@ const AdminDashboard = () => {
           </div>
 
           <select
-            className="campaign-filter"
-            value={campaignFilter}
-            onChange={(e) => setCampaignFilter(e.target.value)}
-          >
-        <option value="all">All Campaigns</option>
-            <option value="Medicare">Medicare</option>
-            <option value="Final Expense">Final Expense</option>
-            <option value="MVA">MVA</option>
-            <option value="Auto Insurance">Auto Insurance</option>
-            <option value="Auto Warranty">Auto Warranty</option>
-
-          </select>
+  className="campaign-filter"
+  value={campaignFilter}
+  onChange={(e) => setCampaignFilter(e.target.value)}
+>
+  <option value="all">All Campaigns</option>
+  <option value="Medicare">Medicare</option>
+  <option value="Final Expense">Final Expense</option>
+  <option value="MVA">MVA</option>
+  <option value="Auto Insurance">Auto Insurance</option>
+  <option value="Auto Warranty">Auto Warranty</option>
+  <option value="ACA">ACA</option>
+  <option value="Home">Home</option>
+  <option value="Medalert">Medalert</option>
+</select>
         </div>
 
         <button className="refresh-btn" onClick={fetchIntegrations}>

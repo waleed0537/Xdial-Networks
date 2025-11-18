@@ -128,12 +128,15 @@ app.post('/api/integration/submit', async (req, res) => {
 
   
     const validCombinations = {
-      'Medicare': ['Basic', 'Advanced'],
-      'Final Expense': ['Basic', 'Advanced'],
-      'MVA': ['Basic'],
-      'Auto Insurance': ['Advanced'],
-      'Auto Warranty': ['Advanced']
-    };
+  'Medicare': ['Basic', 'Advanced'],
+  'Final Expense': ['Basic', 'Advanced'],
+  'MVA': ['Basic'],
+  'Auto Insurance': ['Basic', 'Advanced'],
+  'Auto Warranty': ['Advanced'],
+  'ACA': ['Basic'],
+  'Home': ['Basic'],
+  'Medalert': ['Advanced']
+};
 const validModels = validCombinations[campaign];
 
 // Validate campaign exists FIRST
