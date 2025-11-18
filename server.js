@@ -662,7 +662,46 @@ app.use((err, req, res, next) => {
     error: err.message 
   });
 });
+// Add this endpoint before the "Start Server" section
 
+// Get Client Dashboard Credentials
+app.get('/api/client/dashboard-login/:clientsdata_id', async (req, res) => {
+  try {
+    const { clientsdata_id } = req.params;
+    
+    // Query the clients table using raw SQL since we don't have a Sequelize model for it
+    const [results] = await sequelize.query(
+      'SELECT client_id, password FROM clients WHERE client_id = :clientsdata_id',
+      {
+        replacements: { clientsdata_id: parseInt(clientsdata_id) },
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (!results || !results.client_id) {
+      return res.json({
+        success: false,
+        message: 'Client not found in dashboard system'
+      });
+    }
+
+    res.json({
+      success: true,
+      client: {
+        client_id: results.client_id,
+        password: results.password
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching dashboard credentials:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch dashboard credentials',
+      error: error.message
+    });
+  }
+});
 
 app.get('/api/clientsdata/all', async (req, res) => {
   try {

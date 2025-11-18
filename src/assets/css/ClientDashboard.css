@@ -1196,3 +1196,44 @@
   .list-row { grid-template-columns: 1fr 1fr; }
   .list-row .detail-row { display: none; }
 }
+/* Dashboard Button Styling */
+.dashboard-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.dashboard-btn:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.dashboard-btn:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.dashboard-btn i {
+  font-size: 1rem;
+}
+
+/* Update list-row grid to include dashboard column */
+.list-table .list-row.header,
+.list-table .list-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 1.2fr 1.4fr 1.4fr 160px 160px 80px;
+  column-gap: 28px;
+  padding: 18px 22px;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}

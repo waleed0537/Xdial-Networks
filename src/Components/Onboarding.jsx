@@ -2,8 +2,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/ClientDashboard.css';
 
-
-// Environment detection
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5010';
@@ -12,7 +10,7 @@ const getApiUrl = () => {
 };
 
 const API_URL = getApiUrl();
-// Add pulse animation style
+
 const pulseStyle = document.createElement('style');
 pulseStyle.innerHTML = `
   @keyframes pulse {
@@ -30,16 +28,19 @@ if (!document.head.querySelector('style[data-pulse-animation]')) {
   pulseStyle.setAttribute('data-pulse-animation', 'true');
   document.head.appendChild(pulseStyle);
 }
+
 const Onboarding = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState([]); // each item is an integration/campaign
+  const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
-  // Filters
   const [search, setSearch] = useState('');
   const [campaignFilter, setCampaignFilter] = useState('');
   const [modelFilter, setModelFilter] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showPrimaryPassword, setShowPrimaryPassword] = useState(false);
+  const [showCloserPassword, setShowCloserPassword] = useState(false);
 
   useEffect(() => {
     const isClient = localStorage.getItem('isClientAuthenticated');
@@ -55,7 +56,6 @@ const Onboarding = () => {
   const fetchIntegrations = async () => {
     try {
       setIsLoading(true);
-      // fetch a large page and filter client-side to allow flexible filters
       const response = await fetch(`${API_URL}/api/integration/all?limit=1000`);
       const data = await response.json();
 
@@ -86,7 +86,6 @@ const Onboarding = () => {
 
   const filtered = useMemo(() => {
     return items.filter(i => {
-      // Only show completed campaigns
       if (i.status !== 'completed') return false;
       if (campaignFilter && i.campaign !== campaignFilter) return false;
       if (modelFilter && i.model !== modelFilter) return false;
@@ -112,7 +111,6 @@ const Onboarding = () => {
     });
   };
 
-  // Calculate expiration status
   const getExpirationStatus = (endDate) => {
     if (!endDate) return { status: 'no-date', daysLeft: null, text: 'Not Set', className: '' };
 
@@ -163,24 +161,38 @@ const Onboarding = () => {
       const data = await res.json();
 
       if (data.success) {
-        // Update state with the server response to ensure consistency
         setItems(prev => prev.map(it => it.id === id ? data.data : it));
       } else {
         console.error('Failed to update access:', data.message || data);
-        // Fetch fresh data to ensure UI matches server state
         fetchIntegrations();
       }
     } catch (err) {
       console.error('Error updating access:', err);
-      // Fetch fresh data to ensure UI matches server state
       fetchIntegrations();
     }
   };
 
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [showPrimaryPassword, setShowPrimaryPassword] = useState(false);
-  const [showCloserPassword, setShowCloserPassword] = useState(false);
+  const handleDashboardLogin = async (item) => {
+    try {
+      if (!item.clientsdata_id) {
+        alert('Client ID not found');
+        return;
+      }
+
+      const response = await fetch(`${API_URL}/api/client/dashboard-login/${item.clientsdata_id}`);
+      const data = await response.json();
+
+      if (data.success && data.client) {
+        const dashboardUrl = `https://test.dashboard.xlite.xdialnetworks.com/login?client_id=${data.client.client_id}&password=${encodeURIComponent(data.client.password)}&auto_login=true`;
+        window.open(dashboardUrl, '_blank');
+      } else {
+        alert(data.message || 'Client not found in dashboard');
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard credentials:', error);
+      alert('Failed to access dashboard');
+    }
+  };
 
   const openModal = (item) => {
     setSelectedItem(item);
@@ -198,7 +210,6 @@ const Onboarding = () => {
     navigate('/client-onboarding');
   };
 
-  // Count campaigns by expiration status for notifications
   const expirationCounts = useMemo(() => {
     const counts = {
       expired: 0,
@@ -254,7 +265,6 @@ const Onboarding = () => {
             </div>
           )}
 
-          {/* Filters */}
           <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
             <input
               type="search"
@@ -275,7 +285,6 @@ const Onboarding = () => {
             </select>
           </div>
 
-          {/* List header */}
           <div className="list-table" style={{ width: '100%' }}>
             <div className="list-row header">
               <strong>Company</strong>
@@ -285,6 +294,7 @@ const Onboarding = () => {
               <strong>Server IPs</strong>
               <strong>Status</strong>
               <strong>Expiration</strong>
+              <strong>Dashboard</strong>
             </div>
 
             {filtered.map(item => {
@@ -303,12 +313,10 @@ const Onboarding = () => {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-
                     <span>{item.campaign || '—'}</span>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-
                     <span>{item.model || '—'}</span>
                   </div>
 
@@ -367,12 +375,21 @@ const Onboarding = () => {
                     </span>
                   </div>
 
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
+                    <button 
+                      className="dashboard-btn"
+                      onClick={() => handleDashboardLogin(item)}
+                      disabled={!item.clientsdata_id}
+                      title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
+                    >
+                      <i className="bi bi-box-arrow-up-right"></i>
+                    </button>
+                  </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Details Modal */}
           {showModal && selectedItem && (
             <div className="modal-overlay" onClick={closeModal}>
               <div className="modal-content onboarding-modal" onClick={(e) => e.stopPropagation()}>
@@ -403,16 +420,14 @@ const Onboarding = () => {
                 </div>
 
                 <div className="modal-body">
-                  {/* Campaign Information - Heading Outside Box */}
                   <h3 className="section-title"><i className="bi bi-briefcase-fill"></i> Campaign Information</h3>
                   <div className="detail-section" style={{ gridColumn: '1 / -1' }}>
                     <div className="detail-grid">
                       <div className="detail-item">
-  <label>Client ID</label>
-  <p>{selectedItem.clientsdata_id || '—'}</p>
-</div>
+                        <label>Client ID</label>
+                        <p>{selectedItem.clientsdata_id || '—'}</p>
+                      </div>
                       <div className="detail-item">
-                        
                         <label>Campaign</label>
                         <p>{selectedItem.campaign || '—'}</p>
                       </div>
@@ -440,12 +455,9 @@ const Onboarding = () => {
                         <label>End Date</label>
                         <p>{formatDate(selectedItem.endDate)}</p>
                       </div>
-                      
-                    
                     </div>
                   </div>
 
-                  {/* Admin / Validation - Heading Outside Box */}
                   <h3 className="section-title"><i className="bi bi-shield-lock-fill"></i> Admin / Validation</h3>
                   <div className="detail-section admin-validation-section" style={{ gridColumn: '1 / -1' }}>
                     <div className="detail-grid">
@@ -481,7 +493,6 @@ const Onboarding = () => {
                     </div>
                   </div>
 
-                  {/* Closer fields (if present) - Heading Outside Box */}
                   {selectedItem.setupType === 'separate' && (selectedItem.closerAdminLink || selectedItem.closerIpValidation || selectedItem.closerUser) && (
                     <>
                       <h3 className="section-title"><i className="bi bi-people-fill"></i> Closer Dialer</h3>
@@ -528,7 +539,6 @@ const Onboarding = () => {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>
