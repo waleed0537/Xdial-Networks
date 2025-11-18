@@ -533,7 +533,7 @@ const IntegrationForm = () => {
                 value={formData.numberOfBots}
                 onChange={handleChange}
                 placeholder="e.g., 10"
-                min="1"
+                min="0"
                 max="1000"
                 required
               />
