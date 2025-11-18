@@ -52,22 +52,14 @@ const AdminDashboard = () => {
   });
 
   // Campaign configuration
-  const campaignConfig = {
-    'Medicare': ['Advanced', 'Basic'],
-    'Auto Insurance': ['Advanced', 'Basic'],
+   const campaignConfig = {
+    'Medicare': ['Basic', 'Advanced'],
+    'Final Expense': ['Basic', 'Advanced'],
     'MVA': ['Basic'],
-    'ACA': ['Basic'],
-    'Final Expense': ['Advanced', 'Basic'],
-    'Home': ['Basic'],
-    'Auto Warranty': ['Advanced'],
-    'Medalert': ['Advanced']
+    'Auto Insurance': ['Advanced'],
+    'Auto Warranty': ['Advanced']
   };
-  const transferOptions = [
-    { value: 'quality', label: 'Quality' },
-    { value: 'balanced', label: 'Balanced' },
-    { value: 'high-volume', label: 'High Volume' },
-    { value: 'max-volume', label: 'Max Volume' }
-  ];
+
   const basicTransferOptions = [
     { value: 'high-quality', label: 'High-Quality Transfers' },
     { value: 'balanced', label: 'Balanced Transfers' },
@@ -102,13 +94,15 @@ const AdminDashboard = () => {
       filtered = filtered.filter(item => item.campaign === campaignFilter);
     }
 
-    if (searchTerm) {
-      filtered = filtered.filter(item =>
-        item.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.campaign?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+      if (searchTerm) {
+  filtered = filtered.filter(item =>
+    item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+}
 
     setFilteredIntegrations(filtered);
   }, [statusFilter, campaignFilter, searchTerm, integrations]);
@@ -958,15 +952,13 @@ const AdminDashboard = () => {
             value={campaignFilter}
             onChange={(e) => setCampaignFilter(e.target.value)}
           >
-            <option value="all">All Campaigns</option>
+        <option value="all">All Campaigns</option>
             <option value="Medicare">Medicare</option>
-            <option value="Auto Insurance">Auto Insurance</option>
-            <option value="MVA">MVA</option>
-            <option value="ACA">ACA</option>
             <option value="Final Expense">Final Expense</option>
-            <option value="Home">Home</option>
-            <option value="Auto Warranty ">Auto Warranty</option>
-            <option value="Medalert">Medalert</option>
+            <option value="MVA">MVA</option>
+            <option value="Auto Insurance">Auto Insurance</option>
+            <option value="Auto Warranty">Auto Warranty</option>
+
           </select>
         </div>
 
@@ -1128,7 +1120,11 @@ const AdminDashboard = () => {
                       field="transferSettings"
                       value={selectedIntegration.transferSettings}
                       label="Transfer Settings"
-                      options={transferOptions}
+                      options={
+                        selectedIntegration.model === 'Basic'
+                          ? basicTransferOptions
+                          : advancedTransferOptions
+                      }
                     />
                   </div>
                   <div className="form-row full">

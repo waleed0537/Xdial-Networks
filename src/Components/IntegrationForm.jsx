@@ -21,20 +21,28 @@ const IntegrationForm = () => {
 
   // Campaign configuration
   const campaignConfig = {
-    'Medicare': ['Advanced', 'Basic'],
-    'Auto Insurance': ['Advanced', 'Basic'],
+    'Medicare': ['Basic', 'Advanced'],
+    'Final Expense': ['Basic', 'Advanced'],
     'MVA': ['Basic'],
-    'ACA': ['Basic'],
-    'Final Expense': ['Advanced', 'Basic'],
-    'Home': ['Basic'],
-    'Auto Warranty': ['Advanced'],
-    'Medalert': ['Advanced']
+    'Auto Insurance': ['Advanced'],
+    'Auto Warranty': ['Advanced']
   };
+
+  const basicTransferOptions = [
+    { value: 'high-quality', label: 'High-Quality Transfers', description: 'Highly Qualified Leads, Lower Volume' },
+    { value: 'balanced', label: 'Balanced Transfers', description: 'Moderate Qualification, Moderate Volume' },
+    { value: 'broader', label: 'Broader Transfers', description: 'Higher Volume, Less Qualification' }
+  ];
+
+  const advancedTransferOptions = [
+    { value: 'balanced-broad', label: 'Balanced Broad', description: 'Optimized for Volume with Quality' },
+    { value: 'balanced-qualified', label: 'Balanced Qualified', description: 'Optimized for Quality with Volume' }
+  ];
 
   const [formData, setFormData] = useState({
     // Campaign Configuration
     campaign: '',
-    model: '', // This will be auto-set based on campaign
+    model: '', // This will now be auto-set based on transferSettings
     numberOfBots: '',
     transferSettings: 'balanced', // Set default to balanced
 
@@ -60,9 +68,13 @@ const IntegrationForm = () => {
     // Contact Info
     companyName: '',
 
+
     // Custom Requirements
     customRequirements: ''
   });
+
+  const [availableModels, setAvailableModels] = useState([]);
+  const [availableTransfers, setAvailableTransfers] = useState([]);
 
   const whitelistIPs = [
     '5.78.93.62',
@@ -72,25 +84,20 @@ const IntegrationForm = () => {
     '178.156.174.132'
   ];
 
-  // Auto-set model and reset transferSettings when campaign changes
-  // Auto-set model when campaign changes
-useEffect(() => {
-  if (formData.campaign) {
-    const availableModels = campaignConfig[formData.campaign];
-    let selectedModel = '';
-    
-    if (availableModels && availableModels.length > 0) {
-      // Select the first available model
-      selectedModel = availableModels[0];
+  // Auto-set model based on transfer settings
+  useEffect(() => {
+    if (formData.transferSettings) {
+      const model = formData.transferSettings === 'quality' ? 'Advanced' : 'Basic';
+      setFormData(prev => ({ ...prev, model }));
     }
-    
-    setFormData(prev => ({ 
-      ...prev, 
-      model: selectedModel,
-      transferSettings: 'balanced' 
-    }));
-  }
-}, [formData.campaign]);
+  }, [formData.transferSettings]);
+
+  // Reset transferSettings when campaign changes
+  useEffect(() => {
+    if (formData.campaign) {
+      setFormData(prev => ({ ...prev, transferSettings: 'balanced', model: 'Basic' }));
+    }
+  }, [formData.campaign]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -149,7 +156,7 @@ useEffect(() => {
             campaign: '',
             model: '',
             numberOfBots: '',
-            transferSettings: 'balanced',
+            transferSettings: '',
             setupType: 'same',
             primaryIpValidation: '',
             primaryAdminLink: '',
@@ -166,6 +173,7 @@ useEffect(() => {
             closerIngroup: '',
             closerPort: '5060',
             companyName: '',
+
             customRequirements: ''
           });
           setSubmitMessage({ type: '', text: '' });
@@ -186,19 +194,6 @@ useEffect(() => {
       setIsSubmitting(false);
     }
   };
-
-  // Get the model info for display
-  const getModelInfo = () => {
-    if (!formData.campaign) return null;
-    const availableModels = campaignConfig[formData.campaign];
-    return {
-      hasBasic: availableModels.includes('Basic'),
-      hasAdvanced: availableModels.includes('Advanced'),
-      selectedModel: formData.model
-    };
-  };
-
-  const modelInfo = getModelInfo();
 
   return (
     <div className="integration-form-container">
@@ -234,8 +229,9 @@ useEffect(() => {
                 />
               </div>
             </div>
-          </section>
 
+
+          </section>
           {/* Campaign Configuration Section */}
           <section className="form-section">
             <div className="section-header">
@@ -260,28 +256,6 @@ useEffect(() => {
                 ))}
               </select>
             </div>
-
-            {/* Model Information Display */}
-            {modelInfo && formData.campaign && (
-              <div style={{ 
-                marginBottom: '20px', 
-                padding: '16px', 
-                backgroundColor: modelInfo.hasBasic && modelInfo.hasAdvanced ? '#dbeafe' : '#fef3c7',
-                borderLeft: modelInfo.hasBasic && modelInfo.hasAdvanced ? '4px solid #3b82f6' : '4px solid #f59e0b',
-                borderRadius: '6px'
-              }}>
-                <p style={{ margin: 0, fontSize: '0.9rem', color: '#1f2937', fontWeight: '500' }}>
-                  <i className="bi bi-info-circle-fill" style={{ marginRight: '8px' }}></i>
-                  {modelInfo.hasBasic && modelInfo.hasAdvanced ? (
-                    <span><strong>Both Models Available:</strong> This campaign supports both Basic and Advanced models. Your selection will be determined by the transfer quality settings below.</span>
-                  ) : modelInfo.hasBasic ? (
-                    <span><strong>Basic Model Selected:</strong> This campaign only supports the Basic model with all transfer quality settings.</span>
-                  ) : (
-                    <span><strong>Advanced Model Selected:</strong> This campaign only supports the Advanced model.</span>
-                  )}
-                </p>
-              </div>
-            )}
 
             {formData.campaign && (
               <div className="form-group">
@@ -317,144 +291,143 @@ useEffect(() => {
                 </div>
 
                 {formData.transferSettings && (
-                  <div className="transfer-info-box">
-                    {formData.transferSettings === 'quality' && (
-                      <>
-                        <div className="info-header">
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
-                            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Quality</span>
-                          </div>
-                        </div>
-                        <p style={{ marginTop: '-30px' }}>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
-                        <div className="metrics-grid">
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle quality" strokeDasharray="90, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">90</div>
-                            </div>
-                            <span className="metric-label">Quality</span>
-                          </div>
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle volume" strokeDasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">40</div>
-                            </div>
-                            <span className="metric-label">Volume</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {formData.transferSettings === 'balanced' && (
-                      <>
-                        <div className="info-header">
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
-                            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Balanced (Recommended)</span>
-                          </div>
-                        </div>
-                        <p style={{ marginTop: '-30px' }}>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
-                        <div className="metrics-grid">
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle quality" strokeDasharray="50, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">50</div>
-                            </div>
-                            <span className="metric-label">Quality</span>
-                          </div>
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle volume" strokeDasharray="50, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">50</div>
-                            </div>
-                            <span className="metric-label">Volume</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {formData.transferSettings === 'high-volume' && (
-                      <>
-                        <div className="info-header">
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
-                            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>High Volume</span>
-                          </div>
-                        </div>
-                        <p style={{ marginTop: '-30px' }}>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
-                        <div className="metrics-grid">
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle quality" strokeDasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">40</div>
-                            </div>
-                            <span className="metric-label">Quality</span>
-                          </div>
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle volume" strokeDasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">80</div>
-                            </div>
-                            <span className="metric-label">Volume</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {formData.transferSettings === 'max-volume' && (
-                      <>
-                        <div className="info-header">
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
-                            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Max Volume</span>
-                          </div>
-                        </div>
-                        <p style={{ marginTop: '-30px' }}>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
-                        <div className="metrics-grid">
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle quality" strokeDasharray="30, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">30</div>
-                            </div>
-                            <span className="metric-label">Quality</span>
-                          </div>
-                          <div className="metric-card">
-                            <div className="metric-circle">
-                              <svg viewBox="0 0 36 36" className="circular-chart">
-                                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path className="circle volume" strokeDasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                              </svg>
-                              <div className="metric-number">100</div>
-                            </div>
-                            <span className="metric-label">Volume</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+  <div className="transfer-info-box">
+    {formData.transferSettings === 'quality' && (
+      <>
+        <div className="info-header">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Advanced Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Quality</span>
+          </div>
+        </div>
+        <p style={{ marginTop: '-30px' }}>This setting focuses on prioritizing higher-quality transfers by connecting only the most relevant and well-qualified calls. It's more selective, so the overall number of transfers is typically lower, with a stronger emphasis on quality.</p>
+        <div className="metrics-grid">
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle quality" strokeDasharray="90, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">90</div>
+            </div>
+            <span className="metric-label">Quality</span>
+          </div>
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle volume" strokeDasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">40</div>
+            </div>
+            <span className="metric-label">Volume</span>
+          </div>
+        </div>
+      </>
+    )}
+    {formData.transferSettings === 'balanced' && (
+      <>
+        <div className="info-header">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Balanced (Recommended)</span>
+          </div>
+        </div>
+        <p style={{ marginTop: '-30px' }}>This setting offers an even mix of quality and volume, helping maintain a steady flow of transfers without missing potential opportunities. You can expect a healthy balance between well-qualified, mixed, and general calls.</p>
+        <div className="metrics-grid">
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle quality" strokeDasharray="50, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">50</div>
+            </div>
+            <span className="metric-label">Quality</span>
+          </div>
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle volume" strokeDasharray="50, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">50</div>
+            </div>
+            <span className="metric-label">Volume</span>
+          </div>
+        </div>
+      </>
+    )}
+    {formData.transferSettings === 'high-volume' && (
+      <>
+        <div className="info-header">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>High Volume</span>
+          </div>
+        </div>
+        <p style={{ marginTop: '-30px' }}>This setting prioritizes higher transfer volume, delivering a medium to high number of transfers. While the overall volume is higher, the mix of call quality may vary, including well-qualified, mixed, and general calls, providing more opportunities at scale.</p>
+        <div className="metrics-grid">
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle quality" strokeDasharray="40, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">40</div>
+            </div>
+            <span className="metric-label">Quality</span>
+          </div>
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle volume" strokeDasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">80</div>
+            </div>
+            <span className="metric-label">Volume</span>
+          </div>
+        </div>
+      </>
+    )}
+    {formData.transferSettings === 'max-volume' && (
+      <>
+        <div className="info-header">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+            <div className="model-tag" style={{ alignSelf: 'flex-start' }}>Basic Model</div>
+            <span className="badge" style={{ alignSelf: 'center', marginTop: '12px', background: 'transparent', color: '#374151', border: 'none' }}>Max Volume</span>
+          </div>
+        </div>
+        <p style={{ marginTop: '-30px' }}>This setting focuses on achieving the max number of transfers possible. While it maximizes volume, it also leads to wasted resources and time due to the higher number of low-quality connections.</p>
+        <div className="metrics-grid">
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle quality" strokeDasharray="30, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">30</div>
+            </div>
+            <span className="metric-label">Quality</span>
+          </div>
+          <div className="metric-card">
+            <div className="metric-circle">
+              <svg viewBox="0 0 36 36" className="circular-chart">
+                <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path className="circle volume" strokeDasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <div className="metric-number">100</div>
+            </div>
+            <span className="metric-label">Volume</span>
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+)}
               </div>
             )}
-
             <div className="form-group">
               <label htmlFor="numberOfBots">
                 Number of Remote Agents <span className="required">*</span>
@@ -615,10 +588,11 @@ useEffect(() => {
                   type="text"
                   id="primaryPort"
                   name="primaryPort"
-                  value={formData.primaryPort}
+                  // value={formData.primaryPort}
                   onChange={handleChange}
                   placeholder="e.g., 7788"
                 />
+                {/* <small className="form-hint">Leave default if using port 5060</small> */}
               </div>
             </div>
 
@@ -734,14 +708,19 @@ useEffect(() => {
                     type="text"
                     id="closerPort"
                     name="closerPort"
-                    value={formData.closerPort}
+                    // value={formData.closerPort}
+
                     onChange={handleChange}
-                    placeholder="e.g., 7788"
+                    placeholder=" e.g., 7788"
                   />
+                  {/* <small className="form-hint">Leave default if using port 5060</small> */}
                 </div>
               </div>
             )}
           </section>
+
+          {/* Contact Information Section */}
+
 
           {/* Custom Requirements Section */}
           <section className="form-section">
@@ -761,6 +740,7 @@ useEffect(() => {
                 onChange={handleChange}
                 rows="6"
               />
+
             </div>
           </section>
 

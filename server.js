@@ -126,16 +126,14 @@ app.post('/api/integration/submit', async (req, res) => {
       clientsdata_id  // Add this
     } = req.body;
 
-  const validCombinations = {
-  'Medicare': ['Advanced', 'Basic'],
-  'Auto Insurance': ['Advanced', 'Basic'],
-  'MVA': ['Basic'],
-  'ACA': ['Basic'],
-  'Final Expense': ['Advanced', 'Basic'],
-  'Home': ['Basic'],
-  'Auto Warranty': ['Advanced'],
-  'Medalert': ['Advanced']
-};
+  
+    const validCombinations = {
+      'Medicare': ['Basic', 'Advanced'],
+      'Final Expense': ['Basic', 'Advanced'],
+      'MVA': ['Basic'],
+      'Auto Insurance': ['Advanced'],
+      'Auto Warranty': ['Advanced']
+    };
 const validModels = validCombinations[campaign];
 
 // Validate campaign exists FIRST
@@ -155,13 +153,7 @@ if (!model || !validModels || !validModels.includes(model)) {
 }
 
 // Validate transfer settings
-const validTransfers = ['quality', 'balanced', 'high-volume', 'max-volume'];
-if (!validTransfers.includes(transferSettings)) {
-  return res.status(400).json({
-    success: false,
-    message: 'Invalid transfer settings'
-  });
-}
+
 
 // Validate separate dialler if needed
 if (setupType === 'separate') {
