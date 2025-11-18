@@ -1,6 +1,6 @@
 const sequelize = require('../database');
-const ClientData = require('./Client.cjs');
-const Integration = require('./integration.cjs');
+const ClientData = require('./Client');
+const Integration = require('./integration');
 
 module.exports = {
   sequelize,
