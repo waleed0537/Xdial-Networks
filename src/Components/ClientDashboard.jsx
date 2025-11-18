@@ -183,7 +183,7 @@ const ClientDashboard = () => {
                     <div className="campaign-details">
                       <div className="detail-row">
                         <i className="bi bi-people-fill"></i>
-                        <span>{campaign.numberOfBots} Remote Agents</span>
+                        <span>{campaign.numberOfBots+1} Remote Agents</span>
                       </div>
                       <div className="detail-row">
                         <i className="bi bi-calendar3"></i>
