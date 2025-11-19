@@ -41,17 +41,17 @@ const Onboarding = () => {
   const [showModal, setShowModal] = useState(false);
   const [showPrimaryPassword, setShowPrimaryPassword] = useState(false);
   const [showCloserPassword, setShowCloserPassword] = useState(false);
-const [metrics, setMetrics] = useState({
-  totalClients: 0,
-  activeClients: 0,
-  totalBots: 0,
-  activeBots: 0,
-  totalTestings: 0,
-  ongoingTestings: 0,
-  testingSuccess: 0,
-  testingFails: 0,
-  expiringSoon: 0
-});
+  const [metrics, setMetrics] = useState({
+    totalClients: 0,
+    activeClients: 0,
+    totalBots: 0,
+    activeBots: 0,
+    totalTestings: 0,
+    ongoingTestings: 0,
+    testingSuccess: 0,
+    testingFails: 0,
+    expiringSoon: 0
+  });
   useEffect(() => {
     const isClient = localStorage.getItem('isClientAuthenticated');
     const isAdmin = localStorage.getItem('isAdminAuthenticated');
@@ -62,47 +62,47 @@ const [metrics, setMetrics] = useState({
       fetchIntegrations();
     }
   }, [navigate]);
-  const calculateMetrics = (data) => {
-  const completedItems = data.filter(item => item.status === 'completed');
+  // REPLACE the calculateMetrics function:
+const calculateMetrics = (data) => {
+  const onboardedItems = data.filter(item => item.status === 'onboarded');
   
   const uniqueClientIds = new Set(
-    completedItems
+    onboardedItems
       .filter(item => item.clientsdata_id)
       .map(item => item.clientsdata_id)
   );
   
   const activeClientIds = new Set(
-    completedItems
+    onboardedItems
       .filter(item => item.clientsdata_id && item.clientAccessEnabled)
       .map(item => item.clientsdata_id)
   );
   
-  const totalBots = completedItems.reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
-  const activeBots = completedItems
+  const totalBots = onboardedItems.reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
+  const activeBots = onboardedItems
     .filter(item => item.clientAccessEnabled)
     .reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
   
+  // Count testing phase items (status = 'testing')
   const totalTestings = data.filter(item => 
-    item.testing === 'completed' || item.testing === 'failed'
+    item.status === 'testing' || item.status === 'testing-failed'
   ).length;
   
   const ongoingTestings = data.filter(item => 
-    item.testing === 'in-progress'
+    item.status === 'testing'
   ).length;
   
-  const testingSuccess = data.filter(item => 
-    item.testing === 'completed'
-  ).length;
+  const testingSuccess = onboardedItems.length; // All onboarded items completed testing
   
   const testingFails = data.filter(item => 
-    item.testing === 'failed'
+    item.status === 'testing-failed'
   ).length;
   
   // Campaigns expiring in next 7 days
   const sevenDaysFromNow = new Date();
   sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
   
-  const expiringSoon = completedItems.filter(item => {
+  const expiringSoon = onboardedItems.filter(item => {
     if (!item.endDate) return false;
     const endDate = new Date(item.endDate);
     const now = new Date();
@@ -123,24 +123,24 @@ const [metrics, setMetrics] = useState({
 };
 
   const fetchIntegrations = async () => {
-  try {
-    setIsLoading(true);
-    const response = await fetch(`${API_URL}/api/integration/all?limit=1000`);
-    const data = await response.json();
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/api/integration/all?limit=1000`);
+      const data = await response.json();
 
-    if (data.success) {
-      setItems(data.data || []);
-      calculateMetrics(data.data || []);
-    } else {
-      setError('Failed to fetch integrations');
+      if (data.success) {
+        setItems(data.data || []);
+        calculateMetrics(data.data || []);
+      } else {
+        setError('Failed to fetch integrations');
+      }
+    } catch (err) {
+      console.error('Error fetching integrations:', err);
+      setError('Failed to connect to server');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err) {
-    console.error('Error fetching integrations:', err);
-    setError('Failed to connect to server');
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const uniqueCampaigns = useMemo(() => {
     const s = new Set();
@@ -154,22 +154,31 @@ const [metrics, setMetrics] = useState({
     return Array.from(s);
   }, [items]);
 
+  // REPLACE the filtered useMemo:
   const filtered = useMemo(() => {
-    return items.filter(i => {
-      if (i.status !== 'completed') return false;
-      if (campaignFilter && i.campaign !== campaignFilter) return false;
-      if (modelFilter && i.model !== modelFilter) return false;
-      if (search) {
-        const q = search.toLowerCase();
-        const company = (i.companyName || '').toLowerCase();
-        const campaign = (i.campaign || '').toLowerCase();
-        const model = (i.model || '').toLowerCase();
-        const clientId = (i.clientsdata_id || '').toString().toLowerCase();
+    return items
+      .filter(i => {
+        // Show only onboarded items
+        if (i.status !== 'onboarded') return false;
+        if (campaignFilter && i.campaign !== campaignFilter) return false;
+        if (modelFilter && i.model !== modelFilter) return false;
+        if (search) {
+          const q = search.toLowerCase();
+          const company = (i.companyName || '').toLowerCase();
+          const campaign = (i.campaign || '').toLowerCase();
+          const model = (i.model || '').toLowerCase();
+          const clientId = (i.clientsdata_id || '').toString().toLowerCase();
 
-        if (!company.includes(q) && !campaign.includes(q) && !model.includes(q) && !clientId.includes(q)) return false;
-      }
-      return true;
-    });
+          if (!company.includes(q) && !campaign.includes(q) && !model.includes(q) && !clientId.includes(q)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        // Sort alphabetically by company name
+        const nameA = (a.companyName || '').toLowerCase();
+        const nameB = (b.companyName || '').toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
   }, [items, search, campaignFilter, modelFilter]);
 
   const formatDate = (dateString) => {
@@ -231,10 +240,10 @@ const [metrics, setMetrics] = useState({
       const data = await res.json();
 
       if (data.success) {
-  const updatedItems = prev.map(it => it.id === id ? data.data : it);
-  setItems(updatedItems);
-  calculateMetrics(updatedItems);
-} else {
+        const updatedItems = prev.map(it => it.id === id ? data.data : it);
+        setItems(updatedItems);
+        calculateMetrics(updatedItems);
+      } else {
         console.error('Failed to update access:', data.message || data);
         fetchIntegrations();
       }
@@ -244,51 +253,51 @@ const [metrics, setMetrics] = useState({
     }
   };
 
-const handleDashboardLogin = async (item) => {
-  try {
-    if (!item.clientsdata_id) {
-      alert('Client ID not found');
-      return;
-    }
-
-    // Call our backend to authenticate with the dashboard
-    const response = await fetch(`${API_URL}/api/client/dashboard-auth/${item.clientsdata_id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const handleDashboardLogin = async (item) => {
+    try {
+      if (!item.clientsdata_id) {
+        alert('Client ID not found');
+        return;
       }
-    });
 
-    const data = await response.json();
+      // Call our backend to authenticate with the dashboard
+      const response = await fetch(`${API_URL}/api/client/dashboard-auth/${item.clientsdata_id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
 
-    if (!data.success || !data.authData) {
-      alert(data.message || 'Failed to authenticate with dashboard');
-      return;
+      const data = await response.json();
+
+      if (!data.success || !data.authData) {
+        alert(data.message || 'Failed to authenticate with dashboard');
+        return;
+      }
+
+      // Store auth data temporarily with a timestamp-based key
+      const tempKey = `temp_auth_${Date.now()}`;
+      localStorage.setItem(tempKey, JSON.stringify(data.authData));
+
+      // Open new window with dashboard URL and temp key
+      const newWindow = window.open(
+        `https://test.dashboard.xlite.xdialnetworks.com/dashboard?tempAuth=${tempKey}`,
+        '_blank'
+      );
+
+      if (!newWindow) {
+        localStorage.removeItem(tempKey);
+        alert('Please allow popups to open client dashboard');
+        return;
+      }
+
+      console.log(`Successfully opened dashboard for client ${item.clientsdata_id}`);
+
+    } catch (error) {
+      console.error('Error opening client dashboard:', error);
+      alert('Failed to open client dashboard');
     }
-
-    // Store auth data temporarily with a timestamp-based key
-    const tempKey = `temp_auth_${Date.now()}`;
-    localStorage.setItem(tempKey, JSON.stringify(data.authData));
-
-    // Open new window with dashboard URL and temp key
-    const newWindow = window.open(
-      `https://test.dashboard.xlite.xdialnetworks.com/dashboard?tempAuth=${tempKey}`, 
-      '_blank'
-    );
-
-    if (!newWindow) {
-      localStorage.removeItem(tempKey);
-      alert('Please allow popups to open client dashboard');
-      return;
-    }
-
-    console.log(`Successfully opened dashboard for client ${item.clientsdata_id}`);
-    
-  } catch (error) {
-    console.error('Error opening client dashboard:', error);
-    alert('Failed to open client dashboard');
-  }
-};
+  };
 
   const openModal = (item) => {
     setSelectedItem(item);
@@ -361,70 +370,70 @@ const handleDashboardLogin = async (item) => {
             </div>
           )}
           {error && (
-  <div className="error-banner">
-    <i className="bi bi-exclamation-triangle-fill"></i>
-    {error}
-  </div>
-)}
+            <div className="error-banner">
+              <i className="bi bi-exclamation-triangle-fill"></i>
+              {error}
+            </div>
+          )}
 
-<div className="metrics-bar">
-  <div className="metrics-grid">
-    <div className="metric-item">
-      <span className="metric-label">Total Clients</span>
-      <span className="metric-value">{metrics.totalClients}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Active Clients</span>
-      <span className="metric-value highlight">{metrics.activeClients}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Total Bots</span>
-      <span className="metric-value">{metrics.totalBots}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Active Bots</span>
-      <span className="metric-value highlight">{metrics.activeBots}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Testing History</span>
-      <span className="metric-value">{metrics.totalTestings}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Ongoing Tests</span>
-      <span className="metric-value warning">{metrics.ongoingTestings}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Test Success</span>
-      <span className="metric-value success">{metrics.testingSuccess}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Test Fails</span>
-      <span className="metric-value danger">{metrics.testingFails}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Expiring Soon</span>
-      <span className="metric-value warning">{metrics.expiringSoon}</span>
-    </div>
-  </div>
-</div>
+          <div className="metrics-bar">
+            <div className="metrics-grid">
+              <div className="metric-item">
+                <span className="metric-label">Total Clients</span>
+                <span className="metric-value">{metrics.totalClients}</span>
+              </div>
+              <div className="metric-divider"></div>
 
-<div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}></div>
+              <div className="metric-item">
+                <span className="metric-label">Active Clients</span>
+                <span className="metric-value highlight">{metrics.activeClients}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Total Bots</span>
+                <span className="metric-value">{metrics.totalBots}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Active Bots</span>
+                <span className="metric-value highlight">{metrics.activeBots}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Testing History</span>
+                <span className="metric-value">{metrics.totalTestings}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Ongoing Tests</span>
+                <span className="metric-value warning">{metrics.ongoingTestings}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Test Success</span>
+                <span className="metric-value success">{metrics.testingSuccess}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Test Fails</span>
+                <span className="metric-value danger">{metrics.testingFails}</span>
+              </div>
+              <div className="metric-divider"></div>
+
+              <div className="metric-item">
+                <span className="metric-label">Expiring Soon</span>
+                <span className="metric-value warning">{metrics.expiringSoon}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}></div>
 
           <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
             <input
@@ -462,16 +471,29 @@ const handleDashboardLogin = async (item) => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
                 <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'center', minHeight: '50px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
-                    <span style={{ fontWeight: 600 }}>{item.companyName || '—'}</span>
-                    {item.testing && (
-                      <i className="bi bi-gear-fill" style={{
-                        color: '#ff9800',
-                        fontSize: '14px',
-                        marginLeft: '4px'
-                      }} title="Testing Phase"></i>
-                    )}
-                  </div>
+                  // REPLACE the company name cell in the table (in filtered.map section):
+<div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+  <span style={{ fontWeight: 600 }}>{item.companyName || '—'}</span>
+  {item.status === 'testing' && (
+    <span style={{
+      backgroundColor: '#ff9800',
+      color: 'white',
+      padding: '2px 8px',
+      borderRadius: '10px',
+      fontSize: '10px',
+      fontWeight: '600',
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+      animation: 'pulse 2s infinite',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px'
+    }}>
+      <i className="bi bi-beaker" style={{ fontSize: '10px' }}></i>
+      Testing
+    </span>
+  )}
+</div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span>{item.campaign || '—'}</span>
@@ -537,7 +559,7 @@ const handleDashboardLogin = async (item) => {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
-                    <button 
+                    <button
                       className="dashboard-btn"
                       onClick={() => handleDashboardLogin(item)}
                       disabled={!item.clientsdata_id}
@@ -554,31 +576,32 @@ const handleDashboardLogin = async (item) => {
           {showModal && selectedItem && (
             <div className="modal-overlay" onClick={closeModal}>
               <div className="modal-content onboarding-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="modal-header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <h2>Campaign Details</h2>
-                    {selectedItem.testing && (
-                      <span style={{
-                        backgroundColor: '#ff9800',
-                        color: 'white',
-                        padding: '4px 12px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        boxShadow: '0 2px 4px rgba(255, 152, 0, 0.3)',
-                        animation: 'pulse 2s infinite'
-                      }}>
-                        <i className="bi bi-beaker" style={{ marginRight: '4px' }}></i>
-                        Testing Phase
-                      </span>
-                    )}
-                  </div>
-                  <button className="close-modal-btn" onClick={closeModal}>
-                    <i className="bi bi-x-lg"></i>
-                  </button>
-                </div>
+                // REPLACE the modal header section:
+<div className="modal-header">
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <h2>Campaign Details</h2>
+    {selectedItem.status === 'testing' && (
+      <span style={{
+        backgroundColor: '#ff9800',
+        color: 'white',
+        padding: '4px 12px',
+        borderRadius: '12px',
+        fontSize: '12px',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        boxShadow: '0 2px 4px rgba(255, 152, 0, 0.3)',
+        animation: 'pulse 2s infinite'
+      }}>
+        <i className="bi bi-beaker" style={{ marginRight: '4px' }}></i>
+        Testing Phase
+      </span>
+    )}
+  </div>
+  <button className="close-modal-btn" onClick={closeModal}>
+    <i className="bi bi-x-lg"></i>
+  </button>
+</div>
 
                 <div className="modal-body">
                   <h3 className="section-title"><i className="bi bi-briefcase-fill"></i> Campaign Information</h3>
