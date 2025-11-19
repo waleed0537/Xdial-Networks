@@ -5,11 +5,12 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const fetch = require('node-fetch');
+const axios = require('axios');
 const app = express();
 
 // Import database and model
 const { sequelize, Client, Integration } = require('./models');
+
 
 
 // ============================================================================
@@ -725,12 +726,13 @@ app.get('/api/clientsdata/all', async (req, res) => {
   }
 });
 // Proxy Dashboard Login - Add this before the "Start Server" section
+// Proxy Dashboard Login
 app.post('/api/client/dashboard-auth/:clientsdata_id', async (req, res) => {
   try {
     const { clientsdata_id } = req.params;
     
     // Get client credentials from database
-    const [results] = await sequelize.query(
+    const results = await sequelize.query(
       'SELECT client_id, password FROM clients WHERE client_id = :clientsdata_id',
       {
         replacements: { clientsdata_id: parseInt(clientsdata_id) },
@@ -738,28 +740,32 @@ app.post('/api/client/dashboard-auth/:clientsdata_id', async (req, res) => {
       }
     );
 
-    if (!results || !results.client_id) {
+    if (!results || results.length === 0) {
       return res.status(404).json({
         success: false,
         message: 'Client not found in dashboard system'
       });
     }
 
+    const client = results[0];
+
     // Authenticate with dashboard API from backend
-    const dashboardResponse = await fetch('https://test.dashboard.xlite.xdialnetworks.com/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const dashboardResponse = await axios.post(
+      'https://test.dashboard.xlite.xdialnetworks.com/api/auth/login',
+      {
+        username: client.client_id.toString(),
+        password: client.password
       },
-      body: JSON.stringify({
-        username: results.client_id.toString(),
-        password: results.password
-      }),
-    });
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
 
-    const authData = await dashboardResponse.json();
+    const authData = dashboardResponse.data;
 
-    if (!dashboardResponse.ok || !authData.success) {
+    if (!authData.success) {
       return res.status(401).json({
         success: false,
         message: authData.error || 'Failed to authenticate with dashboard'
@@ -775,7 +781,8 @@ app.post('/api/client/dashboard-auth/:clientsdata_id', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error authenticating with dashboard:', error);
+    console.error('Error authenticating with dashboard:', error.message);
+    console.error('Error details:', error.response?.data || error);
     res.status(500).json({
       success: false,
       message: 'Failed to authenticate with dashboard',
