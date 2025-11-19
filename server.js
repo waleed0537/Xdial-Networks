@@ -305,11 +305,14 @@ app.get('/api/integration/:id', async (req, res) => {
 });
 
 // Update Integration Status
+// REPLACE the entire app.patch('/api/integration/:id/status') endpoint:
 app.patch('/api/integration/:id/status', async (req, res) => {
   try {
     const { status, clientAccessEnabled } = req.body;
 
-    if (!['pending', 'in-progress', 'completed', 'cancelled'].includes(status)) {
+    const validStatuses = ['pending', 'in-progress', 'onboarded', 'testing', 'testing-failed', 'offboarded', 'cancelled'];
+    
+    if (!validStatuses.includes(status)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid status value'
@@ -323,6 +326,22 @@ app.patch('/api/integration/:id/status', async (req, res) => {
         success: false,
         message: 'Integration request not found'
       });
+    }
+
+    const oldStatus = integration.status;
+    
+    // Add to history if status changed
+    if (oldStatus !== status) {
+      const historyEntry = {
+        timestamp: new Date().toISOString(),
+        fromStatus: oldStatus,
+        toStatus: status,
+        action: getStatusAction(status)
+      };
+
+      const currentHistory = integration.statusHistory || [];
+      integration.statusHistory = [...currentHistory, historyEntry];
+      integration.changed('statusHistory', true);
     }
 
     integration.status = status;
@@ -348,6 +367,20 @@ app.patch('/api/integration/:id/status', async (req, res) => {
     });
   }
 });
+
+// ADD this helper function before the endpoint:
+function getStatusAction(status) {
+  const actions = {
+    'pending': 'Set to Pending',
+    'in-progress': 'Started In Progress',
+    'onboarded': 'Client Onboarded',
+    'testing': 'Testing Started',
+    'testing-failed': 'Testing Failed',
+    'offboarded': 'Client Offboarded',
+    'cancelled': 'Request Cancelled'
+  };
+  return actions[status] || 'Status Updated';
+}
 
 // Update Integration Field (Generic Update) - Admin only
 app.patch('/api/integration/:id', async (req, res) => {

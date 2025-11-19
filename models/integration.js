@@ -11,17 +11,7 @@ const Integration = sequelize.define('Integration', {
     type: DataTypes.STRING,
     allowNull: false
   },
- testing: {
-  type: DataTypes.STRING(20),  // Specify length
-  allowNull: true,
-  defaultValue: null,
-  validate: {
-    isIn: {
-      args: [[null, 'in-progress', 'completed', 'failed']],
-      msg: 'Testing status must be null, in-progress, completed, or failed'
-    }
-  }
-},
+
   model: {
     type: DataTypes.STRING,
     allowNull: false
@@ -142,9 +132,19 @@ const Integration = sequelize.define('Integration', {
     defaultValue: ''
   },
   status: {
-    type: DataTypes.STRING,
-    defaultValue: 'pending'
-  },
+  type: DataTypes.STRING,
+  defaultValue: 'pending',
+  validate: {
+    isIn: {
+      args: [['pending', 'in-progress', 'onboarded', 'testing', 'testing-failed', 'offboarded', 'cancelled']],
+      msg: 'Invalid status value'
+    }
+  }
+},
+statusHistory: {
+  type: DataTypes.JSONB,
+  defaultValue: []
+},
   submittedAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW

@@ -29,7 +29,6 @@ const AdminDashboard = () => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
-const [testingStatus, setTestingStatus] = useState(null);
 
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
@@ -43,7 +42,7 @@ const [testingStatus, setTestingStatus] = useState(null);
     completed: 0,
     cancelled: 0
   });
-  
+
 
   // Completion requirements
   const [completionChecks, setCompletionChecks] = useState({
@@ -53,16 +52,16 @@ const [testingStatus, setTestingStatus] = useState(null);
   });
 
   // Campaign configuration
-   const campaignConfig = {
-  'Medicare': ['Basic', 'Advanced'],
-  'Final Expense': ['Basic', 'Advanced'],
-  'MVA': ['Basic'],
-  'Auto Insurance': ['Basic', 'Advanced'],
-  'Auto Warranty': ['Advanced'],
-  'ACA': ['Basic'],
-  'Home': ['Basic'],
-  'Medalert': ['Advanced']
-};
+  const campaignConfig = {
+    'Medicare': ['Basic', 'Advanced'],
+    'Final Expense': ['Basic', 'Advanced'],
+    'MVA': ['Basic'],
+    'Auto Insurance': ['Basic', 'Advanced'],
+    'Auto Warranty': ['Advanced'],
+    'ACA': ['Basic'],
+    'Home': ['Basic'],
+    'Medalert': ['Advanced']
+  };
 
   const basicTransferOptions = [
     { value: 'high-quality', label: 'High-Quality Transfers' },
@@ -98,15 +97,15 @@ const [testingStatus, setTestingStatus] = useState(null);
       filtered = filtered.filter(item => item.campaign === campaignFilter);
     }
 
-      if (searchTerm) {
-  filtered = filtered.filter(item =>
-    item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-}
+    if (searchTerm) {
+      filtered = filtered.filter(item =>
+        item.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.campaign.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.clientsdata_id && item.clientsdata_id.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
 
     setFilteredIntegrations(filtered);
   }, [statusFilter, campaignFilter, searchTerm, integrations]);
@@ -132,16 +131,17 @@ const [testingStatus, setTestingStatus] = useState(null);
     }
   };
 
-  const calculateStats = (data) => {
-    const stats = {
-      total: data.length,
-      pending: data.filter(item => item.status === 'pending').length,
-      inProgress: data.filter(item => item.status === 'in-progress').length,
-      completed: data.filter(item => item.status === 'completed').length,
-      cancelled: data.filter(item => item.status === 'cancelled').length
-    };
-    setStats(stats);
+  // REPLACE calculateStats function:
+const calculateStats = (data) => {
+  const stats = {
+    total: data.length,
+    pending: data.filter(item => item.status === 'pending').length,
+    inProgress: data.filter(item => item.status === 'in-progress').length,
+    completed: data.filter(item => item.status === 'onboarded').length,
+    cancelled: data.filter(item => item.status === 'cancelled').length
   };
+  setStats(stats);
+};
 
   const handleLogout = () => {
     navigate('/client-management');
@@ -150,7 +150,6 @@ const [testingStatus, setTestingStatus] = useState(null);
   const viewDetails = (integration) => {
     setSelectedIntegration(integration);
     setShowModal(true);
-    setTestingStatus(integration.testing || null);
 
     // Load completion checks
     if (integration.completionRequirements) {
@@ -164,44 +163,44 @@ const [testingStatus, setTestingStatus] = useState(null);
     }
   };
   const updateTestingStatus = async (value) => {
-  if (!selectedIntegration) return;
+    if (!selectedIntegration) return;
 
-  setTestingStatus(value);
+    setTestingStatus(value);
 
-  try {
-    const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ testing: value })
-    });
+    try {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ testing: value })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      setIntegrations(prev =>
-        prev.map(item =>
-          item.id === selectedIntegration.id ?
-            { ...item, testing: value } : item
-        )
-      );
+      if (data.success) {
+        setIntegrations(prev =>
+          prev.map(item =>
+            item.id === selectedIntegration.id ?
+              { ...item, testing: value } : item
+          )
+        );
 
-      setSelectedIntegration({ ...selectedIntegration, testing: value });
-      
-      let message = '';
-      if (value === 'in-progress') message = 'Testing phase started';
-      else if (value === 'completed') message = 'Testing marked as completed';
-      else if (value === 'failed') message = 'Testing marked as failed';
-      else message = 'Testing phase removed';
-      
-      setCopyFeedback(message);
-      setTimeout(() => setCopyFeedback(''), 2000);
+        setSelectedIntegration({ ...selectedIntegration, testing: value });
+
+        let message = '';
+        if (value === 'in-progress') message = 'Testing phase started';
+        else if (value === 'completed') message = 'Testing marked as completed';
+        else if (value === 'failed') message = 'Testing marked as failed';
+        else message = 'Testing phase removed';
+
+        setCopyFeedback(message);
+        setTimeout(() => setCopyFeedback(''), 2000);
+      }
+    } catch (err) {
+      console.error('Error updating testing status:', err);
     }
-  } catch (err) {
-    console.error('Error updating testing status:', err);
-  }
-};
+  };
 
   const closeModal = () => {
     setShowModal(false);
@@ -381,71 +380,77 @@ const [testingStatus, setTestingStatus] = useState(null);
   };
 
   const updateStatus = async (id, newStatus) => {
-    if (newStatus === 'completed' && !allCompletionChecksMet()) {
-      alert('Cannot mark as completed! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
-      return;
+  if (newStatus === 'onboarded' && !allCompletionChecksMet()) {
+    alert('Cannot mark as onboarded! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
+    return;
+  }
+
+  if (newStatus === 'onboarded' && (!selectedIntegration.clientsdata_id || selectedIntegration.clientsdata_id === null)) {
+    alert('Cannot mark as onboarded! Please assign a Client ID first.');
+    return;
+  }
+
+  try {
+    const updateData = { status: newStatus };
+
+    if (newStatus === 'onboarded') {
+      updateData.clientAccessEnabled = true;
     }
 
-    if (newStatus === 'completed' && (!selectedIntegration.clientsdata_id || selectedIntegration.clientsdata_id === null)) {
-      alert('Cannot mark as completed! Please assign a Client ID first.');
-      return;
-    }
+    const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData)
+    });
 
-    try {
-      const updateData = { status: newStatus };
+    const data = await response.json();
 
-      if (newStatus === 'completed') {
-        updateData.clientAccessEnabled = true;
-      }
-
-      const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData)
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIntegrations(prev =>
-          prev.map(item =>
-            item.id === id ? {
-              ...item,
-              status: newStatus,
-              clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
-            } : item
-          )
-        );
-
-        if (selectedIntegration && selectedIntegration.id === id) {
-          setSelectedIntegration({
-            ...selectedIntegration,
-            status: newStatus,
-            clientAccessEnabled: newStatus === 'completed' ? true : selectedIntegration.clientAccessEnabled
-          });
-        }
-
-        const updatedIntegrations = integrations.map(item =>
+    if (data.success) {
+      setIntegrations(prev =>
+        prev.map(item =>
           item.id === id ? {
             ...item,
             status: newStatus,
-            clientAccessEnabled: newStatus === 'completed' ? true : item.clientAccessEnabled
+            statusHistory: data.data.statusHistory,
+            clientAccessEnabled: newStatus === 'onboarded' ? true : item.clientAccessEnabled
           } : item
-        );
-        calculateStats(updatedIntegrations);
+        )
+      );
 
-        if (newStatus === 'completed') {
-          setCopyFeedback('Status updated to Completed! Client access enabled.');
-          setTimeout(() => setCopyFeedback(''), 3000);
-        }
+      if (selectedIntegration && selectedIntegration.id === id) {
+        setSelectedIntegration({
+          ...selectedIntegration,
+          status: newStatus,
+          statusHistory: data.data.statusHistory,
+          clientAccessEnabled: newStatus === 'onboarded' ? true : selectedIntegration.clientAccessEnabled
+        });
       }
-    } catch (err) {
-      console.error('Error updating status:', err);
-      alert('Failed to update status. Please try again.');
+
+      const updatedIntegrations = integrations.map(item =>
+        item.id === id ? {
+          ...item,
+          status: newStatus,
+          statusHistory: data.data.statusHistory,
+          clientAccessEnabled: newStatus === 'onboarded' ? true : item.clientAccessEnabled
+        } : item
+      );
+      calculateStats(updatedIntegrations);
+
+      if (newStatus === 'onboarded') {
+        setCopyFeedback('Status updated to Onboarded! Client access enabled.');
+        setTimeout(() => setCopyFeedback(''), 3000);
+      } else {
+        setCopyFeedback(`Status updated to ${getStatusLabel(newStatus)}`);
+        setTimeout(() => setCopyFeedback(''), 2000);
+      }
     }
-  };
+  } catch (err) {
+    console.error('Error updating status:', err);
+    alert('Failed to update status. Please try again.');
+  }
+};
 
   const deleteIntegration = async (id) => {
     if (!window.confirm('Are you sure you want to delete this integration request?')) {
@@ -489,24 +494,30 @@ const [testingStatus, setTestingStatus] = useState(null);
   };
 
   const getStatusBadgeClass = (status) => {
-    const statusMap = {
-      'pending': 'status-pending',
-      'in-progress': 'status-in-progress',
-      'completed': 'status-completed',
-      'cancelled': 'status-cancelled'
-    };
-    return statusMap[status] || 'status-pending';
+  const statusMap = {
+    'pending': 'status-pending',
+    'in-progress': 'status-in-progress',
+    'onboarded': 'status-completed',
+    'testing': 'status-testing',
+    'testing-failed': 'status-cancelled',
+    'offboarded': 'status-offboarded',
+    'cancelled': 'status-cancelled'
   };
+  return statusMap[status] || 'status-pending';
+};
 
   const getStatusLabel = (status) => {
-    const labelMap = {
-      'pending': 'Pending',
-      'in-progress': 'In Progress',
-      'completed': 'Completed',
-      'cancelled': 'Cancelled'
-    };
-    return labelMap[status] || status;
+  const labelMap = {
+    'pending': 'Pending',
+    'in-progress': 'In Progress',
+    'onboarded': 'Onboarded',
+    'testing': 'Testing',
+    'testing-failed': 'Testing Failed',
+    'offboarded': 'Offboarded',
+    'cancelled': 'Cancelled'
   };
+  return labelMap[status] || status;
+};
 
   const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
     const isEditing = editingField === field && isEditMode;
@@ -864,6 +875,30 @@ const [testingStatus, setTestingStatus] = useState(null);
       </div>
     );
   }
+  const StatusHistoryTimeline = ({ history }) => {
+  if (!history || history.length === 0) {
+    return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No status changes yet</p>;
+  }
+
+  return (
+    <div className="status-timeline">
+      {history.map((entry, index) => (
+        <div key={index} className="timeline-entry">
+          <div className="timeline-marker"></div>
+          <div className="timeline-content">
+            <div className="timeline-action">{entry.action}</div>
+            <div className="timeline-meta">
+              <span className="timeline-from">{getStatusLabel(entry.fromStatus)}</span>
+              <i className="bi bi-arrow-right"></i>
+              <span className="timeline-to">{getStatusLabel(entry.toStatus)}</span>
+            </div>
+            <div className="timeline-date">{formatDate(entry.timestamp)}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
   return (
     <div className="admin-dashboard">
@@ -934,47 +969,48 @@ const [testingStatus, setTestingStatus] = useState(null);
 
         <div className="filter-group">
           <div className="status-filters">
-            <button
-              className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('all')}
-            >
-              All
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('pending')}
-            >
-              Pending
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('in-progress')}
-            >
-              In Progress
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === 'completed' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('completed')}
-            >
-              Completed
-            </button>
+            // REPLACE the filter buttons section (around line 880):
+<button
+  className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
+  onClick={() => setStatusFilter('all')}
+>
+  All
+</button>
+<button
+  className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
+  onClick={() => setStatusFilter('pending')}
+>
+  Pending
+</button>
+<button
+  className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
+  onClick={() => setStatusFilter('in-progress')}
+>
+  In Progress
+</button>
+<button
+  className={`filter-btn ${statusFilter === 'onboarded' ? 'active' : ''}`}
+  onClick={() => setStatusFilter('onboarded')}
+>
+  Onboarded
+</button>
           </div>
 
           <select
-  className="campaign-filter"
-  value={campaignFilter}
-  onChange={(e) => setCampaignFilter(e.target.value)}
->
-  <option value="all">All Campaigns</option>
-  <option value="Medicare">Medicare</option>
-  <option value="Final Expense">Final Expense</option>
-  <option value="MVA">MVA</option>
-  <option value="Auto Insurance">Auto Insurance</option>
-  <option value="Auto Warranty">Auto Warranty</option>
-  <option value="ACA">ACA</option>
-  <option value="Home">Home</option>
-  <option value="Medalert">Medalert</option>
-</select>
+            className="campaign-filter"
+            value={campaignFilter}
+            onChange={(e) => setCampaignFilter(e.target.value)}
+          >
+            <option value="all">All Campaigns</option>
+            <option value="Medicare">Medicare</option>
+            <option value="Final Expense">Final Expense</option>
+            <option value="MVA">MVA</option>
+            <option value="Auto Insurance">Auto Insurance</option>
+            <option value="Auto Warranty">Auto Warranty</option>
+            <option value="ACA">ACA</option>
+            <option value="Home">Home</option>
+            <option value="Medalert">Medalert</option>
+          </select>
         </div>
 
         <button className="refresh-btn" onClick={fetchIntegrations}>
@@ -1297,82 +1333,7 @@ const [testingStatus, setTestingStatus] = useState(null);
                 </div>
               )}
 
-              <div className="form-section">
-  <h3>Testing Phase</h3>
-  <div className="testing-controls">
-    <div className="testing-status-display">
-      <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-        Current Status:
-      </label>
-      {!testingStatus && (
-        <span className="status-badge" style={{ background: '#c0c0c0ff' }}>Not in Testing</span>
-      )}
-      {testingStatus === 'in-progress' && (
-        <span className="status-badge" >Testing In Progress</span>
-      )}
-      {testingStatus === 'completed' && (
-        <span className="status-badge" >Testing Completed</span>
-      )}
-      {testingStatus === 'failed' && (
-        <span className="status-badge" >Testing Failed</span>
-      )}
-    </div>
-
-    <div className="testing-actions" style={{ marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-      {!testingStatus && (
-        <button
-          className="save-btn"
-          onClick={() => updateTestingStatus('in-progress')}
-          style={{ fontSize: '14px', padding: '8px 16px' }}
-        >
-          <i className="bi bi-play-circle"></i> Start Testing Phase
-        </button>
-      )}
-      
-      {testingStatus === 'in-progress' && (
-        <>
-          <button
-            className="save-btn"
-            onClick={() => updateTestingStatus('completed')}
-            style={{ fontSize: '14px', padding: '8px 16px' }}
-          >
-            <i className="bi bi-check-circle"></i> Mark as Completed
-          </button>
-          <button
-            className="delete-btn"
-            onClick={() => updateTestingStatus('failed')}
-            style={{ fontSize: '14px', padding: '8px 16px' }}
-          >
-            <i className="bi bi-x-circle"></i> Mark as Failed
-          </button>
-        </>
-      )}
-      
-      {(testingStatus === 'completed' || testingStatus === 'failed') && (
-        <>
-          <button
-            className="save-btn"
-            onClick={() => updateTestingStatus('in-progress')}
-            style={{ fontSize: '14px', padding: '8px 16px'}}
-          >
-            <i className="bi bi-arrow-clockwise"></i> Restart Testing
-          </button>
-          <button
-            className="cancel-btn"
-            onClick={() => updateTestingStatus(null)}
-            style={{ fontSize: '14px', padding: '8px 16px' }}
-          >
-            <i className="bi bi-trash"></i> Clear Testing Status
-          </button>
-        </>
-      )}
-    </div>
-
-    <small style={{ display: 'block', marginTop: '12px'}}>
-      Testing status will be displayed on the client portal with appropriate badges
-    </small>
-  </div>
-</div>
+             
               <div className="form-section">
                 <h3>Status & Requirements</h3>
 
@@ -1426,24 +1387,35 @@ const [testingStatus, setTestingStatus] = useState(null);
                   </button>
                 </div>
 
-                <div className="status-selector">
-                  <label>Update Status:</label>
-                  <select
-                    value={selectedIntegration.status}
-                    onChange={(e) => updateStatus(selectedIntegration.id, e.target.value)}
-                    className="status-dropdown"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                  {!allCompletionChecksMet() && (
-                    <small className="warning-text">
-                      ⚠️ All requirements must be checked before marking as completed
-                    </small>
-                  )}
-                </div>
+                // REPLACE the status dropdown section (around line 1170):
+<div className="status-selector">
+  <label>Update Status:</label>
+  <select
+    value={selectedIntegration.status}
+    onChange={(e) => updateStatus(selectedIntegration.id, e.target.value)}
+    className="status-dropdown"
+  >
+    <option value="pending">Pending</option>
+    <option value="in-progress">In Progress</option>
+    <option value="onboarded">Onboarded</option>
+    <option value="testing">Testing</option>
+    <option value="testing-failed">Testing Failed</option>
+    <option value="offboarded">Offboarded</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
+  {!allCompletionChecksMet() && selectedIntegration.status !== 'onboarded' && (
+    <small className="warning-text">
+      ⚠️ All requirements must be checked before marking as onboarded
+    </small>
+  )}
+</div>
+
+<div className="status-history-section" style={{ marginTop: '24px' }}>
+  <h4 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '600' }}>
+    <i className="bi bi-clock-history"></i> Status History
+  </h4>
+  <StatusHistoryTimeline history={selectedIntegration.statusHistory || []} />
+</div>
               </div>
 
               <div style={{
@@ -1573,7 +1545,10 @@ const [testingStatus, setTestingStatus] = useState(null);
         </div>
       )}
     </div>
+    
   );
+  
 };
+
 
 export default AdminDashboard;
