@@ -12,7 +12,7 @@ const Integration = sequelize.define('Integration', {
     allowNull: false
   },
  testing: {
-  type: DataTypes.STRING,
+  type: DataTypes.STRING(20),  // Specify length
   allowNull: true,
   defaultValue: null,
   validate: {
