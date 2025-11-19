@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
-  const [testingStatus, setTestingStatus] = useState(false);
+const [testingStatus, setTestingStatus] = useState(null);
 
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
   const viewDetails = (integration) => {
     setSelectedIntegration(integration);
     setShowModal(true);
-    setTestingStatus(integration.testing || false);
+    setTestingStatus(integration.testing || null);
 
     // Load completion checks
     if (integration.completionRequirements) {
@@ -163,35 +163,44 @@ const AdminDashboard = () => {
     }
   };
   const updateTestingStatus = async (value) => {
-    if (!selectedIntegration) return;
+  if (!selectedIntegration) return;
 
-    setTestingStatus(value);
+  setTestingStatus(value);
 
-    try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ testing: value })
-      });
+  try {
+    const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ testing: value })
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        setIntegrations(prev =>
-          prev.map(item =>
-            item.id === selectedIntegration.id ?
-              { ...item, testing: value } : item
-          )
-        );
+    if (data.success) {
+      setIntegrations(prev =>
+        prev.map(item =>
+          item.id === selectedIntegration.id ?
+            { ...item, testing: value } : item
+        )
+      );
 
-        setSelectedIntegration({ ...selectedIntegration, testing: value });
-      }
-    } catch (err) {
-      console.error('Error updating testing status:', err);
+      setSelectedIntegration({ ...selectedIntegration, testing: value });
+      
+      let message = '';
+      if (value === 'in-progress') message = 'Testing phase started';
+      else if (value === 'completed') message = 'Testing marked as completed';
+      else if (value === 'failed') message = 'Testing marked as failed';
+      else message = 'Testing phase removed';
+      
+      setCopyFeedback(message);
+      setTimeout(() => setCopyFeedback(''), 2000);
     }
-  };
+  } catch (err) {
+    console.error('Error updating testing status:', err);
+  }
+};
 
   const closeModal = () => {
     setShowModal(false);
@@ -1288,21 +1297,81 @@ const AdminDashboard = () => {
               )}
 
               <div className="form-section">
-                <h3>Testing Phase</h3>
-                <div className="testing-toggle">
-                  <label className="requirement-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={testingStatus}
-                      onChange={(e) => updateTestingStatus(e.target.checked)}
-                    />
-                    <span>Campaign is in Testing Phase</span>
-                  </label>
-                  <small style={{ display: 'block', marginTop: '8px', color: '#666' }}>
-                    When enabled, a "Testing" badge will appear on the client portal
-                  </small>
-                </div>
-              </div>
+  <h3>Testing Phase</h3>
+  <div className="testing-controls">
+    <div className="testing-status-display">
+      <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+        Current Status:
+      </label>
+      {!testingStatus && (
+        <span className="status-badge" style={{ background: '#6b7280' }}>Not in Testing</span>
+      )}
+      {testingStatus === 'in-progress' && (
+        <span className="status-badge" style={{ background: '#f59e0b' }}>Testing In Progress</span>
+      )}
+      {testingStatus === 'completed' && (
+        <span className="status-badge" style={{ background: '#10b981' }}>Testing Completed</span>
+      )}
+      {testingStatus === 'failed' && (
+        <span className="status-badge" style={{ background: '#ef4444' }}>Testing Failed</span>
+      )}
+    </div>
+
+    <div className="testing-actions" style={{ marginTop: '16px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      {!testingStatus && (
+        <button
+          className="save-btn"
+          onClick={() => updateTestingStatus('in-progress')}
+          style={{ fontSize: '14px', padding: '8px 16px' }}
+        >
+          <i className="bi bi-play-circle"></i> Start Testing Phase
+        </button>
+      )}
+      
+      {testingStatus === 'in-progress' && (
+        <>
+          <button
+            className="save-btn"
+            onClick={() => updateTestingStatus('completed')}
+            style={{ fontSize: '14px', padding: '8px 16px', background: '#10b981' }}
+          >
+            <i className="bi bi-check-circle"></i> Mark as Completed
+          </button>
+          <button
+            className="delete-btn"
+            onClick={() => updateTestingStatus('failed')}
+            style={{ fontSize: '14px', padding: '8px 16px' }}
+          >
+            <i className="bi bi-x-circle"></i> Mark as Failed
+          </button>
+        </>
+      )}
+      
+      {(testingStatus === 'completed' || testingStatus === 'failed') && (
+        <>
+          <button
+            className="save-btn"
+            onClick={() => updateTestingStatus('in-progress')}
+            style={{ fontSize: '14px', padding: '8px 16px', background: '#f59e0b' }}
+          >
+            <i className="bi bi-arrow-clockwise"></i> Restart Testing
+          </button>
+          <button
+            className="cancel-btn"
+            onClick={() => updateTestingStatus(null)}
+            style={{ fontSize: '14px', padding: '8px 16px' }}
+          >
+            <i className="bi bi-trash"></i> Clear Testing Status
+          </button>
+        </>
+      )}
+    </div>
+
+    <small style={{ display: 'block', marginTop: '12px', color: '#666' }}>
+      Testing status will be displayed on the client portal with appropriate badges
+    </small>
+  </div>
+</div>
               <div className="form-section">
                 <h3>Status & Requirements</h3>
 

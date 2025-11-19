@@ -12,9 +12,10 @@ const Integration = sequelize.define('Integration', {
     allowNull: false
   },
   testing: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
+  type: DataTypes.STRING,
+  allowNull: true,
+  defaultValue: null  // null = not in testing, 'in-progress' = testing, 'completed' = passed, 'failed' = failed
+},
   model: {
     type: DataTypes.STRING,
     allowNull: false
