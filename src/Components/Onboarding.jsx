@@ -41,7 +41,17 @@ const Onboarding = () => {
   const [showModal, setShowModal] = useState(false);
   const [showPrimaryPassword, setShowPrimaryPassword] = useState(false);
   const [showCloserPassword, setShowCloserPassword] = useState(false);
-
+const [metrics, setMetrics] = useState({
+  totalClients: 0,
+  activeClients: 0,
+  totalBots: 0,
+  activeBots: 0,
+  totalTestings: 0,
+  ongoingTestings: 0,
+  testingSuccess: 0,
+  testingFails: 0,
+  expiringSoon: 0
+});
   useEffect(() => {
     const isClient = localStorage.getItem('isClientAuthenticated');
     const isAdmin = localStorage.getItem('isAdminAuthenticated');
@@ -52,25 +62,85 @@ const Onboarding = () => {
       fetchIntegrations();
     }
   }, [navigate]);
+  const calculateMetrics = (data) => {
+  const completedItems = data.filter(item => item.status === 'completed');
+  
+  const uniqueClientIds = new Set(
+    completedItems
+      .filter(item => item.clientsdata_id)
+      .map(item => item.clientsdata_id)
+  );
+  
+  const activeClientIds = new Set(
+    completedItems
+      .filter(item => item.clientsdata_id && item.clientAccessEnabled)
+      .map(item => item.clientsdata_id)
+  );
+  
+  const totalBots = completedItems.reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
+  const activeBots = completedItems
+    .filter(item => item.clientAccessEnabled)
+    .reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
+  
+  const totalTestings = data.filter(item => 
+    item.testing === 'completed' || item.testing === 'failed'
+  ).length;
+  
+  const ongoingTestings = data.filter(item => 
+    item.testing === 'in-progress'
+  ).length;
+  
+  const testingSuccess = data.filter(item => 
+    item.testing === 'completed'
+  ).length;
+  
+  const testingFails = data.filter(item => 
+    item.testing === 'failed'
+  ).length;
+  
+  // Campaigns expiring in next 7 days
+  const sevenDaysFromNow = new Date();
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+  
+  const expiringSoon = completedItems.filter(item => {
+    if (!item.endDate) return false;
+    const endDate = new Date(item.endDate);
+    const now = new Date();
+    return endDate > now && endDate <= sevenDaysFromNow;
+  }).length;
+  
+  setMetrics({
+    totalClients: uniqueClientIds.size,
+    activeClients: activeClientIds.size,
+    totalBots,
+    activeBots,
+    totalTestings,
+    ongoingTestings,
+    testingSuccess,
+    testingFails,
+    expiringSoon
+  });
+};
 
   const fetchIntegrations = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch(`${API_URL}/api/integration/all?limit=1000`);
-      const data = await response.json();
+  try {
+    setIsLoading(true);
+    const response = await fetch(`${API_URL}/api/integration/all?limit=1000`);
+    const data = await response.json();
 
-      if (data.success) {
-        setItems(data.data || []);
-      } else {
-        setError('Failed to fetch integrations');
-      }
-    } catch (err) {
-      console.error('Error fetching integrations:', err);
-      setError('Failed to connect to server');
-    } finally {
-      setIsLoading(false);
+    if (data.success) {
+      setItems(data.data || []);
+      calculateMetrics(data.data || []);
+    } else {
+      setError('Failed to fetch integrations');
     }
-  };
+  } catch (err) {
+    console.error('Error fetching integrations:', err);
+    setError('Failed to connect to server');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const uniqueCampaigns = useMemo(() => {
     const s = new Set();
@@ -161,8 +231,10 @@ const Onboarding = () => {
       const data = await res.json();
 
       if (data.success) {
-        setItems(prev => prev.map(it => it.id === id ? data.data : it));
-      } else {
+  const updatedItems = prev.map(it => it.id === id ? data.data : it);
+  setItems(updatedItems);
+  calculateMetrics(updatedItems);
+} else {
         console.error('Failed to update access:', data.message || data);
         fetchIntegrations();
       }
@@ -288,6 +360,71 @@ const handleDashboardLogin = async (item) => {
               {error}
             </div>
           )}
+          {error && (
+  <div className="error-banner">
+    <i className="bi bi-exclamation-triangle-fill"></i>
+    {error}
+  </div>
+)}
+
+<div className="metrics-bar">
+  <div className="metrics-grid">
+    <div className="metric-item">
+      <span className="metric-label">Total Clients</span>
+      <span className="metric-value">{metrics.totalClients}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Active Clients</span>
+      <span className="metric-value highlight">{metrics.activeClients}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Total Bots</span>
+      <span className="metric-value">{metrics.totalBots}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Active Bots</span>
+      <span className="metric-value highlight">{metrics.activeBots}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Testing History</span>
+      <span className="metric-value">{metrics.totalTestings}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Ongoing Tests</span>
+      <span className="metric-value warning">{metrics.ongoingTestings}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Test Success</span>
+      <span className="metric-value success">{metrics.testingSuccess}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Test Fails</span>
+      <span className="metric-value danger">{metrics.testingFails}</span>
+    </div>
+    <div className="metric-divider"></div>
+    
+    <div className="metric-item">
+      <span className="metric-label">Expiring Soon</span>
+      <span className="metric-value warning">{metrics.expiringSoon}</span>
+    </div>
+  </div>
+</div>
+
+<div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}></div>
 
           <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
             <input

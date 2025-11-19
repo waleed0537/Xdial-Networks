@@ -43,17 +43,7 @@ const [testingStatus, setTestingStatus] = useState(null);
     completed: 0,
     cancelled: 0
   });
-  const [metrics, setMetrics] = useState({
-  totalClients: 0,
-  activeClients: 0,
-  totalBots: 0,
-  activeBots: 0,
-  totalTestings: 0,
-  ongoingTestings: 0,
-  testingSuccess: 0,
-  testingFails: 0,
-  expiringSoon: 0
-});
+  
 
   // Completion requirements
   const [completionChecks, setCompletionChecks] = useState({
@@ -143,73 +133,15 @@ const [testingStatus, setTestingStatus] = useState(null);
   };
 
   const calculateStats = (data) => {
-  const stats = {
-    total: data.length,
-    pending: data.filter(item => item.status === 'pending').length,
-    inProgress: data.filter(item => item.status === 'in-progress').length,
-    completed: data.filter(item => item.status === 'completed').length,
-    cancelled: data.filter(item => item.status === 'cancelled').length
+    const stats = {
+      total: data.length,
+      pending: data.filter(item => item.status === 'pending').length,
+      inProgress: data.filter(item => item.status === 'in-progress').length,
+      completed: data.filter(item => item.status === 'completed').length,
+      cancelled: data.filter(item => item.status === 'cancelled').length
+    };
+    setStats(stats);
   };
-  setStats(stats);
-  
-  // Calculate metrics
-  const uniqueClientIds = new Set(
-    data
-      .filter(item => item.clientsdata_id)
-      .map(item => item.clientsdata_id)
-  );
-  
-  const activeClientIds = new Set(
-    data
-      .filter(item => item.clientsdata_id && item.status === 'completed')
-      .map(item => item.clientsdata_id)
-  );
-  
-  const totalBots = data.reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
-  const activeBots = data
-    .filter(item => item.status === 'completed')
-    .reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
-  
-  const totalTestings = data.filter(item => 
-    item.testing === 'completed' || item.testing === 'failed'
-  ).length;
-  
-  const ongoingTestings = data.filter(item => 
-    item.testing === 'in-progress'
-  ).length;
-  
-  const testingSuccess = data.filter(item => 
-    item.testing === 'completed'
-  ).length;
-  
-  const testingFails = data.filter(item => 
-    item.testing === 'failed'
-  ).length;
-  
-  // Campaigns expiring in next 7 days
-  const sevenDaysFromNow = new Date();
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-  
-  const expiringSoon = data.filter(item => {
-    if (!item.endDate || item.status !== 'completed') return false;
-    const endDate = new Date(item.endDate);
-    const now = new Date();
-    return endDate > now && endDate <= sevenDaysFromNow;
-  }).length;
-  
-  setMetrics({
-    totalClients: uniqueClientIds.size,
-    activeClients: activeClientIds.size,
-    totalBots,
-    activeBots,
-    totalTestings,
-    ongoingTestings,
-    testingSuccess,
-    testingFails,
-    expiringSoon
-  });
-};
-  
 
   const handleLogout = () => {
     navigate('/client-management');
@@ -945,7 +877,7 @@ const [testingStatus, setTestingStatus] = useState(null);
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
-            <h1><i className="bi bi-speedometer2"></i> Admin Dashboard</h1>
+            <h1><i className="bi bi-speedometer2"></i> Onboarding</h1>
             <p>Manage AI bot integration requests</p>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
@@ -955,81 +887,39 @@ const [testingStatus, setTestingStatus] = useState(null);
         </div>
       </header>
 
-      <div className="metrics-bar">
-  <div className="metrics-grid">
-    <div className="metric-item">
-      <span className="metric-label">Total Clients</span>
-      <span className="metric-value">{metrics.totalClients}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Active Clients</span>
-      <span className="metric-value highlight">{metrics.activeClients}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Total Bots</span>
-      <span className="metric-value">{metrics.totalBots}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Active Bots</span>
-      <span className="metric-value highlight">{metrics.activeBots}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Testing History</span>
-      <span className="metric-value">{metrics.totalTestings}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Ongoing Tests</span>
-      <span className="metric-value warning">{metrics.ongoingTestings}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Test Success</span>
-      <span className="metric-value success">{metrics.testingSuccess}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Test Fails</span>
-      <span className="metric-value danger">{metrics.testingFails}</span>
-    </div>
-    <div className="metric-divider"></div>
-    
-    <div className="metric-item">
-      <span className="metric-label">Expiring Soon</span>
-      <span className="metric-value warning">{metrics.expiringSoon}</span>
-    </div>
-  </div>
-  
-  <div className="status-summary">
-    <div className="summary-item">
-      <span className="summary-dot total"></span>
-      <span className="summary-text">Total: {stats.total}</span>
-    </div>
-    <div className="summary-item">
-      <span className="summary-dot pending"></span>
-      <span className="summary-text">Pending: {stats.pending}</span>
-    </div>
-    <div className="summary-item">
-      <span className="summary-dot progress"></span>
-      <span className="summary-text">In Progress: {stats.inProgress}</span>
-    </div>
-    <div className="summary-item">
-      <span className="summary-dot completed"></span>
-      <span className="summary-text">Completed: {stats.completed}</span>
-    </div>
-  </div>
-</div>
+      <div className="stats-container">
+        <div className="stat-card stat-total">
+
+          <div className="stat-info">
+            <p className="stat-label">Total Requests</p>
+            <h3 className="stat-value">{stats.total}</h3>
+          </div>
+        </div>
+
+        <div className="stat-card stat-pending">
+
+          <div className="stat-info">
+            <p className="stat-label">Pending</p>
+            <h3 className="stat-value">{stats.pending}</h3>
+          </div>
+        </div>
+
+        <div className="stat-card stat-progress">
+
+          <div className="stat-info">
+            <p className="stat-label">In Progress</p>
+            <h3 className="stat-value">{stats.inProgress}</h3>
+          </div>
+        </div>
+
+        <div className="stat-card stat-completed">
+
+          <div className="stat-info">
+            <p className="stat-label">Completed</p>
+            <h3 className="stat-value">{stats.completed}</h3>
+          </div>
+        </div>
+      </div>
 
       <div className="filters-container">
         <div className="search-box">
