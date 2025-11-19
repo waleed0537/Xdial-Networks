@@ -11,10 +11,16 @@ const Integration = sequelize.define('Integration', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  testing: {
+ testing: {
   type: DataTypes.STRING,
   allowNull: true,
-  defaultValue: null  // null = not in testing, 'in-progress' = testing, 'completed' = passed, 'failed' = failed
+  defaultValue: null,
+  validate: {
+    isIn: {
+      args: [[null, 'in-progress', 'completed', 'failed']],
+      msg: 'Testing status must be null, in-progress, completed, or failed'
+    }
+  }
 },
   model: {
     type: DataTypes.STRING,

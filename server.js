@@ -396,17 +396,27 @@ app.patch('/api/integration/:id', async (req, res) => {
     }
 
     Object.keys(req.body).forEach(key => {
-      if (allowedFields.includes(key)) {
-        if (key === 'clientsdata_id' || key === 'client_id') {
-          const value = req.body[key];
-          const parsedValue = value === '' || value === null || value === undefined ? null : parseInt(value);
-          console.log(`Setting ${key} from ${value} to ${parsedValue}`);
-          integration[key] = parsedValue;
-        } else {
-          integration[key] = req.body[key];
-        }
+  if (allowedFields.includes(key)) {
+    if (key === 'clientsdata_id' || key === 'client_id') {
+      const value = req.body[key];
+      const parsedValue = value === '' || value === null || value === undefined ? null : parseInt(value);
+      console.log(`Setting ${key} from ${value} to ${parsedValue}`);
+      integration[key] = parsedValue;
+    } else if (key === 'testing') {
+      const value = req.body[key];
+      // Ensure testing value is valid
+      const validTestingValues = [null, 'in-progress', 'completed', 'failed'];
+      if (validTestingValues.includes(value)) {
+        console.log(`Setting testing from ${integration.testing} to ${value}`);
+        integration[key] = value;
+      } else {
+        console.error(`Invalid testing value: ${value}`);
       }
-    });
+    } else {
+      integration[key] = req.body[key];
+    }
+  }
+});
 
     integration.updatedAt = new Date();
     
