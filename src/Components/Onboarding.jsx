@@ -471,7 +471,7 @@ const calculateMetrics = (data) => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
                 <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'center', minHeight: '50px' }}>
-                  // REPLACE the company name cell in the table (in filtered.map section):
+                 
 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
   <span style={{ fontWeight: 600 }}>{item.companyName || '—'}</span>
   {item.status === 'testing' && (
