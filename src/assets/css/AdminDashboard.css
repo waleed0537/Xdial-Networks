@@ -1443,3 +1443,154 @@ color: #6A6A6A;
 .full-width {
   grid-column: 1 / -1;
 } 
+.metrics-bar {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.metrics-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 100px;
+}
+
+.metric-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.metric-value.highlight {
+  color: #2563eb;
+}
+
+.metric-value.success {
+  color: #10b981;
+}
+
+.metric-value.warning {
+  color: #f59e0b;
+}
+
+.metric-value.danger {
+  color: #ef4444;
+}
+
+.metric-divider {
+  width: 1px;
+  height: 40px;
+  background: #e5e7eb;
+}
+
+.status-summary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.summary-dot.total {
+  background: #6366f1;
+}
+
+.summary-dot.pending {
+  background: #f59e0b;
+}
+
+.summary-dot.progress {
+  background: #3b82f6;
+}
+
+.summary-dot.completed {
+  background: #10b981;
+}
+
+.summary-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+@media (max-width: 1400px) {
+  .metrics-grid {
+    gap: 12px;
+  }
+  
+  .metric-value {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .metrics-grid {
+    justify-content: flex-start;
+  }
+  
+  .metric-item {
+    min-width: 120px;
+  }
+  
+  .metric-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .metrics-bar {
+    padding: 16px;
+  }
+  
+  .metrics-grid {
+    gap: 16px;
+  }
+  
+  .metric-item {
+    flex: 0 0 calc(50% - 8px);
+  }
+  
+  .metric-value {
+    font-size: 20px;
+  }
+  
+  .status-summary {
+    gap: 16px;
+  }
+}
