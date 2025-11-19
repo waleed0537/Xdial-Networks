@@ -1304,16 +1304,16 @@ const [testingStatus, setTestingStatus] = useState(null);
         Current Status:
       </label>
       {!testingStatus && (
-        <span className="status-badge" style={{ background: '#6b7280' }}>Not in Testing</span>
+        <span className="status-badge" style={{ background: '#c0c0c0ff' }}>Not in Testing</span>
       )}
       {testingStatus === 'in-progress' && (
-        <span className="status-badge" style={{ background: '#f59e0b' }}>Testing In Progress</span>
+        <span className="status-badge" >Testing In Progress</span>
       )}
       {testingStatus === 'completed' && (
-        <span className="status-badge" style={{ background: '#10b981' }}>Testing Completed</span>
+        <span className="status-badge" >Testing Completed</span>
       )}
       {testingStatus === 'failed' && (
-        <span className="status-badge" style={{ background: '#ef4444' }}>Testing Failed</span>
+        <span className="status-badge" >Testing Failed</span>
       )}
     </div>
 
@@ -1333,7 +1333,7 @@ const [testingStatus, setTestingStatus] = useState(null);
           <button
             className="save-btn"
             onClick={() => updateTestingStatus('completed')}
-            style={{ fontSize: '14px', padding: '8px 16px', background: '#10b981' }}
+            style={{ fontSize: '14px', padding: '8px 16px' }}
           >
             <i className="bi bi-check-circle"></i> Mark as Completed
           </button>
@@ -1352,7 +1352,7 @@ const [testingStatus, setTestingStatus] = useState(null);
           <button
             className="save-btn"
             onClick={() => updateTestingStatus('in-progress')}
-            style={{ fontSize: '14px', padding: '8px 16px', background: '#f59e0b' }}
+            style={{ fontSize: '14px', padding: '8px 16px'}}
           >
             <i className="bi bi-arrow-clockwise"></i> Restart Testing
           </button>
@@ -1367,7 +1367,7 @@ const [testingStatus, setTestingStatus] = useState(null);
       )}
     </div>
 
-    <small style={{ display: 'block', marginTop: '12px', color: '#666' }}>
+    <small style={{ display: 'block', marginTop: '12px'}}>
       Testing status will be displayed on the client portal with appropriate badges
     </small>
   </div>
