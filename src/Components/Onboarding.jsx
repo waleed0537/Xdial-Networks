@@ -192,8 +192,8 @@ const calculateMetrics = (data) => {
   const filtered = useMemo(() => {
     let arr = items
       .filter(i => {
-        // Show only onboarded items
-        if (i.status !== 'onboarded') return false;
+        // Show onboarded and testing phase items
+        if (i.status !== 'onboarded' && i.status !== 'testing') return false;
         if (campaignFilter && i.campaign !== campaignFilter) return false;
         if (modelFilter && i.model !== modelFilter) return false;
         if (search) {
@@ -602,26 +602,32 @@ const calculateMetrics = (data) => {
                 <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
                   <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
                   <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
-                    <span>{item.companyName || '—'}</span>
-                    {item.status === 'testing' && (
-                      <span style={{
-                        backgroundColor: '#ff9800',
-                        color: 'white',
-                        padding: '2px 8px',
-                        borderRadius: '10px',
-                        fontSize: '10px',
-                        fontWeight: '600',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        animation: 'pulse 2s infinite',
-                        display: 'inline-flex',
-                        alignItems: 'start',
-                        gap: '4px'
-                      }}>
-                        <i className="bi bi-beaker" style={{ fontSize: '10px' }}></i>
-                        Testing
-                      </span>
-                    )}
+                    <span style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                      {item.companyName || '—'}
+                      {item.status === 'testing' && (
+                        <span style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          backgroundColor: '#ff9800',
+                          color: 'white',
+                          padding: '2px 8px',
+                          borderRadius: '10px',
+                          fontSize: '10px',
+                          fontWeight: '600',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          animation: 'pulse 2s infinite',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          zIndex: 2
+                        }}>
+                          <i className="bi bi-beaker" style={{ fontSize: '10px' }}></i>
+                          Testing
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
                     <span>{item.campaign || '—'}</span>
