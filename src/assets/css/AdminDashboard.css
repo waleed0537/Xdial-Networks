@@ -1551,6 +1551,7 @@ color: #6A6A6A;
   gap: 6px;
   flex: 1;
   min-width: 100px;
+  align-items: flex-start;
 }
 
 .metric-label {
