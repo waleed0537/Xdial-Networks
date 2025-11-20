@@ -606,19 +606,16 @@ const calculateMetrics = (data) => {
                       {item.status === 'testing' && (
                         <span className="badge bg-warning text-dark" style={{
                           position: 'absolute',
-                          top: '-12px',
+                          top: '-10px',
                           left: 0,
-                          fontSize: '11px',
-                          fontWeight: 500,
-                          padding: '2px 8px',
+                          fontSize: '13px',
+                          padding: '2px 6px',
                           borderRadius: '8px',
                           display: 'inline-flex',
                           alignItems: 'center',
-                          gap: '4px',
                           zIndex: 2
                         }}>
-                          <i className="bi bi-beaker" style={{ fontSize: '12px', marginRight: '2px' }}></i>
-                          Testing
+                          <i className="bi bi-beaker" style={{ fontSize: '13px' }}></i>
                         </span>
                       )}
                       <span>{item.companyName || '—'}</span>
