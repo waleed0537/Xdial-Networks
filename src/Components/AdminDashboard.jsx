@@ -794,29 +794,29 @@ const AdminDashboard = () => {
         <label>{label}</label>
         {isEditMode && isEditing ? (
           <div className="edit-mode">
-            <div style={{ marginBottom: '8px', display: 'flex', flexWrap: 'wrap', gap: '6px', direction: 'ltr' }}>
+            <div className="array-chips-row" style={{ marginBottom: '8px', direction: 'ltr' }}>
               {items.length > 0 ? items.map((it, i) => (
-                <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 8px', background: '#eef2ff', borderRadius: '16px', border: '1px solid #c7d2fe', color: '#1e293b' }}>
-                  <span style={{ fontFamily: '"Courier New", monospace' }}>{it}</span>
-                  <button type="button" onClick={() => removeItem(i)} title="Remove" style={{ background: 'transparent', border: 'none', color: '#dc2626', cursor: 'pointer' }}>
+                <span key={i} className="array-chip">
+                  <span className="array-chip-text">{it}</span>
+                  <button type="button" className="array-chip-remove" onClick={() => removeItem(i)} title="Remove">
                     <i className="bi bi-x-lg"></i>
                   </button>
                 </span>
               )) : (
-                <small style={{ color: '#6b7280' }}>No {label.toLowerCase()} added yet</small>
+                <small className="array-empty">No {label.toLowerCase()} added yet</small>
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+            <div className="array-add-row" style={{ marginBottom: '8px' }}>
               <input
                 type="text"
+                className="array-add-input"
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
                 placeholder={`Add ${label.replace(/s$/, '')}`}
-                style={{ flex: 1, padding: '8px', borderRadius: '6px', border: '1px solid #d1d5db', direction: 'ltr' }}
                 dir="ltr"
               />
-              <button type="button" className="save-btn" onClick={addItem} style={{ whiteSpace: 'nowrap' }}>
+              <button type="button" className="array-add-btn" onClick={addItem}>
                 Add
               </button>
             </div>
