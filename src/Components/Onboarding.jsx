@@ -62,7 +62,7 @@ const Onboarding = () => {
   const [copyFeedback, setCopyFeedback] = useState('');
   // Copy to clipboard helper
   const copyToClipboard = async (text) => {
-    if (!text || text === '—') return;
+    if (!text || text === 'â€”') return;
     try {
       await navigator.clipboard.writeText(text);
       setCopyFeedback('Copied!');
@@ -589,7 +589,7 @@ const calculateMetrics = (data) => {
                   {col.label}
                   {sortBy === col.key && (
                     <span style={{ fontSize: '12px' }}>
-                      {sortOrder === 'asc' ? '▲' : '▼'}
+                      {sortOrder === 'asc' ? 'â–²' : 'â–¼'}
                     </span>
                   )}
                 </strong>
@@ -602,7 +602,7 @@ const calculateMetrics = (data) => {
     <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
       <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
       <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', position: 'relative' }}>
-        <span>{item.companyName || '—'}</span>
+        <span>{item.companyName || 'â€”'}</span>
         {item.status === 'testing' && (
           <i className="bi bi-gear-fill" style={{
             fontSize: '14px',
@@ -613,21 +613,21 @@ const calculateMetrics = (data) => {
         )}
       </div>
       <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span>{item.campaign || '—'}</span>
+        <span>{item.campaign || 'â€”'}</span>
       </div>
       <div style={{ flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span>{item.model || '—'}</span>
+        <span>{item.model || 'â€”'}</span>
       </div>
       <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
         <i className="bi bi-telephone-fill"></i>
-        <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '—'}</span>
+        <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : 'â€”'}</span>
       </div>
       <div style={{ flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span>{item.numberOfBots != null ? item.numberOfBots : '—'}</span>
+        <span>{item.numberOfBots != null ? item.numberOfBots : 'â€”'}</span>
       </div>
       <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
         <i className="bi bi-hdd-network-fill"></i>
-        <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '—'}</span>
+        <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : 'â€”'}</span>
       </div>
       <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }}>
         <label className="switch" onClick={(e) => e.stopPropagation()}>
@@ -717,65 +717,73 @@ const calculateMetrics = (data) => {
   </button>
 </div>
 
-                <div className="modal-body">
-                  <h3 className="section-title"><i className="bi bi-briefcase-fill"></i> Campaign Information</h3>
-                  <div className="detail-section" style={{ gridColumn: '1 / -1' }}>
-                    <div className="detail-grid">
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.companyName || '—')}>
+                <div className="modal-body simple-form">
+                  <div className="form-section">
+                    <h3><i className="bi bi-briefcase-fill"></i> Campaign Information</h3>
+                    <div className="form-row">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.companyName || 'â€"')}>
                         <label>Client Name</label>
-                        <p>{selectedItem.companyName || '—'}</p>
+                        <p className="field-value">{selectedItem.companyName || 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.clientsdata_id || '—')}>
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.clientsdata_id || 'â€"')}>
                         <label>Client ID</label>
-                        <p>{selectedItem.clientsdata_id || '—'}</p>
+                        <p className="field-value">{selectedItem.clientsdata_id || 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.campaign || '—')}>
+                    </div>
+                    <div className="form-row">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.campaign || 'â€"')}>
                         <label>Campaign</label>
-                        <p>{selectedItem.campaign || '—'}</p>
+                        <p className="field-value">{selectedItem.campaign || 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.model || '—')}>
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.model || 'â€"')}>
                         <label>Model</label>
-                        <p>{selectedItem.model || '—'}</p>
+                        <p className="field-value">{selectedItem.model || 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.numberOfBots != null ? selectedItem.numberOfBots : '—')}>
+                    </div>
+                    <div className="form-row">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.numberOfBots != null ? selectedItem.numberOfBots : 'â€"')}>
                         <label>Number of Bots</label>
-                        <p>{selectedItem.numberOfBots != null ? selectedItem.numberOfBots : '—'}</p>
+                        <p className="field-value">{selectedItem.numberOfBots != null ? selectedItem.numberOfBots : 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard((selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : '—')}>
-                        <label>Extensions</label>
-                        <p>{(selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : '—'}</p>
-                      </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard((selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : '—')}>
-                        <label>Server IPs</label>
-                        <p>{(selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : '—'}</p>
-                      </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.dialplan || '—')}>
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.dialplan || 'â€"')}>
                         <label>Dial Plan</label>
-                        <p>{selectedItem.dialplan || '—'}</p>
+                        <p className="field-value">{selectedItem.dialplan || 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(formatDate(selectedItem.startDate))}>
+                    </div>
+                    <div className="form-row">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard((selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : 'â€"')}>
+                        <label>Extensions</label>
+                        <p className="field-value">{(selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : 'â€"'}</p>
+                      </div>
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard((selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : 'â€"')}>
+                        <label>Server IPs</label>
+                        <p className="field-value">{(selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : 'â€"'}</p>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(formatDate(selectedItem.startDate))}>
                         <label>Start Date</label>
-                        <p>{formatDate(selectedItem.startDate)}</p>
+                        <p className="field-value">{formatDate(selectedItem.startDate)}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(formatDate(selectedItem.endDate))}>
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(formatDate(selectedItem.endDate))}>
                         <label>End Date</label>
-                        <p>{formatDate(selectedItem.endDate)}</p>
+                        <p className="field-value">{formatDate(selectedItem.endDate)}</p>
                       </div>
                     </div>
                   </div>
 
-                  <h3 className="section-title"><i className="bi bi-shield-lock-fill"></i> Primary Dialler</h3>
-                  <div className="detail-section admin-validation-section" style={{ gridColumn: '1 / -1' }}>
-                    <div className="detail-grid">
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryUser || '—')}>
+                  <div className="form-section">
+                    <h3><i className="bi bi-shield-lock-fill"></i> Primary Dialler</h3>
+                    <div className="form-row">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryUser || 'â€"')}>
                         <label>Username</label>
-                        <p>{selectedItem.primaryUser || '—'}</p>
+                        <p className="field-value">{selectedItem.primaryUser || 'â€"'}</p>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryPassword ? selectedItem.primaryPassword : '—')}>
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryPassword ? selectedItem.primaryPassword : 'â€"')}>
                         <label>Password</label>
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
-                          <p style={{ margin: 0, flex: 1 }}>
-                            {selectedItem.primaryPassword ? (showPrimaryPassword ? selectedItem.primaryPassword : '••••••••') : '—'}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <p className="field-value" style={{ margin: 0, flex: 1 }}>
+                            {selectedItem.primaryPassword ? (showPrimaryPassword ? selectedItem.primaryPassword : 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢') : 'â€"'}
                           </p>
                           {selectedItem.primaryPassword && (
                             <button
@@ -789,61 +797,59 @@ const calculateMetrics = (data) => {
                         </div>
                       </div>
                     </div>
-                    <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '—')}>
+                    <div className="form-row full">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || 'â€"')}>
                         <label>IP Validation Link</label>
-                        <p>{selectedItem.primaryIpValidation || '—'}</p>
+                        <p className="field-value">{selectedItem.primaryIpValidation || 'â€"'}</p>
                       </div>
                     </div>
-                    <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '—')}>
+                    <div className="form-row full">
+                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || 'â€"')}>
                         <label>Admin Link</label>
-                        <p>{selectedItem.primaryAdminLink || '—'}</p>
+                        <p className="field-value">{selectedItem.primaryAdminLink || 'â€"'}</p>
                       </div>
                     </div>
                   </div>
 
                   {selectedItem.setupType === 'separate' && (selectedItem.closerAdminLink || selectedItem.closerIpValidation || selectedItem.closerUser) && (
-                    <>
-                      <h3 className="section-title"><i className="bi bi-people-fill"></i> Closer Dialler</h3>
-                      <div className="detail-section" style={{ gridColumn: '1 / -1' }}>
-                        <div className="detail-grid">
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerUser || '—')}>
-                            <label>Username</label>
-                            <p>{selectedItem.closerUser || '—'}</p>
-                          </div>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerPassword ? selectedItem.closerPassword : '—')}>
-                            <label>Password</label>
-                            <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
-                              <p style={{ margin: 0, flex: 1 }}>
-                                {selectedItem.closerPassword ? (showCloserPassword ? selectedItem.closerPassword : '••••••••') : '—'}
-                              </p>
-                              {selectedItem.closerPassword && (
-                                <button
-                                  className="password-toggle-btn"
-                                  onClick={(e) => { e.stopPropagation(); setShowCloserPassword(!showCloserPassword); }}
-                                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
-                                >
-                                  <i className={`bi ${showCloserPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
-                                </button>
-                              )}
-                            </div>
-                          </div>
+                    <div className="form-section">
+                      <h3><i className="bi bi-people-fill"></i> Closer Dialler</h3>
+                      <div className="form-row">
+                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerUser || 'â€"')}>
+                          <label>Username</label>
+                          <p className="field-value">{selectedItem.closerUser || 'â€"'}</p>
                         </div>
-                        <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '—')}>
-                            <label>IP Validation Link</label>
-                            <p>{selectedItem.closerIpValidation || '—'}</p>
-                          </div>
-                        </div>
-                        <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '—')}>
-                            <label>Admin Link</label>
-                            <p>{selectedItem.closerAdminLink || '—'}</p>
+                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerPassword ? selectedItem.closerPassword : 'â€"')}>
+                          <label>Password</label>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <p className="field-value" style={{ margin: 0, flex: 1 }}>
+                              {selectedItem.closerPassword ? (showCloserPassword ? selectedItem.closerPassword : 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢') : 'â€"'}
+                            </p>
+                            {selectedItem.closerPassword && (
+                              <button
+                                className="password-toggle-btn"
+                                onClick={(e) => { e.stopPropagation(); setShowCloserPassword(!showCloserPassword); }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
+                              >
+                                <i className={`bi ${showCloserPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </>
+                      <div className="form-row full">
+                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || 'â€"')}>
+                          <label>IP Validation Link</label>
+                          <p className="field-value">{selectedItem.closerIpValidation || 'â€"'}</p>
+                        </div>
+                      </div>
+                      <div className="form-row full">
+                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || 'â€"')}>
+                          <label>Admin Link</label>
+                          <p className="field-value">{selectedItem.closerAdminLink || 'â€"'}</p>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
 

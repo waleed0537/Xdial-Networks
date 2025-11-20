@@ -1344,3 +1344,92 @@
     font-size: 10px;
   }
 }
+/* Additional Form Field Styles for Onboarding Modal */
+.modal-body.simple-form {
+  padding: 2rem;
+  background: #ffffff;
+}
+
+.form-section {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.2rem 1rem 1.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.75rem;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
+}
+
+.form-section h3 {
+  font-size: 1rem;
+  color: #1e40af;
+  margin: 0.5rem 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.form-section h3 i {
+  color: #1e40af;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.form-row.full {
+  grid-template-columns: 1fr;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-field .field-value {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  color: #111827;
+  word-break: break-word;
+  line-height: 1.5;
+  flex: 1;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.form-field:hover .field-value {
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
