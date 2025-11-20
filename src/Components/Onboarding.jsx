@@ -538,11 +538,45 @@ const calculateMetrics = (data) => {
           </div>
 
           <div className="list-table" style={{ width: '100%' }}>
-            <div className="list-row header">
+            <div className="list-row header" style={{ display: 'flex', width: '100%' }}>
               {columns.map(col => (
                 <strong
                   key={col.key}
-                  style={{ cursor: 'pointer', userSelect: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                  style={{
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    flex: col.key === 'companyName' ? '1.5' : '1',
+                    minWidth:
+                      col.key === 'sr' ? 40 :
+                      col.key === 'companyName' ? 120 :
+                      col.key === 'campaign' ? 100 :
+                      col.key === 'model' ? 90 :
+                      col.key === 'extensions' ? 110 :
+                      col.key === 'numberOfBots' ? 80 :
+                      col.key === 'serverIPs' ? 110 :
+                      col.key === 'status' ? 70 :
+                      col.key === 'expiration' ? 110 :
+                      col.key === 'dashboard' ? 70 : 80,
+                    maxWidth:
+                      col.key === 'sr' ? 50 :
+                      col.key === 'companyName' ? 200 :
+                      col.key === 'campaign' ? 140 :
+                      col.key === 'model' ? 120 :
+                      col.key === 'extensions' ? 150 :
+                      col.key === 'numberOfBots' ? 100 :
+                      col.key === 'serverIPs' ? 150 :
+                      col.key === 'status' ? 90 :
+                      col.key === 'expiration' ? 140 :
+                      col.key === 'dashboard' ? 90 : 120,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    padding: '6px 8px',
+                    boxSizing: 'border-box',
+                  }}
                   onClick={() => {
                     if (sortBy === col.key) {
                       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -565,12 +599,10 @@ const calculateMetrics = (data) => {
             {filtered.map((item, idx) => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
-                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'start', minHeight: '50px' }}>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px', position: 'relative' }}>
-                    <span style={{ fontWeight: 600 }}>{idx + 1}</span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px', position: 'relative' }}>
-                    <span style={{ fontWeight: 600 }}>{item.companyName || '—'}</span>
+                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
+                  <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
+                  <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
+                    <span>{item.companyName || '—'}</span>
                     {item.status === 'testing' && (
                       <span style={{
                         backgroundColor: '#ff9800',
@@ -591,30 +623,30 @@ const calculateMetrics = (data) => {
                       </span>
                     )}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                  <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
                     <span>{item.campaign || '—'}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                  <div style={{ flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box' }}>
                     <span>{item.model || '—'}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                  <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <i className="bi bi-telephone-fill"></i>
                     <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '—'}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                  <div style={{ flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box' }}>
                     <span>{item.numberOfBots != null ? item.numberOfBots : '—'}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                  <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <i className="bi bi-hdd-network-fill"></i>
                     <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '—'}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                  <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }}>
                     <label className="switch" onClick={(e) => e.stopPropagation()}>
                       <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
                       <span className="slider round"></span>
                     </label>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start' }}>
+                  <div style={{ flex: '1', minWidth: 110, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
                     <span style={{
                       display: 'inline-flex',
                       alignItems: 'start',
@@ -651,7 +683,7 @@ const calculateMetrics = (data) => {
                       <span>{expirationStatus.text}</span>
                     </span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
+                  <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
                     <button
                       className="dashboard-btn"
                       onClick={() => handleDashboardLogin(item)}
