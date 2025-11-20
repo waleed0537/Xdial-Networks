@@ -597,105 +597,99 @@ const calculateMetrics = (data) => {
             </div>
 
             {filtered.map((item, idx) => {
-              const expirationStatus = getExpirationStatus(item.endDate);
-              return (
-                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
-                  <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
-                  <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
-                    <span style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                      {item.status === 'testing' && (
-                        <span className="badge bg-warning text-dark" style={{
-                          position: 'absolute',
-                          top: '-10px',
-                          left: 0,
-                          minHeight: '20px',
-                          minWidth: '20px',
-                          padding: '2px 6px',
-                          borderRadius: '8px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          zIndex: 2
-                        }}>
-                          <i className="bi bi-beaker" style={{ fontSize: '16px', color: '#856404', display: 'block' }}></i>
-                        </span>
-                      )}
-                      <span>{item.companyName || '—'}</span>
-                    </span>
-                  </div>
-                  <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
-                    <span>{item.campaign || '—'}</span>
-                  </div>
-                  <div style={{ flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box' }}>
-                    <span>{item.model || '—'}</span>
-                  </div>
-                  <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <i className="bi bi-telephone-fill"></i>
-                    <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '—'}</span>
-                  </div>
-                  <div style={{ flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box' }}>
-                    <span>{item.numberOfBots != null ? item.numberOfBots : '—'}</span>
-                  </div>
-                  <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <i className="bi bi-hdd-network-fill"></i>
-                    <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '—'}</span>
-                  </div>
-                  <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }}>
-                    <label className="switch" onClick={(e) => e.stopPropagation()}>
-                      <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
-                  <div style={{ flex: '1', minWidth: 110, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
-                    <span style={{
-                      display: 'inline-flex',
-                      alignItems: 'start',
-                      gap: '5px',
-                      padding: '4px 10px',
-                      fontSize: '0.75rem',
-                      fontWeight: '600',
-                      borderRadius: '5px',
-                      whiteSpace: 'nowrap',
-                      backgroundColor:
-                        expirationStatus.status === 'expired' ? '#fee2e2' :
-                          expirationStatus.status === 'expires-today' ? '#fef3c7' :
-                            expirationStatus.status === 'expires-soon' ? '#fff7ed' :
-                              expirationStatus.status === 'no-date' ? '#f3f4f6' :
-                                '#dcfce7',
-                      color:
-                        expirationStatus.status === 'expired' ? '#dc2626' :
-                          expirationStatus.status === 'expires-today' ? '#d97706' :
-                            expirationStatus.status === 'expires-soon' ? '#ea580c' :
-                              expirationStatus.status === 'no-date' ? '#6b7280' :
-                                '#16a34a',
-                      border:
-                        expirationStatus.status === 'expired' ? '1px solid #fecaca' :
-                          expirationStatus.status === 'expires-today' ? '1px solid #fde68a' :
-                            expirationStatus.status === 'expires-soon' ? '1px solid #fed7aa' :
-                              expirationStatus.status === 'no-date' ? '1px solid #e5e7eb' :
-                                '1px solid #bbf7d0'
-                    }}>
-                      {expirationStatus.status === 'expired' && <i className="bi bi-x-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
-                      {expirationStatus.status === 'expires-today' && <i className="bi bi-clock-fill" style={{ fontSize: '0.85rem' }}></i>}
-                      {expirationStatus.status === 'expires-soon' && <i className="bi bi-exclamation-triangle-fill" style={{ fontSize: '0.85rem' }}></i>}
-                      {expirationStatus.status === 'active' && <i className="bi bi-check-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
-                      {expirationStatus.status === 'no-date' && <i className="bi bi-calendar-x" style={{ fontSize: '0.85rem' }}></i>}
-                      <span>{expirationStatus.text}</span>
-                    </span>
-                  </div>
-                  <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
-                    <button
-                      className="dashboard-btn"
-                      onClick={() => handleDashboardLogin(item)}
-                      disabled={!item.clientsdata_id}
-                      title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
-                    >
-                      <i className="bi bi-box-arrow-up-right"></i>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+  const expirationStatus = getExpirationStatus(item.endDate);
+  return (
+    <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
+      <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
+      <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
+        <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          <span>{item.companyName || '—'}</span>
+          {item.status === 'testing' && (
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#ff9800',
+              display: 'inline-block',
+              boxShadow: '0 0 4px rgba(255, 152, 0, 0.6)',
+              animation: 'pulse 2s infinite'
+            }} title="Testing Phase"></span>
+          )}
+        </span>
+      </div>
+      <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
+        <span>{item.campaign || '—'}</span>
+      </div>
+      <div style={{ flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box' }}>
+        <span>{item.model || '—'}</span>
+      </div>
+      <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <i className="bi bi-telephone-fill"></i>
+        <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '—'}</span>
+      </div>
+      <div style={{ flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box' }}>
+        <span>{item.numberOfBots != null ? item.numberOfBots : '—'}</span>
+      </div>
+      <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <i className="bi bi-hdd-network-fill"></i>
+        <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '—'}</span>
+      </div>
+      <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }}>
+        <label className="switch" onClick={(e) => e.stopPropagation()}>
+          <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
+          <span className="slider round"></span>
+        </label>
+      </div>
+      <div style={{ flex: '1', minWidth: 110, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
+        <span style={{
+          display: 'inline-flex',
+          alignItems: 'start',
+          gap: '5px',
+          padding: '4px 10px',
+          fontSize: '0.75rem',
+          fontWeight: '600',
+          borderRadius: '5px',
+          whiteSpace: 'nowrap',
+          backgroundColor:
+            expirationStatus.status === 'expired' ? '#fee2e2' :
+              expirationStatus.status === 'expires-today' ? '#fef3c7' :
+                expirationStatus.status === 'expires-soon' ? '#fff7ed' :
+                  expirationStatus.status === 'no-date' ? '#f3f4f6' :
+                    '#dcfce7',
+          color:
+            expirationStatus.status === 'expired' ? '#dc2626' :
+              expirationStatus.status === 'expires-today' ? '#d97706' :
+                expirationStatus.status === 'expires-soon' ? '#ea580c' :
+                  expirationStatus.status === 'no-date' ? '#6b7280' :
+                    '#16a34a',
+          border:
+            expirationStatus.status === 'expired' ? '1px solid #fecaca' :
+              expirationStatus.status === 'expires-today' ? '1px solid #fde68a' :
+                expirationStatus.status === 'expires-soon' ? '1px solid #fed7aa' :
+                  expirationStatus.status === 'no-date' ? '1px solid #e5e7eb' :
+                    '1px solid #bbf7d0'
+        }}>
+          {expirationStatus.status === 'expired' && <i className="bi bi-x-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
+          {expirationStatus.status === 'expires-today' && <i className="bi bi-clock-fill" style={{ fontSize: '0.85rem' }}></i>}
+          {expirationStatus.status === 'expires-soon' && <i className="bi bi-exclamation-triangle-fill" style={{ fontSize: '0.85rem' }}></i>}
+          {expirationStatus.status === 'active' && <i className="bi bi-check-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
+          {expirationStatus.status === 'no-date' && <i className="bi bi-calendar-x" style={{ fontSize: '0.85rem' }}></i>}
+          <span>{expirationStatus.text}</span>
+        </span>
+      </div>
+      <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
+        <button
+          className="dashboard-btn"
+          onClick={() => handleDashboardLogin(item)}
+          disabled={!item.clientsdata_id}
+          title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
+        >
+          <i className="bi bi-box-arrow-up-right"></i>
+        </button>
+      </div>
+    </div>
+  );
+})}
           </div>
 
           {showModal && selectedItem && (
