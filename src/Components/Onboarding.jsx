@@ -767,13 +767,15 @@ const calculateMetrics = (data) => {
                   <h3 className="section-title"><i className="bi bi-shield-lock-fill"></i> Primary Dialler</h3>
                   <div className="detail-section admin-validation-section" style={{ gridColumn: '1 / -1' }}>
                     <div className="detail-grid">
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryUser || '—')}>
+                      <div className="detail-item">
                         <label>Username</label>
-                        <p>{selectedItem.primaryUser || '—'}</p>
+                        <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb'}} onClick={() => copyToClipboard(selectedItem.primaryUser || '—')}>
+                          <p style={{ margin: 0 }}>{selectedItem.primaryUser || '—'}</p>
+                        </div>
                       </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryPassword ? selectedItem.primaryPassword : '—')}>
+                      <div className="detail-item">
                         <label>Password</label>
-                        <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                        <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '8px'}} onClick={() => copyToClipboard(selectedItem.primaryPassword ? selectedItem.primaryPassword : '—')}>
                           <p style={{ margin: 0, flex: 1 }}>
                             {selectedItem.primaryPassword ? (showPrimaryPassword ? selectedItem.primaryPassword : '••••••••') : '—'}
                           </p>
@@ -789,16 +791,16 @@ const calculateMetrics = (data) => {
                         </div>
                       </div>
                     </div>
-                    <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '—')}>
-                        <label>IP Validation Link</label>
-                        <p>{selectedItem.primaryIpValidation || '—'}</p>
+                    <div style={{ marginTop: '12px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.875rem', color: '#374151' }}>IP Validation Link</label>
+                      <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '—')}>
+                        <p style={{ margin: 0, wordBreak: 'break-all' }}>{selectedItem.primaryIpValidation || '—'}</p>
                       </div>
                     </div>
-                    <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '—')}>
-                        <label>Admin Link</label>
-                        <p>{selectedItem.primaryAdminLink || '—'}</p>
+                    <div style={{ marginTop: '12px' }}>
+                      <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.875rem', color: '#374151' }}>Admin Link</label>
+                      <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '—')}>
+                        <p style={{ margin: 0, wordBreak: 'break-all' }}>{selectedItem.primaryAdminLink || '—'}</p>
                       </div>
                     </div>
                   </div>
@@ -808,13 +810,15 @@ const calculateMetrics = (data) => {
                       <h3 className="section-title"><i className="bi bi-people-fill"></i> Closer Dialler</h3>
                       <div className="detail-section" style={{ gridColumn: '1 / -1' }}>
                         <div className="detail-grid">
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerUser || '—')}>
+                          <div className="detail-item">
                             <label>Username</label>
-                            <p>{selectedItem.closerUser || '—'}</p>
+                            <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb'}} onClick={() => copyToClipboard(selectedItem.closerUser || '—')}>
+                              <p style={{ margin: 0 }}>{selectedItem.closerUser || '—'}</p>
+                            </div>
                           </div>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerPassword ? selectedItem.closerPassword : '—')}>
+                          <div className="detail-item">
                             <label>Password</label>
-                            <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
+                            <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '8px'}} onClick={() => copyToClipboard(selectedItem.closerPassword ? selectedItem.closerPassword : '—')}>
                               <p style={{ margin: 0, flex: 1 }}>
                                 {selectedItem.closerPassword ? (showCloserPassword ? selectedItem.closerPassword : '••••••••') : '—'}
                               </p>
@@ -830,16 +834,16 @@ const calculateMetrics = (data) => {
                             </div>
                           </div>
                         </div>
-                        <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '—')}>
-                            <label>IP Validation Link</label>
-                            <p>{selectedItem.closerIpValidation || '—'}</p>
+                        <div style={{ marginTop: '12px' }}>
+                          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.875rem', color: '#374151' }}>IP Validation Link</label>
+                          <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '—')}>
+                            <p style={{ margin: 0, wordBreak: 'break-all' }}>{selectedItem.closerIpValidation || '—'}</p>
                           </div>
                         </div>
-                        <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '—')}>
-                            <label>Admin Link</label>
-                            <p>{selectedItem.closerAdminLink || '—'}</p>
+                        <div style={{ marginTop: '12px' }}>
+                          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', fontSize: '0.875rem', color: '#374151' }}>Admin Link</label>
+                          <div style={{cursor:'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px', border: '1px solid #e5e7eb'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '—')}>
+                            <p style={{ margin: 0, wordBreak: 'break-all' }}>{selectedItem.closerAdminLink || '—'}</p>
                           </div>
                         </div>
                       </div>
