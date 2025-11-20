@@ -761,16 +761,66 @@ const AdminDashboard = () => {
   const EditableArrayField = ({ field, value, label }) => {
     const isEditing = editingField === field && isEditMode;
 
+    // Local state for quick add input
+    const [newItem, setNewItem] = useState('');
+
     // Convert value array to plain text for display
     const valueAsText = Array.isArray(value) && value.length > 0
       ? value.join('\n')
       : '';
+
+    // When entering edit mode, ensure the quick-add input is cleared
+    useEffect(() => {
+      if (isEditing) setNewItem('');
+    }, [isEditing]);
+
+    const items = editValue ? editValue.split('\n').map(s => s.trim()).filter(Boolean) : [];
+
+    const addItem = () => {
+      const trimmed = (newItem || '').trim();
+      if (!trimmed) return;
+      const updated = items.concat([trimmed]);
+      setEditValue(updated.join('\n'));
+      setNewItem('');
+    };
+
+    const removeItem = (idx) => {
+      const updated = items.filter((_, i) => i !== idx);
+      setEditValue(updated.join('\n'));
+    };
 
     return (
       <div className="form-field full-width">
         <label>{label}</label>
         {isEditMode && isEditing ? (
           <div className="edit-mode">
+            <div style={{ marginBottom: '8px', display: 'flex', flexWrap: 'wrap', gap: '6px', direction: 'ltr' }}>
+              {items.length > 0 ? items.map((it, i) => (
+                <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 8px', background: '#eef2ff', borderRadius: '16px', border: '1px solid #c7d2fe', color: '#1e293b' }}>
+                  <span style={{ fontFamily: '"Courier New", monospace' }}>{it}</span>
+                  <button type="button" onClick={() => removeItem(i)} title="Remove" style={{ background: 'transparent', border: 'none', color: '#dc2626', cursor: 'pointer' }}>
+                    <i className="bi bi-x-lg"></i>
+                  </button>
+                </span>
+              )) : (
+                <small style={{ color: '#6b7280' }}>No {label.toLowerCase()} added yet</small>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+              <input
+                type="text"
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                placeholder={`Add ${label.replace(/s$/, '')}`}
+                style={{ flex: 1, padding: '8px', borderRadius: '6px', border: '1px solid #d1d5db', direction: 'ltr' }}
+                dir="ltr"
+              />
+              <button type="button" className="save-btn" onClick={addItem} style={{ whiteSpace: 'nowrap' }}>
+                Add
+              </button>
+            </div>
+
             <div style={{
               border: '1px solid #ccc',
               borderRadius: '4px',
@@ -795,7 +845,6 @@ const AdminDashboard = () => {
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                   rows="4"
-                  autoFocus
                   placeholder="Enter one value per line"
                   style={{
                     border: 'none',
@@ -815,6 +864,7 @@ const AdminDashboard = () => {
                 />
               </pre>
             </div>
+
             <small style={{ display: 'block', marginTop: '5px', color: '#666', direction: 'ltr' }}>
               Enter one {label.toLowerCase().replace(/s$/, '')} per line
             </small>
