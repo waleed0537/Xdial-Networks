@@ -608,14 +608,16 @@ const calculateMetrics = (data) => {
                           position: 'absolute',
                           top: '-10px',
                           left: 0,
-                          fontSize: '13px',
+                          minHeight: '20px',
+                          minWidth: '20px',
                           padding: '2px 6px',
                           borderRadius: '8px',
-                          display: 'inline-flex',
+                          display: 'flex',
                           alignItems: 'center',
+                          justifyContent: 'center',
                           zIndex: 2
                         }}>
-                          <i className="bi bi-beaker" style={{ fontSize: '13px' }}></i>
+                          <i className="bi bi-beaker" style={{ fontSize: '16px', color: '#856404', display: 'block' }}></i>
                         </span>
                       )}
                       <span>{item.companyName || '—'}</span>
