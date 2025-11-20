@@ -29,7 +29,7 @@ const AdminDashboard = () => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
-  const [showStatusHistory, setShowStatusHistory] = useState(true);
+  const [showStatusHistory, setShowStatusHistory] = useState(false);
 
 
   const [campaignResources, setCampaignResources] = useState({
@@ -764,6 +764,14 @@ const AdminDashboard = () => {
     // Local state for quick add input
     const [newItem, setNewItem] = useState('');
 
+    // Add item on Enter key
+    const handleAddInputKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addItem();
+      }
+    }    
+
     // Convert value array to plain text for display
     const valueAsText = Array.isArray(value) && value.length > 0
       ? value.join('\n')
@@ -809,16 +817,17 @@ const AdminDashboard = () => {
 
             <div className="array-add-row" style={{ marginBottom: '8px' }}>
               <input
-                type="text"
-                className="array-add-input"
-                value={newItem}
-                onChange={(e) => setNewItem(e.target.value)}
-                placeholder={`Add ${label.replace(/s$/, '')}`}
-                dir="ltr"
-              />
-              <button type="button" className="array-add-btn" onClick={addItem}>
-                Add
-              </button>
+                  type="text"
+                  className="array-add-input"
+                  value={newItem}
+                  onChange={(e) => setNewItem(e.target.value)}
+                  onKeyDown={handleAddInputKeyDown}
+                  placeholder={`Add ${label.replace(/s$/, '')}`}
+                  dir="ltr"
+                />
+                <button type="button" className="array-add-btn" onClick={addItem}>
+                  Add
+                </button>
             </div>
 
             <div style={{
