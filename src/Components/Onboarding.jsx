@@ -601,21 +601,16 @@ const calculateMetrics = (data) => {
   return (
     <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
       <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
-      <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
-        <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-          <span>{item.companyName || '—'}</span>
-          {item.status === 'testing' && (
-            <span style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#ff9800',
-              display: 'inline-block',
-              boxShadow: '0 0 4px rgba(255, 152, 0, 0.6)',
-              animation: 'pulse 2s infinite'
-            }} title="Testing Phase"></span>
-          )}
-        </span>
+      <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', position: 'relative' }}>
+        <span>{item.companyName || '—'}</span>
+        {item.status === 'testing' && (
+          <i className="bi bi-gear-fill" style={{
+            fontSize: '14px',
+            color: '#ff9800',
+            cursor: 'pointer',
+            flexShrink: 0
+          }} title="Testing Phase"></i>
+        )}
       </div>
       <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
         <span>{item.campaign || '—'}</span>
@@ -769,17 +764,9 @@ const calculateMetrics = (data) => {
                     </div>
                   </div>
 
-                  <h3 className="section-title"><i className="bi bi-shield-lock-fill"></i> Admin / Validation</h3>
+                  <h3 className="section-title"><i className="bi bi-shield-lock-fill"></i> Primary Dialler</h3>
                   <div className="detail-section admin-validation-section" style={{ gridColumn: '1 / -1' }}>
                     <div className="detail-grid">
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '—')}>
-                        <label>IP Validation Link</label>
-                        <p>{selectedItem.primaryIpValidation || '—'}</p>
-                      </div>
-                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '—')}>
-                        <label>Admin Link</label>
-                        <p>{selectedItem.primaryAdminLink || '—'}</p>
-                      </div>
                       <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryUser || '—')}>
                         <label>Username</label>
                         <p>{selectedItem.primaryUser || '—'}</p>
@@ -793,7 +780,7 @@ const calculateMetrics = (data) => {
                           {selectedItem.primaryPassword && (
                             <button
                               className="password-toggle-btn"
-                              onClick={() => setShowPrimaryPassword(!showPrimaryPassword)}
+                              onClick={(e) => { e.stopPropagation(); setShowPrimaryPassword(!showPrimaryPassword); }}
                               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
                             >
                               <i className={`bi ${showPrimaryPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
@@ -802,21 +789,25 @@ const calculateMetrics = (data) => {
                         </div>
                       </div>
                     </div>
+                    <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
+                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '—')}>
+                        <label>IP Validation Link</label>
+                        <p>{selectedItem.primaryIpValidation || '—'}</p>
+                      </div>
+                    </div>
+                    <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
+                      <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '—')}>
+                        <label>Admin Link</label>
+                        <p>{selectedItem.primaryAdminLink || '—'}</p>
+                      </div>
+                    </div>
                   </div>
 
                   {selectedItem.setupType === 'separate' && (selectedItem.closerAdminLink || selectedItem.closerIpValidation || selectedItem.closerUser) && (
                     <>
-                      <h3 className="section-title"><i className="bi bi-people-fill"></i> Closer Dialer</h3>
+                      <h3 className="section-title"><i className="bi bi-people-fill"></i> Closer Dialler</h3>
                       <div className="detail-section" style={{ gridColumn: '1 / -1' }}>
                         <div className="detail-grid">
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '—')}>
-                            <label>IP Validation Link</label>
-                            <p>{selectedItem.closerIpValidation || '—'}</p>
-                          </div>
-                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '—')}>
-                            <label>Admin Link</label>
-                            <p>{selectedItem.closerAdminLink || '—'}</p>
-                          </div>
                           <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerUser || '—')}>
                             <label>Username</label>
                             <p>{selectedItem.closerUser || '—'}</p>
@@ -830,13 +821,25 @@ const calculateMetrics = (data) => {
                               {selectedItem.closerPassword && (
                                 <button
                                   className="password-toggle-btn"
-                                  onClick={() => setShowCloserPassword(!showCloserPassword)}
+                                  onClick={(e) => { e.stopPropagation(); setShowCloserPassword(!showCloserPassword); }}
                                   style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280' }}
                                 >
                                   <i className={`bi ${showCloserPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'}`}></i>
                                 </button>
                               )}
                             </div>
+                          </div>
+                        </div>
+                        <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
+                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '—')}>
+                            <label>IP Validation Link</label>
+                            <p>{selectedItem.closerIpValidation || '—'}</p>
+                          </div>
+                        </div>
+                        <div className="detail-grid" style={{ gridTemplateColumns: '1fr', marginTop: '12px' }}>
+                          <div className="detail-item" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '—')}>
+                            <label>Admin Link</label>
+                            <p>{selectedItem.closerAdminLink || '—'}</p>
                           </div>
                         </div>
                       </div>
