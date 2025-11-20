@@ -603,30 +603,25 @@ const calculateMetrics = (data) => {
                   <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
                   <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', position: 'relative' }}>
                     <span style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                      {item.companyName || '—'}
                       {item.status === 'testing' && (
-                        <span style={{
+                        <span className="badge bg-warning text-dark" style={{
                           position: 'absolute',
-                          top: 0,
-                          right: 0,
-                          backgroundColor: '#ff9800',
-                          color: 'white',
+                          top: '-12px',
+                          left: 0,
+                          fontSize: '11px',
+                          fontWeight: 500,
                           padding: '2px 8px',
-                          borderRadius: '10px',
-                          fontSize: '10px',
-                          fontWeight: '600',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          animation: 'pulse 2s infinite',
+                          borderRadius: '8px',
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '4px',
                           zIndex: 2
                         }}>
-                          <i className="bi bi-beaker" style={{ fontSize: '10px' }}></i>
+                          <i className="bi bi-beaker" style={{ fontSize: '12px', marginRight: '2px' }}></i>
                           Testing
                         </span>
                       )}
+                      <span>{item.companyName || '—'}</span>
                     </span>
                   </div>
                   <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
