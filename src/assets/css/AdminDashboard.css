@@ -1044,19 +1044,19 @@ color: #6A6A6A;
 .array-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
+  gap: 6px;
+  padding: 4px 8px;
   background: #ffffff;
   color: #0f172a;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #eef2f7;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   box-shadow: 0 1px 2px rgba(16,24,40,0.03);
 }
 
 .array-chip-text {
   font-family: 'SF Mono', 'Courier New', monospace;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .array-chip-remove {
@@ -1082,22 +1082,23 @@ color: #6A6A6A;
 
 .array-add-input {
   flex: 1;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
   border: 1px solid #eef2f7;
   background: white;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   direction: ltr;
 }
 
 .array-add-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
   border: 1px solid #eef2f7;
   background: transparent;
   color: #0f172a;
   cursor: pointer;
   font-weight: 600;
+  font-size: 0.82rem;
 }
 
 .array-empty {
