@@ -1570,21 +1570,20 @@ color: #6A6A6A;
 }
 
 .metric-value.highlight {
-  color: #2563eb;
+  color: #111827;
 }
 
 .metric-value.success {
-  color: #10b981;
+  color: #111827;
 }
 
 .metric-value.warning {
-  color: #f59e0b;
+  color: #111827;
 }
 
 .metric-value.danger {
-  color: #ef4444;
+  color: #111827;
 }
-
 .metric-divider {
   width: 1px;
   height: 40px;
