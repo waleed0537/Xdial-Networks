@@ -153,7 +153,7 @@ if (!validCombinations[campaign]) {
 if (!model || !validModels || !validModels.includes(model)) {
   return res.status(400).json({
     success: false,
-    message: `Invalid model "${model}" for campaign "${campaign}". Valid options: ${validModels ? validModels.join(', ') : 'none'}`
+    message: `Invalid model ${model} for campaign "${campaign}". Valid options: ${validModels ? validModels.join(', ') : 'none'}`
   });
 }
 

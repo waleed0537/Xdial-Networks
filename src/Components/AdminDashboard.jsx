@@ -457,7 +457,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const deleteStatusHistoryEntry = async (index) => {
+  const deleteStatusHistoryEntry = async (entry) => {
     if (!selectedIntegration) return;
 
     if (!window.confirm('Are you sure you want to delete this status history entry?')) {
@@ -466,7 +466,21 @@ const AdminDashboard = () => {
 
     try {
       const updatedHistory = [...(selectedIntegration.statusHistory || [])];
-      updatedHistory.splice(index, 1);
+
+      // Find the exact index of the entry in the original history array
+      const idx = updatedHistory.findIndex(e => (
+        e.timestamp === entry.timestamp &&
+        e.action === entry.action &&
+        e.fromStatus === entry.fromStatus &&
+        e.toStatus === entry.toStatus
+      ));
+
+      if (idx === -1) {
+        // Entry not found; abort
+        return;
+      }
+
+      updatedHistory.splice(idx, 1);
 
       const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
         method: 'PATCH',
@@ -921,60 +935,63 @@ const AdminDashboard = () => {
     );
   }
   const StatusHistoryTimeline = ({ history, onDelete }) => {
-  if (!history || history.length === 0) {
-    return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No status changes yet</p>;
-  }
+    if (!history || history.length === 0) {
+      return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No status changes yet</p>;
+    }
 
-  return (
-    <div className="status-timeline">
-      {history.map((entry, index) => (
-        <div key={index} className="timeline-entry">
-          <div className="timeline-marker"></div>
-          <div className="timeline-content">
-            <div className="timeline-action">
-              {entry.action}
-              <button
-                className="delete-history-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(index);
-                }}
-                title="Delete this entry"
-                style={{
-                  marginLeft: '12px',
-                  padding: '4px 8px',
-                  fontSize: '12px',
-                  color: '#dc2626',
-                  background: 'transparent',
-                  border: '1px solid #fca5a5',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.background = '#fee2e2';
-                  e.currentTarget.style.borderColor = '#dc2626';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.borderColor = '#fca5a5';
-                }}
-              >
-                <i className="bi bi-trash"></i>
-              </button>
+    // Sort history so newest entries appear first
+    const sorted = [...history].slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    return (
+      <div className="status-timeline">
+        {sorted.map((entry, index) => (
+          <div key={index} className="timeline-entry">
+            <div className="timeline-marker"></div>
+            <div className="timeline-content">
+              <div className="timeline-action">
+                {entry.action}
+                <button
+                  className="delete-history-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(entry);
+                  }}
+                  title="Delete this entry"
+                  style={{
+                    marginLeft: '12px',
+                    padding: '4px 8px',
+                    fontSize: '12px',
+                    color: '#dc2626',
+                    background: 'transparent',
+                    border: '1px solid #fca5a5',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = '#fee2e2';
+                    e.currentTarget.style.borderColor = '#dc2626';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderColor = '#fca5a5';
+                  }}
+                >
+                  <i className="bi bi-trash"></i>
+                </button>
+              </div>
+              <div className="timeline-meta">
+                <span className="timeline-from">{getStatusLabel(entry.fromStatus)}</span>
+                <i className="bi bi-arrow-right"></i>
+                <span className="timeline-to">{getStatusLabel(entry.toStatus)}</span>
+              </div>
+              <div className="timeline-date">{formatDate(entry.timestamp)}</div>
             </div>
-            <div className="timeline-meta">
-              <span className="timeline-from">{getStatusLabel(entry.fromStatus)}</span>
-              <i className="bi bi-arrow-right"></i>
-              <span className="timeline-to">{getStatusLabel(entry.toStatus)}</span>
-            </div>
-            <div className="timeline-date">{formatDate(entry.timestamp)}</div>
           </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="admin-dashboard">
@@ -1045,7 +1062,6 @@ const AdminDashboard = () => {
 
         <div className="filter-group">
           <div className="status-filters">
-            // REPLACE the filter buttons section (around line 880):
             <button
               className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
               onClick={() => setStatusFilter('all')}
@@ -1135,7 +1151,7 @@ const AdminDashboard = () => {
                   </td>
                   <td>
                     {integration.extensions && integration.extensions.length > 0 ? (
-                      <div className="extensions-cell">
+                      <div className="extensions-cell admin-extensions-cell" dir="ltr" style={{ direction: 'ltr' }}>
                         {integration.extensions.map((ext, idx) => (
                           <span key={idx} className="extension-badge">{ext}</span>
                         ))}
@@ -1146,7 +1162,7 @@ const AdminDashboard = () => {
                   </td>
                   <td>
                     {integration.serverIPs && integration.serverIPs.length > 0 ? (
-                      <div className="ips-cell">
+                      <div className="ips-cell admin-serverips-cell" dir="ltr" style={{ direction: 'ltr' }}>
                         {integration.serverIPs.slice(0, 2).map((ip, idx) => (
                           <span key={idx} className="ip-badge">{ip}</span>
                         ))}
@@ -1254,14 +1270,14 @@ const AdminDashboard = () => {
                       }
                     />
                   </div>
-                  <div className="form-row full">
+                  <div className="form-row full admin-extensions-row" dir="ltr" style={{ direction: 'ltr' }}>
                     <EditableArrayField
                       field="extensions"
                       value={selectedIntegration.extensions}
                       label="Extensions"
                     />
                   </div>
-                  <div className="form-row full">
+                  <div className="form-row full admin-serverips-row" dir="ltr" style={{ direction: 'ltr' }}>
                     <EditableArrayField
                       field="serverIPs"
                       value={selectedIntegration.serverIPs}
@@ -1463,7 +1479,6 @@ const AdminDashboard = () => {
                   </button>
                 </div>
 
-                // REPLACE the status dropdown section (around line 1170):
                 <div className="status-selector">
                   <label>Update Status:</label>
                   <select

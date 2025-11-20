@@ -159,11 +159,7 @@ const IntegrationForm = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        setSubmitMessage({
-          type: 'success',
-          text: 'Integration request submitted successfully! We will contact you shortly.'
-        });
-
+       
         // Reset form after successful submission
         setTimeout(() => {
           setFormData({
@@ -691,17 +687,18 @@ const IntegrationForm = () => {
             </div>
 
             {/* Separate Closer Dialler Settings */}
+            {/* Separate Closer Dialler Settings */}
             {formData.setupType === 'separate' && (
               <div className="integration-subsection closer-section">
                 <h3 className="subsection-title">
                   <i className="bi bi-diagram-3"></i>
-                  Closer Dialler Settings
+                  Closer Dialler Settings (Optional)
                 </h3>
 
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="closerIpValidation">
-                      IP Validation Link <span className="required">*</span>
+                      IP Validation Link
                     </label>
                     <input
                       type="text"
@@ -710,13 +707,12 @@ const IntegrationForm = () => {
                       value={formData.closerIpValidation}
                       onChange={handleChange}
                       placeholder="e.g., example.com"
-                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="closerAdminLink">
-                      Admin Link <span className="required">*</span>
+                      Admin Link
                     </label>
                     <input
                       type="text"
@@ -725,7 +721,6 @@ const IntegrationForm = () => {
                       value={formData.closerAdminLink}
                       onChange={handleChange}
                       placeholder="e.g., closer-dialer.com, www.closer-dialer.com, or https://closer-dialer.com"
-                      required
                     />
                   </div>
                 </div>
@@ -733,7 +728,7 @@ const IntegrationForm = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="closerUser">
-                      Username <span className="required">*</span>
+                      Username
                     </label>
                     <input
                       type="text"
@@ -742,13 +737,12 @@ const IntegrationForm = () => {
                       value={formData.closerUser}
                       onChange={handleChange}
                       placeholder="Admin username"
-                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="closerPassword">
-                      Password <span className="required">*</span>
+                      Password
                     </label>
                     <input
                       type="password"
@@ -757,7 +751,6 @@ const IntegrationForm = () => {
                       value={formData.closerPassword}
                       onChange={handleChange}
                       placeholder="Admin password"
-                      required
                     />
                   </div>
                 </div>
@@ -765,7 +758,7 @@ const IntegrationForm = () => {
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="closerCampaign">
-                      Campaign <span className="required">*</span>
+                      Campaign
                     </label>
                     <input
                       type="text"
@@ -774,13 +767,12 @@ const IntegrationForm = () => {
                       value={formData.closerCampaign}
                       onChange={handleChange}
                       placeholder="Closer campaign name"
-                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="closerIngroup">
-                      Ingroup <span className="required">*</span>
+                      Ingroup
                     </label>
                     <input
                       type="text"
@@ -789,7 +781,6 @@ const IntegrationForm = () => {
                       value={formData.closerIngroup}
                       onChange={handleChange}
                       placeholder="Inbound group name"
-                      required
                     />
                   </div>
                 </div>
@@ -802,12 +793,10 @@ const IntegrationForm = () => {
                     type="text"
                     id="closerPort"
                     name="closerPort"
-                    // value={formData.closerPort}
-
+                    value={formData.closerPort}
                     onChange={handleChange}
-                    placeholder=" e.g., 7788"
+                    placeholder="e.g., 7788"
                   />
-                  {/* <small className="form-hint">Leave default if using port 5060</small> */}
                 </div>
               </div>
             )}
