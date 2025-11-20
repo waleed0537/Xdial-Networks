@@ -30,6 +30,7 @@ if (!document.head.querySelector('style[data-pulse-animation]')) {
 }
 
 const Onboarding = () => {
+
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -52,6 +53,9 @@ const Onboarding = () => {
     testingFails: 0,
     expiringSoon: 0
   });
+  useEffect(() => {
+    document.title = "Manage - Xdial";
+  }, []);
   useEffect(() => {
     const isClient = localStorage.getItem('isClientAuthenticated');
     const isAdmin = localStorage.getItem('isAdminAuthenticated');
@@ -409,7 +413,7 @@ const calculateMetrics = (data) => {
               <div className="metric-divider"></div>
 
               <div className="metric-item">
-                <span className="metric-label">Ongoing Tests</span>
+                <span className="metric-label">Trials</span>
                 <span className="metric-value warning">{metrics.ongoingTestings}</span>
               </div>
               <div className="metric-divider"></div>
@@ -433,9 +437,9 @@ const calculateMetrics = (data) => {
             </div>
           </div>
 
-          <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}></div>
+          <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'start' }}></div>
 
-          <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'center' }}>
+          <div className="filters-row" style={{ display: 'flex', gap: '12px', marginBottom: '12px', alignItems: 'start' }}>
             <input
               type="search"
               placeholder="Search company, campaign, model or client id"
@@ -470,9 +474,9 @@ const calculateMetrics = (data) => {
             {filtered.map(item => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
-                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'center', minHeight: '50px' }}>
+                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ alignItems: 'start', minHeight: '50px' }}>
                  
-<div style={{ display: 'flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+<div style={{ display: 'flex', alignItems: 'start', gap: '8px', position: 'relative' }}>
   <span style={{ fontWeight: 600 }}>{item.companyName || '—'}</span>
   {item.status === 'testing' && (
     <span style={{
@@ -486,7 +490,7 @@ const calculateMetrics = (data) => {
       letterSpacing: '0.5px',
       animation: 'pulse 2s infinite',
       display: 'inline-flex',
-      alignItems: 'center',
+      alignItems: 'start',
       gap: '4px'
     }}>
       <i className="bi bi-beaker" style={{ fontSize: '10px' }}></i>
@@ -495,35 +499,35 @@ const calculateMetrics = (data) => {
   )}
 </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                     <span>{item.campaign || '—'}</span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                     <span>{item.model || '—'}</span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                     <i className="bi bi-telephone-fill"></i>
                     <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '—'}</span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                     <i className="bi bi-hdd-network-fill"></i>
                     <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '—'}</span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                     <label className="switch" onClick={(e) => e.stopPropagation()}>
                       <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
                       <span className="slider round"></span>
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'start' }}>
                     <span style={{
                       display: 'inline-flex',
-                      alignItems: 'center',
+                      alignItems: 'start',
                       gap: '5px',
                       padding: '4px 10px',
                       fontSize: '0.75rem',
@@ -558,7 +562,7 @@ const calculateMetrics = (data) => {
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
                     <button
                       className="dashboard-btn"
                       onClick={() => handleDashboardLogin(item)}
@@ -578,7 +582,7 @@ const calculateMetrics = (data) => {
               <div className="modal-content onboarding-modal" onClick={(e) => e.stopPropagation()}>
                 // REPLACE the modal header section:
 <div className="modal-header">
-  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+  <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
     <h2>Campaign Details</h2>
     {selectedItem.status === 'testing' && (
       <span style={{
@@ -659,7 +663,7 @@ const calculateMetrics = (data) => {
                       </div>
                       <div className="detail-item">
                         <label>Password</label>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                           <p style={{ margin: 0, flex: 1 }}>
                             {selectedItem.primaryPassword ? (showPrimaryPassword ? selectedItem.primaryPassword : '••••••••') : '—'}
                           </p>
@@ -696,7 +700,7 @@ const calculateMetrics = (data) => {
                           </div>
                           <div className="detail-item">
                             <label>Password</label>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ display: 'flex', alignItems: 'start', gap: '8px' }}>
                               <p style={{ margin: 0, flex: 1 }}>
                                 {selectedItem.closerPassword ? (showCloserPassword ? selectedItem.closerPassword : '••••••••') : '—'}
                               </p>

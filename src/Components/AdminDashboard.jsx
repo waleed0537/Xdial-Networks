@@ -29,6 +29,8 @@ const AdminDashboard = () => {
   const [editingField, setEditingField] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
+  const [showStatusHistory, setShowStatusHistory] = useState(true);
+
 
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
@@ -73,6 +75,9 @@ const AdminDashboard = () => {
     { value: 'balanced-broad', label: 'Balanced Broad' },
     { value: 'balanced-qualified', label: 'Balanced Qualified' }
   ];
+  useEffect(() => {
+    document.title = "Onboarding - Xdial";
+  }, []);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('isAdminAuthenticated');
@@ -132,16 +137,16 @@ const AdminDashboard = () => {
   };
 
   // REPLACE calculateStats function:
-const calculateStats = (data) => {
-  const stats = {
-    total: data.length,
-    pending: data.filter(item => item.status === 'pending').length,
-    inProgress: data.filter(item => item.status === 'in-progress').length,
-    completed: data.filter(item => item.status === 'onboarded').length,
-    cancelled: data.filter(item => item.status === 'cancelled').length
+  const calculateStats = (data) => {
+    const stats = {
+      total: data.length,
+      pending: data.filter(item => item.status === 'pending').length,
+      inProgress: data.filter(item => item.status === 'in-progress').length,
+      completed: data.filter(item => item.status === 'onboarded').length,
+      cancelled: data.filter(item => item.status === 'cancelled').length
+    };
+    setStats(stats);
   };
-  setStats(stats);
-};
 
   const handleLogout = () => {
     navigate('/client-management');
@@ -380,77 +385,117 @@ const calculateStats = (data) => {
   };
 
   const updateStatus = async (id, newStatus) => {
-  if (newStatus === 'onboarded' && !allCompletionChecksMet()) {
-    alert('Cannot mark as onboarded! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
-    return;
-  }
-
-  if (newStatus === 'onboarded' && (!selectedIntegration.clientsdata_id || selectedIntegration.clientsdata_id === null)) {
-    alert('Cannot mark as onboarded! Please assign a Client ID first.');
-    return;
-  }
-
-  try {
-    const updateData = { status: newStatus };
-
-    if (newStatus === 'onboarded') {
-      updateData.clientAccessEnabled = true;
+    if (newStatus === 'onboarded' && !allCompletionChecksMet()) {
+      alert('Cannot mark as onboarded! Please ensure all requirements are checked:\n- Long Script\n- Client Dashboard\n- Disposition');
+      return;
     }
 
-    const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updateData)
-    });
+    if (newStatus === 'onboarded' && (!selectedIntegration.clientsdata_id || selectedIntegration.clientsdata_id === null)) {
+      alert('Cannot mark as onboarded! Please assign a Client ID first.');
+      return;
+    }
 
-    const data = await response.json();
+    try {
+      const updateData = { status: newStatus };
 
-    if (data.success) {
-      setIntegrations(prev =>
-        prev.map(item =>
+      if (newStatus === 'onboarded') {
+        updateData.clientAccessEnabled = true;
+      }
+
+      const response = await fetch(`${API_URL}/api/integration/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIntegrations(prev =>
+          prev.map(item =>
+            item.id === id ? {
+              ...item,
+              status: newStatus,
+              statusHistory: data.data.statusHistory,
+              clientAccessEnabled: newStatus === 'onboarded' ? true : item.clientAccessEnabled
+            } : item
+          )
+        );
+
+        if (selectedIntegration && selectedIntegration.id === id) {
+          setSelectedIntegration({
+            ...selectedIntegration,
+            status: newStatus,
+            statusHistory: data.data.statusHistory,
+            clientAccessEnabled: newStatus === 'onboarded' ? true : selectedIntegration.clientAccessEnabled
+          });
+        }
+
+        const updatedIntegrations = integrations.map(item =>
           item.id === id ? {
             ...item,
             status: newStatus,
             statusHistory: data.data.statusHistory,
             clientAccessEnabled: newStatus === 'onboarded' ? true : item.clientAccessEnabled
           } : item
-        )
-      );
+        );
+        calculateStats(updatedIntegrations);
 
-      if (selectedIntegration && selectedIntegration.id === id) {
-        setSelectedIntegration({
-          ...selectedIntegration,
-          status: newStatus,
-          statusHistory: data.data.statusHistory,
-          clientAccessEnabled: newStatus === 'onboarded' ? true : selectedIntegration.clientAccessEnabled
-        });
+        if (newStatus === 'onboarded') {
+          setCopyFeedback('Status updated to Onboarded! Client access enabled.');
+          setTimeout(() => setCopyFeedback(''), 3000);
+        } else {
+          setCopyFeedback(`Status updated to ${getStatusLabel(newStatus)}`);
+          setTimeout(() => setCopyFeedback(''), 2000);
+        }
       }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Failed to update status. Please try again.');
+    }
+  };
 
-      const updatedIntegrations = integrations.map(item =>
-        item.id === id ? {
-          ...item,
-          status: newStatus,
-          statusHistory: data.data.statusHistory,
-          clientAccessEnabled: newStatus === 'onboarded' ? true : item.clientAccessEnabled
-        } : item
-      );
-      calculateStats(updatedIntegrations);
+  const deleteStatusHistoryEntry = async (index) => {
+    if (!selectedIntegration) return;
 
-      if (newStatus === 'onboarded') {
-        setCopyFeedback('Status updated to Onboarded! Client access enabled.');
-        setTimeout(() => setCopyFeedback(''), 3000);
-      } else {
-        setCopyFeedback(`Status updated to ${getStatusLabel(newStatus)}`);
+    if (!window.confirm('Are you sure you want to delete this status history entry?')) {
+      return;
+    }
+
+    try {
+      const updatedHistory = [...(selectedIntegration.statusHistory || [])];
+      updatedHistory.splice(index, 1);
+
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ statusHistory: updatedHistory })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIntegrations(prev =>
+          prev.map(item =>
+            item.id === selectedIntegration.id ?
+              { ...item, statusHistory: updatedHistory } : item
+          )
+        );
+
+        setSelectedIntegration({ ...selectedIntegration, statusHistory: updatedHistory });
+
+        setCopyFeedback('History entry deleted');
         setTimeout(() => setCopyFeedback(''), 2000);
       }
+    } catch (err) {
+      console.error('Error deleting history entry:', err);
+      alert('Failed to delete history entry');
     }
-  } catch (err) {
-    console.error('Error updating status:', err);
-    alert('Failed to update status. Please try again.');
-  }
-};
+  };
 
   const deleteIntegration = async (id) => {
     if (!window.confirm('Are you sure you want to delete this integration request?')) {
@@ -494,30 +539,30 @@ const calculateStats = (data) => {
   };
 
   const getStatusBadgeClass = (status) => {
-  const statusMap = {
-    'pending': 'status-pending',
-    'in-progress': 'status-in-progress',
-    'onboarded': 'status-completed',
-    'testing': 'status-testing',
-    'testing-failed': 'status-cancelled',
-    'offboarded': 'status-offboarded',
-    'cancelled': 'status-cancelled'
+    const statusMap = {
+      'pending': 'status-pending',
+      'in-progress': 'status-in-progress',
+      'onboarded': 'status-completed',
+      'testing': 'status-testing',
+      'testing-failed': 'status-cancelled',
+      'offboarded': 'status-offboarded',
+      'cancelled': 'status-cancelled'
+    };
+    return statusMap[status] || 'status-pending';
   };
-  return statusMap[status] || 'status-pending';
-};
 
   const getStatusLabel = (status) => {
-  const labelMap = {
-    'pending': 'Pending',
-    'in-progress': 'In Progress',
-    'onboarded': 'Onboarded',
-    'testing': 'Testing',
-    'testing-failed': 'Testing Failed',
-    'offboarded': 'Offboarded',
-    'cancelled': 'Cancelled'
+    const labelMap = {
+      'pending': 'Pending',
+      'in-progress': 'In Progress',
+      'onboarded': 'Onboarded',
+      'testing': 'Testing',
+      'testing-failed': 'Testing Failed',
+      'offboarded': 'Offboarded',
+      'cancelled': 'Cancelled'
+    };
+    return labelMap[status] || status;
   };
-  return labelMap[status] || status;
-};
 
   const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
     const isEditing = editingField === field && isEditMode;
@@ -875,7 +920,7 @@ const calculateStats = (data) => {
       </div>
     );
   }
-  const StatusHistoryTimeline = ({ history }) => {
+  const StatusHistoryTimeline = ({ history, onDelete }) => {
   if (!history || history.length === 0) {
     return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No status changes yet</p>;
   }
@@ -886,7 +931,38 @@ const calculateStats = (data) => {
         <div key={index} className="timeline-entry">
           <div className="timeline-marker"></div>
           <div className="timeline-content">
-            <div className="timeline-action">{entry.action}</div>
+            <div className="timeline-action">
+              {entry.action}
+              <button
+                className="delete-history-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(index);
+                }}
+                title="Delete this entry"
+                style={{
+                  marginLeft: '12px',
+                  padding: '4px 8px',
+                  fontSize: '12px',
+                  color: '#dc2626',
+                  background: 'transparent',
+                  border: '1px solid #fca5a5',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = '#fee2e2';
+                  e.currentTarget.style.borderColor = '#dc2626';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.borderColor = '#fca5a5';
+                }}
+              >
+                <i className="bi bi-trash"></i>
+              </button>
+            </div>
             <div className="timeline-meta">
               <span className="timeline-from">{getStatusLabel(entry.fromStatus)}</span>
               <i className="bi bi-arrow-right"></i>
@@ -970,30 +1046,30 @@ const calculateStats = (data) => {
         <div className="filter-group">
           <div className="status-filters">
             // REPLACE the filter buttons section (around line 880):
-<button
-  className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
-  onClick={() => setStatusFilter('all')}
->
-  All
-</button>
-<button
-  className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
-  onClick={() => setStatusFilter('pending')}
->
-  Pending
-</button>
-<button
-  className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
-  onClick={() => setStatusFilter('in-progress')}
->
-  In Progress
-</button>
-<button
-  className={`filter-btn ${statusFilter === 'onboarded' ? 'active' : ''}`}
-  onClick={() => setStatusFilter('onboarded')}
->
-  Onboarded
-</button>
+            <button
+              className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('all')}
+            >
+              All
+            </button>
+            <button
+              className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('pending')}
+            >
+              Pending
+            </button>
+            <button
+              className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('in-progress')}
+            >
+              In Progress
+            </button>
+            <button
+              className={`filter-btn ${statusFilter === 'onboarded' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('onboarded')}
+            >
+              Onboarded
+            </button>
           </div>
 
           <select
@@ -1333,7 +1409,7 @@ const calculateStats = (data) => {
                 </div>
               )}
 
-             
+
               <div className="form-section">
                 <h3>Status & Requirements</h3>
 
@@ -1388,33 +1464,72 @@ const calculateStats = (data) => {
                 </div>
 
                 // REPLACE the status dropdown section (around line 1170):
-<div className="status-selector">
-  <label>Update Status:</label>
-  <select
-    value={selectedIntegration.status}
-    onChange={(e) => updateStatus(selectedIntegration.id, e.target.value)}
-    className="status-dropdown"
-  >
-    <option value="pending">Pending</option>
-    <option value="in-progress">In Progress</option>
-    <option value="onboarded">Onboarded</option>
-    <option value="testing">Testing</option>
-    <option value="testing-failed">Testing Failed</option>
-    <option value="offboarded">Offboarded</option>
-    <option value="cancelled">Cancelled</option>
-  </select>
-  {!allCompletionChecksMet() && selectedIntegration.status !== 'onboarded' && (
-    <small className="warning-text">
-      ⚠️ All requirements must be checked before marking as onboarded
-    </small>
-  )}
-</div>
+                <div className="status-selector">
+                  <label>Update Status:</label>
+                  <select
+                    value={selectedIntegration.status}
+                    onChange={(e) => updateStatus(selectedIntegration.id, e.target.value)}
+                    className="status-dropdown"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="onboarded">Onboarded</option>
+                    <option value="testing">Testing</option>
+                    <option value="testing-failed">Testing Failed</option>
+                    <option value="offboarded">Offboarded</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  {!allCompletionChecksMet() && selectedIntegration.status !== 'onboarded' && (
+                    <small className="warning-text">
+                      ⚠️ All requirements must be checked before marking as onboarded
+                    </small>
+                  )}
+                </div>
 
-<div className="status-history-section" style={{ marginTop: '24px' }}>
-  <h4 style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '600' }}>
-    <i className="bi bi-clock-history"></i> Status History
-  </h4>
-  <StatusHistoryTimeline history={selectedIntegration.statusHistory || []} />
+                <div className="status-history-section" style={{ marginTop: '24px' }}>
+  <div style={{ 
+    display: 'flex', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginBottom: '16px' 
+  }}>
+    <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+      <i className="bi bi-clock-history"></i> Status History
+    </h4>
+    <button
+      className="toggle-history-btn"
+      onClick={() => setShowStatusHistory(!showStatusHistory)}
+      style={{
+        padding: '6px 12px',
+        fontSize: '14px',
+        color: '#4f46e5',
+        background: 'transparent',
+        border: '1px solid #4f46e5',
+        borderRadius: '6px',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        transition: 'all 0.2s'
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.background = '#eef2ff';
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.background = 'transparent';
+      }}
+    >
+      <i className={`bi bi-chevron-${showStatusHistory ? 'up' : 'down'}`}></i>
+      {showStatusHistory ? 'Hide' : 'Show'} History
+    </button>
+  </div>
+  
+  {showStatusHistory && (
+    <StatusHistoryTimeline 
+      history={selectedIntegration.statusHistory || []} 
+      onDelete={deleteStatusHistoryEntry}
+    />
+  )}
 </div>
               </div>
 
@@ -1545,9 +1660,9 @@ const calculateStats = (data) => {
         </div>
       )}
     </div>
-    
+
   );
-  
+
 };
 
 
