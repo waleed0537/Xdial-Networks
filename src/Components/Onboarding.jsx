@@ -36,7 +36,7 @@ const Onboarding = () => {
 
   // Table columns config
   const columns = [
-    { key: 'sr', label: 'Sr#' },
+    { key: 'sr', label: 'No.' },
     { key: 'companyName', label: 'Company' },
     { key: 'campaign', label: 'Campaign' },
     { key: 'model', label: 'Model' },
@@ -675,9 +675,9 @@ const calculateMetrics = (data) => {
       <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
         <button
           className="dashboard-btn"
-          onClick={() => handleDashboardLogin(item)}
-          disabled={!item.clientsdata_id}
-          title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
+          // onClick={() => handleDashboardLogin(item)}
+          // disabled={!item.clientsdata_id}
+          // title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
         >
           <i className="bi bi-box-arrow-up-right"></i>
         </button>
