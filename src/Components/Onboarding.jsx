@@ -669,7 +669,7 @@ const calculateMetrics = (data) => {
           {showModal && selectedItem && (
             <div className="modal-overlay" onClick={closeModal}>
               <div className="modal-content onboarding-modal" onClick={(e) => e.stopPropagation()}>
-                // REPLACE the modal header section:
+                
 <div className="modal-header">
   <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
     <h2>Campaign Details</h2>
