@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../assets/css/ClientDashboard.css';
+import '../assets/css/Onboarding.css';
 
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
