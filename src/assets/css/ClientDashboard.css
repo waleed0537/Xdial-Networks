@@ -1277,21 +1277,6 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.metric-value.highlight {
-  color: #2563eb;
-}
-
-.metric-value.success {
-  color: #10b981;
-}
-
-.metric-value.warning {
-  color: #f59e0b;
-}
-
-.metric-value.danger {
-  color: #ef4444;
-}
 
 .metric-divider {
   width: 1px;
