@@ -310,7 +310,7 @@ app.patch('/api/integration/:id/status', async (req, res) => {
   try {
     const { status, clientAccessEnabled } = req.body;
 
-    const validStatuses = ['pending', 'in-progress', 'onboarded', 'testing', 'testing-failed', 'offboarded', 'cancelled'];
+    const validStatuses = ['pending', 'in-progress', 'onboarded', 'testing', 'testing-failed', 'offboarded', 'cancelled', 'paused'];
     
     if (!validStatuses.includes(status)) {
       return res.status(400).json({
@@ -369,6 +369,7 @@ app.patch('/api/integration/:id/status', async (req, res) => {
 });
 
 // ADD this helper function before the endpoint:
+// Update getStatusAction function
 function getStatusAction(status) {
   const actions = {
     'pending': 'Set to Pending',
@@ -377,7 +378,8 @@ function getStatusAction(status) {
     'testing': 'Testing Started',
     'testing-failed': 'Testing Failed',
     'offboarded': 'Client Offboarded',
-    'cancelled': 'Request Cancelled'
+    'cancelled': 'Request Cancelled',
+    'paused': 'Campaign Paused'
   };
   return actions[status] || 'Status Updated';
 }

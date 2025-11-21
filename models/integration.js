@@ -136,7 +136,7 @@ const Integration = sequelize.define('Integration', {
   defaultValue: 'pending',
   validate: {
     isIn: {
-      args: [['pending', 'in-progress', 'onboarded', 'testing', 'testing-failed', 'offboarded', 'cancelled']],
+      args: [['pending', 'in-progress', 'onboarded', 'testing', 'testing-failed', 'offboarded', 'cancelled', 'paused']],
       msg: 'Invalid status value'
     }
   }

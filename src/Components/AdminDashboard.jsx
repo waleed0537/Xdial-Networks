@@ -552,31 +552,35 @@ const AdminDashboard = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const getStatusBadgeClass = (status) => {
-    const statusMap = {
-      'pending': 'status-pending',
-      'in-progress': 'status-in-progress',
-      'onboarded': 'status-completed',
-      'testing': 'status-testing',
-      'testing-failed': 'status-cancelled',
-      'offboarded': 'status-offboarded',
-      'cancelled': 'status-cancelled'
-    };
-    return statusMap[status] || 'status-pending';
+  // Replace getStatusBadgeClass function
+const getStatusBadgeClass = (status) => {
+  const statusMap = {
+    'pending': 'status-pending',
+    'in-progress': 'status-in-progress',
+    'onboarded': 'status-completed',
+    'testing': 'status-testing',
+    'testing-failed': 'status-cancelled',
+    'offboarded': 'status-offboarded',
+    'cancelled': 'status-cancelled',
+    'paused': 'status-paused'
   };
+  return statusMap[status] || 'status-pending';
+};
 
-  const getStatusLabel = (status) => {
-    const labelMap = {
-      'pending': 'Pending',
-      'in-progress': 'In Progress',
-      'onboarded': 'Onboarded',
-      'testing': 'Testing',
-      'testing-failed': 'Testing Failed',
-      'offboarded': 'Offboarded',
-      'cancelled': 'Cancelled'
-    };
-    return labelMap[status] || status;
+  // Replace getStatusLabel function
+const getStatusLabel = (status) => {
+  const labelMap = {
+    'pending': 'Pending',
+    'in-progress': 'In Progress',
+    'onboarded': 'Onboarded',
+    'testing': 'Testing',
+    'testing-failed': 'Testing Failed',
+    'offboarded': 'Offboarded',
+    'cancelled': 'Cancelled',
+    'paused': 'Paused'
   };
+  return labelMap[status] || status;
+};
 
   const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
     const isEditing = editingField === field && isEditMode;
@@ -1125,50 +1129,39 @@ const AdminDashboard = () => {
           />
         </div>
 
-        <div className="filter-group">
-          <div className="status-filters">
-            <button
-              className={`filter-btn ${statusFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('all')}
-            >
-              All
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === 'pending' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('pending')}
-            >
-              Pending
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === 'in-progress' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('in-progress')}
-            >
-              In Progress
-            </button>
-            <button
-              className={`filter-btn ${statusFilter === 'onboarded' ? 'active' : ''}`}
-              onClick={() => setStatusFilter('onboarded')}
-            >
-              Onboarded
-            </button>
-          </div>
+<div className="filter-group">
+  <select
+    className="status-filter-dropdown"
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
+  >
+    <option value="all">All Statuses</option>
+    <option value="pending">Pending</option>
+    <option value="in-progress">In Progress</option>
+    <option value="onboarded">Onboarded</option>
+    <option value="testing">Testing</option>
+    <option value="testing-failed">Testing Failed</option>
+    <option value="paused">Paused</option>
+    <option value="offboarded">Offboarded</option>
+    <option value="cancelled">Cancelled</option>
+  </select>
 
-          <select
-            className="campaign-filter"
-            value={campaignFilter}
-            onChange={(e) => setCampaignFilter(e.target.value)}
-          >
-            <option value="all">All Campaigns</option>
-            <option value="Medicare">Medicare</option>
-            <option value="Final Expense">Final Expense</option>
-            <option value="MVA">MVA</option>
-            <option value="Auto Insurance">Auto Insurance</option>
-            <option value="Auto Warranty">Auto Warranty</option>
-            <option value="ACA">ACA</option>
-            <option value="Home">Home</option>
-            <option value="Medalert">Medalert</option>
-          </select>
-        </div>
+  <select
+    className="campaign-filter"
+    value={campaignFilter}
+    onChange={(e) => setCampaignFilter(e.target.value)}
+  >
+    <option value="all">All Campaigns</option>
+    <option value="Medicare">Medicare</option>
+    <option value="Final Expense">Final Expense</option>
+    <option value="MVA">MVA</option>
+    <option value="Auto Insurance">Auto Insurance</option>
+    <option value="Auto Warranty">Auto Warranty</option>
+    <option value="ACA">ACA</option>
+    <option value="Home">Home</option>
+    <option value="Medalert">Medalert</option>
+  </select>
+</div>
 
         <button className="refresh-btn" onClick={fetchIntegrations}>
           <i className="bi bi-arrow-clockwise"></i>
@@ -1552,12 +1545,13 @@ const AdminDashboard = () => {
                     className="status-dropdown"
                   >
                     <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="onboarded">Onboarded</option>
-                    <option value="testing">Testing</option>
-                    <option value="testing-failed">Testing Failed</option>
-                    <option value="offboarded">Offboarded</option>
-                    <option value="cancelled">Cancelled</option>
+  <option value="in-progress">In Progress</option>
+  <option value="onboarded">Onboarded</option>
+  <option value="testing">Testing</option>
+  <option value="testing-failed">Testing Failed</option>
+  <option value="paused">Paused</option>
+  <option value="offboarded">Offboarded</option>
+  <option value="cancelled">Cancelled</option>
                   </select>
                   {!allCompletionChecksMet() && selectedIntegration.status !== 'onboarded' && (
                     <small className="warning-text">

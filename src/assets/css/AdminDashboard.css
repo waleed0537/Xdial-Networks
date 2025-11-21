@@ -1775,3 +1775,28 @@ color: #6A6A6A;
   border-top: 1px solid #e5e7eb;
   padding-top: 20px;
 }
+.status-paused {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-filter-dropdown {
+  padding: 8px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 150px;
+}
+
+.status-filter-dropdown:hover {
+  border-color: #4f46e5;
+}
+
+.status-filter-dropdown:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
