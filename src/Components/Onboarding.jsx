@@ -49,6 +49,21 @@ const Onboarding = () => {
     { key: 'dashboard', label: 'Dashboard' }
   ];
 
+  // Header cell styles mapped to match row cell sizing exactly
+  const headerCellStyles = {
+    sr: { flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', fontWeight: 600 },
+    companyName: { flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 },
+    campaign: { flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    model: { flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    extensions: { flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    numberOfBots: { flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    serverIPs: { flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    status: { flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    expiration: { flex: '1', minWidth: 110, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    dashboard: { flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+    default: { flex: '1', minWidth: 80, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' }
+  };
+
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -539,63 +554,32 @@ const Onboarding = () => {
           </div>
 
           <div className="list-table" style={{ width: '100%' }}>
-            <div className="list-row header" style={{ display: 'flex', width: '110%', alignItems: 'center' }}>
-              {columns.map(col => (
-                <strong
-                  key={col.key}
-                  style={{
-                    cursor: 'pointer',
-                    userSelect: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    minHeight: '50px',
-                    gap: '4px',
-                    flex: col.key === 'companyName' ? '1.5' : '1',
-                    minWidth:
-                      col.key === 'sr' ? 40 :
-                        col.key === 'companyName' ? 120 :
-                          col.key === 'campaign' ? 100 :
-                            col.key === 'model' ? 90 :
-                              col.key === 'extensions' ? 110 :
-                                col.key === 'numberOfBots' ? 80 :
-                                  col.key === 'serverIPs' ? 110 :
-                                    col.key === 'status' ? 70 :
-                                      col.key === 'expiration' ? 110 :
-                                        col.key === 'dashboard' ? 70 : 80,
-                    maxWidth:
-                      col.key === 'sr' ? 50 :
-                        col.key === 'companyName' ? 200 :
-                          col.key === 'campaign' ? 140 :
-                            col.key === 'model' ? 120 :
-                              col.key === 'extensions' ? 150 :
-                                col.key === 'numberOfBots' ? 100 :
-                                  col.key === 'serverIPs' ? 150 :
-                                    col.key === 'status' ? 90 :
-                                      col.key === 'expiration' ? 140 :
-                                        col.key === 'dashboard' ? 90 : 120,
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis',
-                    padding: '6px 8px',
-                    boxSizing: 'border-box',
-                  }}
-                  onClick={() => {
-                    if (sortBy === col.key) {
-                      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-                    } else {
-                      setSortBy(col.key);
-                      setSortOrder('asc');
-                    }
-                  }}
-                >
-                  {col.label}
-                  {sortBy === col.key && (
-                    <span style={{ fontSize: '12px' }}>
-                      {sortOrder === 'asc' ? '▲' : '▼'}
-                    </span>
-                  )}
-                </strong>
-              ))}
+            <div className="list-row header" style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+              {columns.map(col => {
+                const base = headerCellStyles[col.key] || headerCellStyles.default;
+                const style = { ...base, cursor: 'pointer', userSelect: 'none', minHeight: '50px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', gap: '4px' };
+                return (
+                  <div
+                    key={col.key}
+                    style={style}
+                    onClick={() => {
+                      if (sortBy === col.key) {
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                      } else {
+                        setSortBy(col.key);
+                        setSortOrder('asc');
+                      }
+                    }}
+                  >
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>{col.label}</span>
+                    {sortBy === col.key && (
+                      <span style={{ fontSize: '12px' }}>
+                        {sortOrder === 'asc' ? '▲' : '▼'}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {filtered.map((item, idx) => {
