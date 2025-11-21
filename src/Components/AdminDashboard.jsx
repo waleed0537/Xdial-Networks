@@ -1067,10 +1067,16 @@ const AdminDashboard = () => {
             <h1><i className="bi bi-speedometer2"></i> Onboarding</h1>
             <p>Manage AI bot integration requests</p>
           </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            <i className="bi bi-box-arrow-right"></i>
-            Client Management
-          </button>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button className="logout-btn" onClick={() => navigate('/integration-form')}>
+              <i className="bi bi-file-earmark-plus"></i>
+              Integration Form
+            </button>
+            <button className="logout-btn" onClick={handleLogout}>
+              <i className="bi bi-box-arrow-right"></i>
+              Client Management
+            </button>
+          </div>
         </div>
       </header>
 
