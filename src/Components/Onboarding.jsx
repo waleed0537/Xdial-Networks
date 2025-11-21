@@ -19,6 +19,7 @@ pulseStyle.innerHTML = `
       transform: scale(1);
     }
     50% {
+    
       opacity: 0.8;
       transform: scale(1.05);
     }
@@ -97,64 +98,64 @@ const Onboarding = () => {
     }
   }, [navigate]);
   // REPLACE the calculateMetrics function:
-const calculateMetrics = (data) => {
-  const onboardedItems = data.filter(item => item.status === 'onboarded');
-  
-  const uniqueClientIds = new Set(
-    onboardedItems
-      .filter(item => item.clientsdata_id)
-      .map(item => item.clientsdata_id)
-  );
-  
-  const activeClientIds = new Set(
-    onboardedItems
-      .filter(item => item.clientsdata_id && item.clientAccessEnabled)
-      .map(item => item.clientsdata_id)
-  );
-  
-  const totalBots = onboardedItems.reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
-  const activeBots = onboardedItems
-    .filter(item => item.clientAccessEnabled)
-    .reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
-  
-  // Count testing phase items (status = 'testing')
-  const totalTestings = data.filter(item => 
-    item.status === 'testing' || item.status === 'testing-failed'
-  ).length;
-  
-  const ongoingTestings = data.filter(item => 
-    item.status === 'testing'
-  ).length;
-  
-  const testingSuccess = onboardedItems.length; // All onboarded items completed testing
-  
-  const testingFails = data.filter(item => 
-    item.status === 'testing-failed'
-  ).length;
-  
-  // Campaigns expiring in next 7 days
-  const sevenDaysFromNow = new Date();
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-  
-  const expiringSoon = onboardedItems.filter(item => {
-    if (!item.endDate) return false;
-    const endDate = new Date(item.endDate);
-    const now = new Date();
-    return endDate > now && endDate <= sevenDaysFromNow;
-  }).length;
-  
-  setMetrics({
-    totalClients: uniqueClientIds.size,
-    activeClients: activeClientIds.size,
-    totalBots,
-    activeBots,
-    totalTestings,
-    ongoingTestings,
-    testingSuccess,
-    testingFails,
-    expiringSoon
-  });
-};
+  const calculateMetrics = (data) => {
+    const onboardedItems = data.filter(item => item.status === 'onboarded');
+
+    const uniqueClientIds = new Set(
+      onboardedItems
+        .filter(item => item.clientsdata_id)
+        .map(item => item.clientsdata_id)
+    );
+
+    const activeClientIds = new Set(
+      onboardedItems
+        .filter(item => item.clientsdata_id && item.clientAccessEnabled)
+        .map(item => item.clientsdata_id)
+    );
+
+    const totalBots = onboardedItems.reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
+    const activeBots = onboardedItems
+      .filter(item => item.clientAccessEnabled)
+      .reduce((sum, item) => sum + (item.numberOfBots || 0), 0);
+
+    // Count testing phase items (status = 'testing')
+    const totalTestings = data.filter(item =>
+      item.status === 'testing' || item.status === 'testing-failed'
+    ).length;
+
+    const ongoingTestings = data.filter(item =>
+      item.status === 'testing'
+    ).length;
+
+    const testingSuccess = onboardedItems.length; // All onboarded items completed testing
+
+    const testingFails = data.filter(item =>
+      item.status === 'testing-failed'
+    ).length;
+
+    // Campaigns expiring in next 7 days
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+    const expiringSoon = onboardedItems.filter(item => {
+      if (!item.endDate) return false;
+      const endDate = new Date(item.endDate);
+      const now = new Date();
+      return endDate > now && endDate <= sevenDaysFromNow;
+    }).length;
+
+    setMetrics({
+      totalClients: uniqueClientIds.size,
+      activeClients: activeClientIds.size,
+      totalBots,
+      activeBots,
+      totalTestings,
+      ongoingTestings,
+      testingSuccess,
+      testingFails,
+      expiringSoon
+    });
+  };
 
   const fetchIntegrations = async () => {
     try {
@@ -538,7 +539,7 @@ const calculateMetrics = (data) => {
           </div>
 
           <div className="list-table" style={{ width: '100%' }}>
-            <div className="list-row header" style={{ display: 'flex', width: '100%' }}>
+            <div className="list-row header" style={{ display: 'flex', width: '100%', alignItems: 'start' }}>
               {columns.map(col => (
                 <strong
                   key={col.key}
@@ -546,31 +547,31 @@ const calculateMetrics = (data) => {
                     cursor: 'pointer',
                     userSelect: 'none',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'flex-start',
                     gap: '4px',
                     flex: col.key === 'companyName' ? '1.5' : '1',
                     minWidth:
                       col.key === 'sr' ? 40 :
-                      col.key === 'companyName' ? 120 :
-                      col.key === 'campaign' ? 100 :
-                      col.key === 'model' ? 90 :
-                      col.key === 'extensions' ? 110 :
-                      col.key === 'numberOfBots' ? 80 :
-                      col.key === 'serverIPs' ? 110 :
-                      col.key === 'status' ? 70 :
-                      col.key === 'expiration' ? 110 :
-                      col.key === 'dashboard' ? 70 : 80,
+                        col.key === 'companyName' ? 120 :
+                          col.key === 'campaign' ? 100 :
+                            col.key === 'model' ? 90 :
+                              col.key === 'extensions' ? 110 :
+                                col.key === 'numberOfBots' ? 80 :
+                                  col.key === 'serverIPs' ? 110 :
+                                    col.key === 'status' ? 70 :
+                                      col.key === 'expiration' ? 110 :
+                                        col.key === 'dashboard' ? 70 : 80,
                     maxWidth:
                       col.key === 'sr' ? 50 :
-                      col.key === 'companyName' ? 200 :
-                      col.key === 'campaign' ? 140 :
-                      col.key === 'model' ? 120 :
-                      col.key === 'extensions' ? 150 :
-                      col.key === 'numberOfBots' ? 100 :
-                      col.key === 'serverIPs' ? 150 :
-                      col.key === 'status' ? 90 :
-                      col.key === 'expiration' ? 140 :
-                      col.key === 'dashboard' ? 90 : 120,
+                        col.key === 'companyName' ? 200 :
+                          col.key === 'campaign' ? 140 :
+                            col.key === 'model' ? 120 :
+                              col.key === 'extensions' ? 150 :
+                                col.key === 'numberOfBots' ? 100 :
+                                  col.key === 'serverIPs' ? 150 :
+                                    col.key === 'status' ? 90 :
+                                      col.key === 'expiration' ? 140 :
+                                        col.key === 'dashboard' ? 90 : 120,
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
@@ -597,175 +598,175 @@ const calculateMetrics = (data) => {
             </div>
 
             {filtered.map((item, idx) => {
-  const expirationStatus = getExpirationStatus(item.endDate);
-  return (
-    <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
-      <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
-      <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', position: 'relative' }}>
-        <span>{item.companyName || '-'}</span>
-        {item.status === 'testing' && (
-          <i className="bi bi-gear-fill" style={{
-            fontSize: '14px',
-            color: '#ff9800',
-            cursor: 'pointer',
-            flexShrink: 0
-          }} title="Testing Phase"></i>
-        )}
-      </div>
-      <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span>{item.campaign || '-'}</span>
-      </div>
-      <div style={{ flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span>{item.model || '-'}</span>
-      </div>
-      <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <i className="bi bi-telephone-fill"></i>
-        <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '-'}</span>
-      </div>
-      <div style={{ flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span>{item.numberOfBots != null ? item.numberOfBots : '-'}</span>
-      </div>
-      <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
-        <i className="bi bi-hdd-network-fill"></i>
-        <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '-'}</span>
-      </div>
-      <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <label className="switch" onClick={(e) => e.stopPropagation()}>
-          <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
-          <span className="slider round"></span>
-        </label>
-      </div>
-      <div style={{ flex: '1', minWidth: 110, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
-        <span style={{
-          display: 'inline-flex',
-          alignItems: 'start',
-          gap: '5px',
-          padding: '4px 10px',
-          fontSize: '0.75rem',
-          fontWeight: '600',
-          borderRadius: '5px',
-          whiteSpace: 'nowrap',
-          backgroundColor:
-            expirationStatus.status === 'expired' ? '#fee2e2' :
-              expirationStatus.status === 'expires-today' ? '#fef3c7' :
-                expirationStatus.status === 'expires-soon' ? '#fff7ed' :
-                  expirationStatus.status === 'no-date' ? '#f3f4f6' :
-                    '#dcfce7',
-          color:
-            expirationStatus.status === 'expired' ? '#dc2626' :
-              expirationStatus.status === 'expires-today' ? '#d97706' :
-                expirationStatus.status === 'expires-soon' ? '#ea580c' :
-                  expirationStatus.status === 'no-date' ? '#6b7280' :
-                    '#16a34a',
-          border:
-            expirationStatus.status === 'expired' ? '1px solid #fecaca' :
-              expirationStatus.status === 'expires-today' ? '1px solid #fde68a' :
-                expirationStatus.status === 'expires-soon' ? '1px solid #fed7aa' :
-                  expirationStatus.status === 'no-date' ? '1px solid #e5e7eb' :
-                    '1px solid #bbf7d0'
-        }}>
-          {expirationStatus.status === 'expired' && <i className="bi bi-x-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
-          {expirationStatus.status === 'expires-today' && <i className="bi bi-clock-fill" style={{ fontSize: '0.85rem' }}></i>}
-          {expirationStatus.status === 'expires-soon' && <i className="bi bi-exclamation-triangle-fill" style={{ fontSize: '0.85rem' }}></i>}
-          {expirationStatus.status === 'active' && <i className="bi bi-check-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
-          {expirationStatus.status === 'no-date' && <i className="bi bi-calendar-x" style={{ fontSize: '0.85rem' }}></i>}
-          <span>{expirationStatus.text}</span>
-        </span>
-      </div>
-      <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
-        <button
-          className="dashboard-btn"
-          // onClick={() => handleDashboardLogin(item)}
-          // disabled={!item.clientsdata_id}
-          // title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
-        >
-          <i className="bi bi-box-arrow-up-right"></i>
-        </button>
-      </div>
-    </div>
-  );
-})}
+              const expirationStatus = getExpirationStatus(item.endDate);
+              return (
+                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
+                  <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
+                  <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', position: 'relative' }}>
+                    <span>{item.companyName || '-'}</span>
+                    {item.status === 'testing' && (
+                      <i className="bi bi-gear-fill" style={{
+                        fontSize: '14px',
+                        color: '#ff9800',
+                        cursor: 'pointer',
+                        flexShrink: 0
+                      }} title="Testing Phase"></i>
+                    )}
+                  </div>
+                  <div style={{ flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
+                    <span>{item.campaign || '-'}</span>
+                  </div>
+                  <div style={{ flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box' }}>
+                    <span>{item.model || '-'}</span>
+                  </div>
+                  <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <i className="bi bi-telephone-fill"></i>
+                    <span>{(item.extensions && item.extensions.length > 0) ? item.extensions.join(', ') : '-'}</span>
+                  </div>
+                  <div style={{ flex: '0 0 80px', minWidth: 80, maxWidth: 100, padding: '6px 8px', boxSizing: 'border-box' }}>
+                    <span>{item.numberOfBots != null ? item.numberOfBots : '-'}</span>
+                  </div>
+                  <div style={{ flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <i className="bi bi-hdd-network-fill"></i>
+                    <span>{(item.serverIPs && item.serverIPs.length > 0) ? item.serverIPs.join(', ') : '-'}</span>
+                  </div>
+                  <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }}>
+                    <label className="switch" onClick={(e) => e.stopPropagation()}>
+                      <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
+                  <div style={{ flex: '1', minWidth: 110, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box' }}>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'start',
+                      gap: '5px',
+                      padding: '4px 10px',
+                      fontSize: '0.75rem',
+                      fontWeight: '600',
+                      borderRadius: '5px',
+                      whiteSpace: 'nowrap',
+                      backgroundColor:
+                        expirationStatus.status === 'expired' ? '#fee2e2' :
+                          expirationStatus.status === 'expires-today' ? '#fef3c7' :
+                            expirationStatus.status === 'expires-soon' ? '#fff7ed' :
+                              expirationStatus.status === 'no-date' ? '#f3f4f6' :
+                                '#dcfce7',
+                      color:
+                        expirationStatus.status === 'expired' ? '#dc2626' :
+                          expirationStatus.status === 'expires-today' ? '#d97706' :
+                            expirationStatus.status === 'expires-soon' ? '#ea580c' :
+                              expirationStatus.status === 'no-date' ? '#6b7280' :
+                                '#16a34a',
+                      border:
+                        expirationStatus.status === 'expired' ? '1px solid #fecaca' :
+                          expirationStatus.status === 'expires-today' ? '1px solid #fde68a' :
+                            expirationStatus.status === 'expires-soon' ? '1px solid #fed7aa' :
+                              expirationStatus.status === 'no-date' ? '1px solid #e5e7eb' :
+                                '1px solid #bbf7d0'
+                    }}>
+                      {expirationStatus.status === 'expired' && <i className="bi bi-x-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
+                      {expirationStatus.status === 'expires-today' && <i className="bi bi-clock-fill" style={{ fontSize: '0.85rem' }}></i>}
+                      {expirationStatus.status === 'expires-soon' && <i className="bi bi-exclamation-triangle-fill" style={{ fontSize: '0.85rem' }}></i>}
+                      {expirationStatus.status === 'active' && <i className="bi bi-check-circle-fill" style={{ fontSize: '0.85rem' }}></i>}
+                      {expirationStatus.status === 'no-date' && <i className="bi bi-calendar-x" style={{ fontSize: '0.85rem' }}></i>}
+                      <span>{expirationStatus.text}</span>
+                    </span>
+                  </div>
+                  <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
+                    <button
+                      className="dashboard-btn"
+                    // onClick={() => handleDashboardLogin(item)}
+                    // disabled={!item.clientsdata_id}
+                    // title={item.clientsdata_id ? "Open Dashboard" : "Client ID not set"}
+                    >
+                      <i className="bi bi-box-arrow-up-right"></i>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {showModal && selectedItem && (
             <div className="modal-overlay" onClick={closeModal}>
               <div className="modal-content onboarding-modal" onClick={(e) => e.stopPropagation()}>
-                
-<div className="modal-header">
-  <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
-    <h2>Campaign Details</h2>
-    {selectedItem.status === 'testing' && (
-      <span style={{
-        backgroundColor: '#ff9800',
-        color: 'white',
-        padding: '4px 12px',
-        borderRadius: '12px',
-        fontSize: '12px',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: '0.5px',
-        boxShadow: '0 2px 4px rgba(255, 152, 0, 0.3)',
-        animation: 'pulse 2s infinite'
-      }}>
-        <i className="bi bi-beaker" style={{ marginRight: '4px' }}></i>
-        Testing Phase
-      </span>
-    )}
-  </div>
-  <button className="close-modal-btn" onClick={closeModal}>
-    <i className="bi bi-x-lg"></i>
-  </button>
-</div>
+
+                <div className="modal-header">
+                  <div style={{ display: 'flex', alignItems: 'start', gap: '12px' }}>
+                    <h2>Campaign Details</h2>
+                    {selectedItem.status === 'testing' && (
+                      <span style={{
+                        backgroundColor: '#ff9800',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        boxShadow: '0 2px 4px rgba(255, 152, 0, 0.3)',
+                        animation: 'pulse 2s infinite'
+                      }}>
+                        <i className="bi bi-beaker" style={{ marginRight: '4px' }}></i>
+                        Testing Phase
+                      </span>
+                    )}
+                  </div>
+                  <button className="close-modal-btn" onClick={closeModal}>
+                    <i className="bi bi-x-lg"></i>
+                  </button>
+                </div>
 
                 <div className="modal-body simple-form">
                   <div className="form-section">
                     <h3><i className="bi bi-briefcase-fill"></i> Campaign Information</h3>
                     <div className="form-row">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.companyName || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.companyName || '-')}>
                         <label>Client Name</label>
                         <p className="field-value">{selectedItem.companyName || '-'}</p>
                       </div>
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.clientsdata_id || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.clientsdata_id || '-')}>
                         <label>Client ID</label>
                         <p className="field-value">{selectedItem.clientsdata_id || '-'}</p>
                       </div>
                     </div>
                     <div className="form-row">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.campaign || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.campaign || '-')}>
                         <label>Campaign</label>
                         <p className="field-value">{selectedItem.campaign || '-'}</p>
                       </div>
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.model || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.model || '-')}>
                         <label>Model</label>
                         <p className="field-value">{selectedItem.model || '-'}</p>
                       </div>
                     </div>
                     <div className="form-row">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.numberOfBots != null ? selectedItem.numberOfBots : '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.numberOfBots != null ? selectedItem.numberOfBots : '-')}>
                         <label>Number of Bots</label>
                         <p className="field-value">{selectedItem.numberOfBots != null ? selectedItem.numberOfBots : '-'}</p>
                       </div>
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.dialplan || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.dialplan || '-')}>
                         <label>Dial Plan</label>
                         <p className="field-value">{selectedItem.dialplan || '-'}</p>
                       </div>
                     </div>
                     <div className="form-row">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard((selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard((selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : '-')}>
                         <label>Extensions</label>
                         <p className="field-value">{(selectedItem.extensions && selectedItem.extensions.length > 0) ? selectedItem.extensions.join(', ') : '-'}</p>
                       </div>
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard((selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard((selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : '-')}>
                         <label>Server IPs</label>
                         <p className="field-value">{(selectedItem.serverIPs && selectedItem.serverIPs.length > 0) ? selectedItem.serverIPs.join(', ') : '-'}</p>
                       </div>
                     </div>
                     <div className="form-row">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(formatDate(selectedItem.startDate))}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(formatDate(selectedItem.startDate))}>
                         <label>Start Date</label>
                         <p className="field-value">{formatDate(selectedItem.startDate)}</p>
                       </div>
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(formatDate(selectedItem.endDate))}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(formatDate(selectedItem.endDate))}>
                         <label>End Date</label>
                         <p className="field-value">{formatDate(selectedItem.endDate)}</p>
                       </div>
@@ -775,11 +776,11 @@ const calculateMetrics = (data) => {
                   <div className="form-section">
                     <h3><i className="bi bi-shield-lock-fill"></i> Primary Dialler</h3>
                     <div className="form-row">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryUser || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.primaryUser || '-')}>
                         <label>Username</label>
                         <p className="field-value">{selectedItem.primaryUser || '-'}</p>
                       </div>
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryPassword ? selectedItem.primaryPassword : '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.primaryPassword ? selectedItem.primaryPassword : '-')}>
                         <label>Password</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <p className="field-value" style={{ margin: 0, flex: 1 }}>
@@ -798,13 +799,13 @@ const calculateMetrics = (data) => {
                       </div>
                     </div>
                     <div className="form-row full">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.primaryIpValidation || '-')}>
                         <label>IP Validation Link</label>
                         <p className="field-value">{selectedItem.primaryIpValidation || '-'}</p>
                       </div>
                     </div>
                     <div className="form-row full">
-                      <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '-')}>
+                      <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.primaryAdminLink || '-')}>
                         <label>Admin Link</label>
                         <p className="field-value">{selectedItem.primaryAdminLink || '-'}</p>
                       </div>
@@ -815,11 +816,11 @@ const calculateMetrics = (data) => {
                     <div className="form-section">
                       <h3><i className="bi bi-people-fill"></i> Closer Dialler</h3>
                       <div className="form-row">
-                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerUser || '-')}>
+                        <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.closerUser || '-')}>
                           <label>Username</label>
                           <p className="field-value">{selectedItem.closerUser || '-'}</p>
                         </div>
-                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerPassword ? selectedItem.closerPassword : '-')}>
+                        <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.closerPassword ? selectedItem.closerPassword : '-')}>
                           <label>Password</label>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <p className="field-value" style={{ margin: 0, flex: 1 }}>
@@ -838,13 +839,13 @@ const calculateMetrics = (data) => {
                         </div>
                       </div>
                       <div className="form-row full">
-                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '-')}>
+                        <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.closerIpValidation || '-')}>
                           <label>IP Validation Link</label>
                           <p className="field-value">{selectedItem.closerIpValidation || '-'}</p>
                         </div>
                       </div>
                       <div className="form-row full">
-                        <div className="form-field" style={{cursor:'pointer'}} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '-')}>
+                        <div className="form-field" style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(selectedItem.closerAdminLink || '-')}>
                           <label>Admin Link</label>
                           <p className="field-value">{selectedItem.closerAdminLink || '-'}</p>
                         </div>
@@ -854,7 +855,7 @@ const calculateMetrics = (data) => {
                 </div>
 
                 {copyFeedback && (
-                  <div style={{position:'fixed',top:'24px',right:'24px',zIndex:9999,background:'#111827',color:'#fff',padding:'8px 18px',borderRadius:'8px',fontWeight:600,boxShadow:'0 2px 8px rgba(0,0,0,0.12)'}}>
+                  <div style={{ position: 'fixed', top: '24px', right: '24px', zIndex: 9999, background: '#111827', color: '#fff', padding: '8px 18px', borderRadius: '8px', fontWeight: 600, boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}>
                     {copyFeedback}
                   </div>
                 )}
