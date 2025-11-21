@@ -51,8 +51,8 @@ const Onboarding = () => {
 
   // Header cell styles mapped to match row cell sizing exactly
   const headerCellStyles = {
-    sr: { flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', fontWeight: 600 },
-    companyName: { flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 },
+    sr: { flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
+    companyName: { flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', gap: '8px' },
     campaign: { flex: '1', minWidth: 100, maxWidth: 140, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
     model: { flex: '1', minWidth: 90, maxWidth: 120, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
     extensions: { flex: '1', minWidth: 110, maxWidth: 150, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center' },
@@ -571,7 +571,7 @@ const Onboarding = () => {
                       }
                     }}
                   >
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>{col.label}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>{col.label}</span>
                     {sortBy === col.key && (
                       <span style={{ fontSize: '12px' }}>
                         {sortOrder === 'asc' ? '▲' : '▼'}
@@ -585,9 +585,9 @@ const Onboarding = () => {
             {filtered.map((item, idx) => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
-                <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
-                  <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600 }}>{idx + 1}</div>
-                  <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', position: 'relative' }}>
+                  <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{ display: 'flex', alignItems: 'start', minHeight: '50px', width: '100%' }}>
+                  <div style={{ flex: '0 0 40px', minWidth: 40, maxWidth: 50, padding: '6px 8px', boxSizing: 'border-box' }}>{idx + 1}</div>
+                  <div style={{ flex: '1.5', minWidth: 120, maxWidth: 200, padding: '6px 8px', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', position: 'relative' }}>
                     <span>{item.companyName || '-'}</span>
                     {item.status === 'testing' && (
                       <i className="bi bi-gear-fill" style={{
@@ -628,7 +628,6 @@ const Onboarding = () => {
                       gap: '5px',
                       padding: '4px 10px',
                       fontSize: '0.75rem',
-                      fontWeight: '600',
                       borderRadius: '5px',
                       whiteSpace: 'nowrap',
                       backgroundColor:
