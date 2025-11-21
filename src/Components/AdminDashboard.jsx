@@ -1070,7 +1070,7 @@ const AdminDashboard = () => {
           <div style={{ display: 'flex', gap: '12px' }}>
             <button className="logout-btn" onClick={() => navigate('/integration-form')}>
               <i className="bi bi-file-earmark-plus"></i>
-              Integration Form
+              Add Client
             </button>
             <button className="logout-btn" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right"></i>
