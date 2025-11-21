@@ -336,9 +336,25 @@
   gap: 0.6rem;
 }
 
-/* Force consistent font-weight across the onboarding table */
-.list-table, .list-table .list-row, .list-table .list-row > div, .list-table .list-row * {
-  font-weight: 600 !important;
+/* Table font weight and color tuning:
+   - Keep header bold (600)
+   - Render data rows lighter (500) and use a softer text color for less visual weight
+*/
+.list-table .list-row.header {
+  font-weight: 600;
+  color: #111827;
+}
+
+.list-table .list-row:not(.header) {
+  font-weight: 500;
+  color: #475569; /* softer slate color */
+}
+
+.list-table .list-row:not(.header) > div,
+.list-table .list-row:not(.header) span,
+.list-table .list-row:not(.header) p {
+  font-weight: 500;
+  color: #475569;
 }
 
 .list-row i {
