@@ -46,7 +46,7 @@ const Onboarding = () => {
     { key: 'serverIPs', label: 'Server IPs' },
     { key: 'status', label: 'Status' },
     { key: 'expiration', label: 'Expiration' },
-    { key: 'dashboard', label: 'Dashboard' }
+    // { key: 'dashboard', label: 'Dashboard' }
   ];
 
   // Header cell styles mapped to match row cell sizing exactly
@@ -657,6 +657,7 @@ const Onboarding = () => {
                       <span>{expirationStatus.text}</span>
                     </span>
                   </div>
+                  {/*
                   <div style={{ flex: '0 0 70px', minWidth: 70, maxWidth: 90, padding: '6px 8px', boxSizing: 'border-box' }} onClick={(e) => e.stopPropagation()}>
                     <button
                       className="dashboard-btn"
@@ -667,6 +668,7 @@ const Onboarding = () => {
                       <i className="bi bi-box-arrow-up-right"></i>
                     </button>
                   </div>
+                  */}
                 </div>
               );
             })}
