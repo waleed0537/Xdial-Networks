@@ -539,7 +539,7 @@ const Onboarding = () => {
           </div>
 
           <div className="list-table" style={{ width: '100%' }}>
-            <div className="list-row header" style={{ display: 'flex', width: '100%', alignItems: 'center' }}>
+            <div className="list-row header" style={{ display: 'flex', width: '110%', alignItems: 'center' }}>
               {columns.map(col => (
                 <strong
                   key={col.key}
