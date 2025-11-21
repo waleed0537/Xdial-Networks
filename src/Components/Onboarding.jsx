@@ -42,7 +42,7 @@ const Onboarding = () => {
     { key: 'campaign', label: 'Campaign' },
     { key: 'model', label: 'Model' },
     { key: 'extensions', label: 'Extensions' },
-    { key: 'numberOfBots', label: 'No. of Bots' },
+    { key: 'numberOfBots', label: 'Bots' },
     { key: 'serverIPs', label: 'Server IPs' },
     { key: 'status', label: 'Status' },
     { key: 'expiration', label: 'Expiration' },
