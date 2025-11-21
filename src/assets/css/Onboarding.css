@@ -336,6 +336,11 @@
   gap: 0.6rem;
 }
 
+/* Force consistent font-weight across the onboarding table */
+.list-table, .list-table .list-row, .list-table .list-row > div, .list-table .list-row * {
+  font-weight: 600 !important;
+}
+
 .list-row i {
   color: #3b82f6;
   font-size: 1rem;

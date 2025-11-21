@@ -571,7 +571,7 @@ const Onboarding = () => {
                       }
                     }}
                   >
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 700 }}>{col.label}</span>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>{col.label}</span>
                     {sortBy === col.key && (
                       <span style={{ fontSize: '12px' }}>
                         {sortOrder === 'asc' ? '▲' : '▼'}
