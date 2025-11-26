@@ -309,7 +309,7 @@
   }
 
   .improved-comparison-container::after {
-    content: '← Scroll horizontally →';
+    content: 'Scroll horizontally';
     display: block;
     text-align: center;
     padding: 0.5rem;

@@ -18,7 +18,7 @@ async function fixClientAccess() {
       useUnifiedTopology: true,
     });
     
-    console.log('âœ" Connected to MongoDB');
+    console.log('Connected to MongoDB');
 
     // Find all completed campaigns with a client ID but no client access
     const result = await Integration.updateMany(
@@ -38,7 +38,7 @@ async function fixClientAccess() {
       }
     );
 
-    console.log(`âœ" Updated ${result.modifiedCount} campaigns`);
+    console.log(`Updated ${result.modifiedCount} campaigns`);
     console.log(`  - Matched: ${result.matchedCount}`);
     console.log(`  - Modified: ${result.modifiedCount}`);
 
@@ -52,17 +52,17 @@ async function fixClientAccess() {
       'clientId companyName campaign model'
     );
 
-    console.log('\nâœ" Client access enabled for:');
+    console.log('\nClient access enabled for:');
     updatedCampaigns.forEach(campaign => {
       console.log(`  - ${campaign.companyName} (ID: ${campaign.clientId}) - ${campaign.campaign} ${campaign.model}`);
     });
 
     await mongoose.connection.close();
-    console.log('\nâœ" Database connection closed');
+    console.log('\nDatabase connection closed');
     process.exit(0);
 
   } catch (error) {
-    console.error('âœ— Error:', error);
+    console.error('Error:', error);
     process.exit(1);
   }
 }
