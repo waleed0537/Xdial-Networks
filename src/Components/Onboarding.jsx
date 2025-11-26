@@ -76,8 +76,8 @@ const Onboarding = () => {
 
   const filtered = useMemo(() => {
     return items.filter(i => {
-      // Only show completed campaigns
-      if (i.status !== 'completed') return false;
+      // Only show onboarded and testing campaigns
+      if (i.status !== 'onboarded' && i.status !== 'testing') return false;
       if (campaignFilter && i.campaign !== campaignFilter) return false;
       if (modelFilter && i.model !== modelFilter) return false;
       if (search) {
@@ -85,7 +85,7 @@ const Onboarding = () => {
         const company = (i.companyName || '').toLowerCase();
         const campaign = (i.campaign || '').toLowerCase();
         const model = (i.model || '').toLowerCase();
-        const clientId = (i.clientId || '').toLowerCase();
+        const clientId = (i.clientsdata_id || '').toString().toLowerCase();
         if (!company.includes(q) && !campaign.includes(q) && !model.includes(q) && !clientId.includes(q)) return false;
       }
       return true;
