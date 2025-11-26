@@ -9,7 +9,7 @@ const axios = require('axios');
 const app = express();
 
 // Import database and model
-const { sequelize, adminSequelize, Client, Integration } = require('./models');
+const { sequelize, adminSequelize, ClientData, Integration } = require('./models');
 
 
 
@@ -100,7 +100,7 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
-// Submit Integration Request (Client-facing form)
+// Submit Integration Request (ClientData-facing form)
 app.post('/api/integration/submit', async (req, res) => {
   try {
     const {
