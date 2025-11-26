@@ -9,7 +9,7 @@ const axios = require('axios');
 const app = express();
 
 // Import database and model
-const { sequelize, Client, Integration } = require('./models');
+const { sequelize, adminSequelize, Client, Integration } = require('./models');
 
 
 
@@ -239,7 +239,6 @@ if (setupType === 'separate') {
   }
 });
 
-// Get All Integration Requests (Admin)
 app.get('/api/integration/all', async (req, res) => {
   try {
     const { status, campaign, page = 1, limit = 10 } = req.query;
@@ -257,9 +256,51 @@ app.get('/api/integration/all', async (req, res) => {
       offset: offset
     });
 
+    // get client IDs that have campaigns | only onboarded/testing status
+    const clientIds = [...new Set(
+      rows
+        .filter(item => item.clientsdata_id && (item.status === 'onboarded' || item.status === 'testing'))
+        .map(item => String(item.clientsdata_id))
+    )];
+
+    // check live status from admindashboard for all clients at once | no need to get them separately for each client
+    let liveClientIds = new Set();
+    
+    if (clientIds.length > 0) {
+      try {
+        const [results] = await adminSequelize.query(`
+          SELECT DISTINCT client_id
+          FROM calls 
+          WHERE client_id = ANY(:clientIds::text[])
+            AND timestamp >= NOW() - INTERVAL '1 minute'
+        `, {
+          replacements: { clientIds },
+          type: adminSequelize.QueryTypes.SELECT
+        });
+        
+        liveClientIds = new Set(results.map(r => r.client_id));
+      } catch (error) {
+        console.error('Error checking live status from admindashboard:', error);
+      }
+    }
+
+    // add liveStatus to each item
+    const rowsWithStatus = rows.map(item => {
+      const itemData = item.toJSON();
+      
+      // Determine if client is live
+      const isLive = item.clientsdata_id && liveClientIds.has(String(item.clientsdata_id));
+      
+      itemData.liveStatus = {
+        isLive: isLive
+      };
+      
+      return itemData;
+    });
+
     res.json({
       success: true,
-      data: rows,
+      data: rowsWithStatus,
       pagination: {
         total: count,
         page: parseInt(page),

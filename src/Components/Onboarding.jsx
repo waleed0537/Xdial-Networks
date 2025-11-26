@@ -102,6 +102,7 @@ const Onboarding = () => {
   useEffect(() => {
     document.title = "Manage - Xdial";
   }, []);
+  
   useEffect(() => {
     const isClient = localStorage.getItem('isClientAuthenticated');
     const isAdmin = localStorage.getItem('isAdminAuthenticated');
@@ -110,6 +111,13 @@ const Onboarding = () => {
       navigate('/admin/login');
     } else {
       fetchIntegrations();
+      
+      // Auto-refresh every 30 seconds to update live status
+      const refreshInterval = setInterval(() => {
+        fetchIntegrations();
+      }, 30000);
+
+      return () => clearInterval(refreshInterval);
     }
   }, [navigate]);
   // REPLACE the calculateMetrics function:
