@@ -228,7 +228,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const startEditing = (field, currentValue) => {
+const startEditing = (field, currentValue) => {
   setEditingField(field);
   const isArrayField = ['extensions', 'serverIPs'].includes(field);
 
@@ -238,73 +238,77 @@ const AdminDashboard = () => {
       : '';
     setEditValue(textValue);
   } else {
-    // Convert to string, handling null/undefined/numbers properly
-    const stringValue = currentValue === null || currentValue === undefined 
-      ? '' 
-      : String(currentValue);
-    setEditValue(stringValue);
+    // For all other fields, preserve the actual value type
+    setEditValue(currentValue === null || currentValue === undefined ? '' : currentValue);
   }
 };
-
   const cancelEditing = () => {
     setEditingField(null);
     setEditValue('');
   };
 
   const saveField = async (field) => {
-    if (!selectedIntegration) return;
+  if (!selectedIntegration) return;
 
-    const isArrayField = ['extensions', 'serverIPs'].includes(field);
-    const isDateField = ['startDate', 'endDate'].includes(field);
+  const isArrayField = ['extensions', 'serverIPs'].includes(field);
+  const isDateField = ['startDate', 'endDate'].includes(field);
+  const isNumberField = ['numberOfBots', 'clientsdata_id', 'client_id'].includes(field);
 
-    let valueToSave;
-    if (isArrayField) {
-      valueToSave = editValue
-        .split('\n')
-        .map(item => item.trim())
-        .filter(item => item !== '');
-    } else if (isDateField) {
-      valueToSave = editValue ? new Date(editValue).toISOString() : null;
-    } else if (field === 'clientsdata_id') {
-      valueToSave = editValue === '' ? null : parseInt(editValue) || null;
+  let valueToSave;
+  
+  if (isArrayField) {
+    valueToSave = editValue
+      .split('\n')
+      .map(item => item.trim())
+      .filter(item => item !== '');
+  } else if (isDateField) {
+    valueToSave = editValue ? new Date(editValue).toISOString() : null;
+  } else if (isNumberField) {
+    // Handle number fields explicitly
+    if (editValue === '' || editValue === null || editValue === undefined) {
+      valueToSave = null;
     } else {
-      valueToSave = editValue;
+      const parsedNumber = parseInt(editValue, 10);
+      valueToSave = isNaN(parsedNumber) ? null : parsedNumber;
     }
+  } else {
+    valueToSave = editValue;
+  }
 
-    try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ [field]: valueToSave })
-      });
+  try {
+    const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ [field]: valueToSave })
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (data.success) {
-        const updatedIntegrations = integrations.map(item =>
-          item.id === selectedIntegration.id ? { ...item, [field]: valueToSave } : item
-        );
-        setIntegrations(updatedIntegrations);
-        setFilteredIntegrations(updatedIntegrations);
-        setSelectedIntegration({ ...selectedIntegration, [field]: valueToSave });
-
-        setEditingField(null);
-        setEditValue('');
-      } else {
-        throw new Error(data.message || 'Failed to save changes');
-      }
-    } catch (err) {
-      console.error('Error updating field:', err);
-      const errorMessage = err.message || 'Failed to update field';
-      setError(errorMessage);
-      setTimeout(() => setError(''), 3000);
+    if (data.success) {
+      const updatedIntegrations = integrations.map(item =>
+        item.id === selectedIntegration.id ? { ...item, [field]: valueToSave } : item
+      );
+      setIntegrations(updatedIntegrations);
+      setFilteredIntegrations(updatedIntegrations);
+      setSelectedIntegration({ ...selectedIntegration, [field]: valueToSave });
 
       setEditingField(null);
       setEditValue('');
+    } else {
+      throw new Error(data.message || 'Failed to save changes');
     }
-  };
+  } catch (err) {
+    console.error('Error updating field:', err);
+    const errorMessage = err.message || 'Failed to update field';
+    setError(errorMessage);
+    setTimeout(() => setError(''), 3000);
+
+    setEditingField(null);
+    setEditValue('');
+  }
+};
 
   const updateCompletionCheck = async (field, value) => {
     if (!selectedIntegration) return;
@@ -584,156 +588,114 @@ const getStatusLabel = (status) => {
   return labelMap[status] || status;
 };
 
-  const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
-    const isEditing = editingField === field && isEditMode;
+const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
+  const isEditing = editingField === field && isEditMode;
 
-    if (type === 'date') {
-      return (
-        <div className="form-field">
-          <label>{label}</label>
-          {isEditMode && isEditing ? (
-            <div className="field-edit-group">
-              <input
-                type="date"
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                autoFocus
-                className="form-input"
-              />
-              <div className="field-actions-inline">
-                <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
-                  <i className="bi bi-check-lg"></i>
-                </button>
-                <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
-                  <i className="bi bi-x-lg"></i>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isEditMode) startEditing(field, value);
-              }}
-              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-            >
-              {isEditMode ? (
-                <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
-                  {value || 'Not set'}
-                </p>
-              ) : (
-                <p className="field-value">{value ? formatDate(new Date(value)) : 'Not set'}</p>
-              )}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (isTextarea) {
-      return (
-        <div className="form-field full-width">
-          <label>{label}</label>
-          {isEditMode && isEditing ? (
-            <div className="edit-mode">
-              <textarea
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                rows="4"
-                autoFocus
-                className="form-textarea"
-              />
-              <div className="field-actions">
-                <button className="save-btn" onClick={() => saveField(field)}>
-                  <i className="bi bi-check-lg"></i> Save
-                </button>
-                <button className="cancel-btn" onClick={cancelEditing}>
-                  <i className="bi bi-x-lg"></i> Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isEditMode) startEditing(field, value);
-              }}
-              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-            >
-              {isEditMode ? (
-                <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
-                  {value || '-'}
-                </p>
-              ) : (
-                <p className="field-value">{value || '-'}</p>
-              )}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (options) {
-      return (
-        <div className="form-field">
-          <label>{label}</label>
-          {isEditMode && isEditing ? (
-            <div className="field-edit-group">
-              <select
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                autoFocus
-                className="form-select"
-              >
-                <option value="">Select {label}</option>
-                {options.map((option) => (
-                  <option key={option.value || option} value={option.value || option}>
-                    {option.label || option}
-                  </option>
-                ))}
-              </select>
-              <div className="field-actions-inline">
-                <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
-                  <i className="bi bi-check-lg"></i>
-                </button>
-                <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
-                  <i className="bi bi-x-lg"></i>
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isEditMode) startEditing(field, value);
-              }}
-              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-            >
-              {isEditMode ? (
-                <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
-                  {value || '-'}
-                </p>
-              ) : (
-                <p className="field-value">{value || '-'}</p>
-              )}
-            </div>
-          )}
-        </div>
-      );
-    }
-
+  if (type === 'date') {
     return (
       <div className="form-field">
         <label>{label}</label>
         {isEditMode && isEditing ? (
           <div className="field-edit-group">
             <input
-              type={type}
+              type="date"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
               autoFocus
               className="form-input"
             />
+            <div className="field-actions-inline">
+              <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+                <i className="bi bi-check-lg"></i>
+              </button>
+              <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isEditMode) startEditing(field, value);
+            }}
+            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+          >
+            {isEditMode ? (
+              <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+                {value || 'Not set'}
+              </p>
+            ) : (
+              <p className="field-value">{value ? formatDate(new Date(value)) : 'Not set'}</p>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (isTextarea) {
+    return (
+      <div className="form-field full-width">
+        <label>{label}</label>
+        {isEditMode && isEditing ? (
+          <div className="edit-mode">
+            <textarea
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              rows="4"
+              autoFocus
+              className="form-textarea"
+            />
+            <div className="field-actions">
+              <button className="save-btn" onClick={() => saveField(field)}>
+                <i className="bi bi-check-lg"></i> Save
+              </button>
+              <button className="cancel-btn" onClick={cancelEditing}>
+                <i className="bi bi-x-lg"></i> Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isEditMode) startEditing(field, value);
+            }}
+            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+          >
+            {isEditMode ? (
+              <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+                {value || '-'}
+              </p>
+            ) : (
+              <p className="field-value">{value || '-'}</p>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (options) {
+    return (
+      <div className="form-field">
+        <label>{label}</label>
+        {isEditMode && isEditing ? (
+          <div className="field-edit-group">
+            <select
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              autoFocus
+              className="form-select"
+            >
+              <option value="">Select {label}</option>
+              {options.map((option) => (
+                <option key={option.value || option} value={option.value || option}>
+                  {option.label || option}
+                </option>
+              ))}
+            </select>
             <div className="field-actions-inline">
               <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
                 <i className="bi bi-check-lg"></i>
@@ -762,7 +724,49 @@ const getStatusLabel = (status) => {
         )}
       </div>
     );
-  };
+  }
+
+  return (
+    <div className="form-field">
+      <label>{label}</label>
+      {isEditMode && isEditing ? (
+        <div className="field-edit-group">
+          <input
+            type={type}
+            value={editValue}
+            onChange={(e) => setEditValue(type === 'number' ? e.target.value : e.target.value)}
+            autoFocus
+            className="form-input"
+          />
+          <div className="field-actions-inline">
+            <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+              <i className="bi bi-check-lg"></i>
+            </button>
+            <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+              <i className="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isEditMode) startEditing(field, value);
+          }}
+          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+        >
+          {isEditMode ? (
+            <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+              {value === null || value === undefined ? '-' : value}
+            </p>
+          ) : (
+            <p className="field-value">{value === null || value === undefined ? '-' : value}</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
   const EditableArrayField = ({ field, value, label }) => {
     const isEditing = editingField === field && isEditMode;
@@ -1308,11 +1312,11 @@ const getStatusLabel = (status) => {
                       options={campaignConfig[selectedIntegration.campaign] || []}
                     />
                     <EditableField
-                      field="numberOfBots"
-                      value={selectedIntegration.numberOfBots}
-                      label="Number of Bots"
-                      type="number"
-                    />
+  field="numberOfBots"
+  value={selectedIntegration.numberOfBots}
+  label="Number of Bots"
+  type="number"
+/>
                   </div>
                   <div className="form-row">
                     <EditableField
