@@ -812,6 +812,109 @@ app.get('/api/client/dashboard-login/:clientsdata_id', async (req, res) => {
     });
   }
 });
+app.get('/api/integration/all', async (req, res) => {
+  try {
+    const { status, campaign, page = 1, limit = 10 } = req.query;
+    
+    const where = {};
+    if (status) where.status = status;
+    if (campaign) where.campaign = campaign;
+    
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Integration.findAndCountAll({
+      where,
+      order: [['submittedAt', 'DESC']],
+      limit: parseInt(limit),
+      offset: offset
+    });
+
+    // get client IDs that have campaigns | only onboarded/testing status
+    const clientIds = [...new Set(
+      rows
+        .filter(item => item.clientsdata_id && (item.status === 'onboarded' || item.status === 'testing'))
+        .map(item => String(item.clientsdata_id))
+    )];
+
+    // check live status from admindashboard for all clients at once
+    let liveClientIds = new Set();
+    
+    if (clientIds.length > 0) {
+      try {
+        const results = await adminSequelize.query(`
+          SELECT DISTINCT client_id::text
+          FROM calls 
+          WHERE client_id IN (:clientIds)
+            AND timestamp >= NOW() - INTERVAL '1 minute'
+        `, {
+          replacements: { clientIds },
+          type: adminSequelize.QueryTypes.SELECT
+        });
+        
+        liveClientIds = new Set(results.map(r => String(r.client_id)));
+
+        // Auto-enable clientAccessEnabled for live clients
+        const idsToEnable = Array.from(liveClientIds).map(id => parseInt(id));
+        if (idsToEnable.length > 0) {
+          await Integration.update(
+            { clientAccessEnabled: true },
+            { 
+              where: { 
+                clientsdata_id: idsToEnable,
+                status: ['onboarded', 'testing']
+              } 
+            }
+          );
+        }
+
+        // Auto-disable clients with no recent calls
+        const allClientIds = clientIds.map(id => parseInt(id));
+        const inactiveClientIds = allClientIds.filter(id => !liveClientIds.has(String(id)));
+
+        if (inactiveClientIds.length > 0) {
+          await Integration.update(
+            { clientAccessEnabled: false },
+            { 
+              where: { 
+                clientsdata_id: inactiveClientIds,
+                status: ['onboarded', 'testing']
+              } 
+            }
+          );
+        }
+
+      } catch (error) {
+        console.error('Error checking live status from admindashboard:', error);
+      }
+    }
+
+    // Reload rows to get updated clientAccessEnabled values
+    const { rows: updatedRows } = await Integration.findAndCountAll({
+      where,
+      order: [['submittedAt', 'DESC']],
+      limit: parseInt(limit),
+      offset: offset
+    });
+
+    res.json({
+      success: true,
+      data: updatedRows,
+      pagination: {
+        total: count,
+        page: parseInt(page),
+        pages: Math.ceil(count / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error('Error fetching integration requests:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch integration requests',
+      error: error.message
+    });
+  }
+});
 
 app.get('/api/clientsdata/all', async (req, res) => {
   try {
