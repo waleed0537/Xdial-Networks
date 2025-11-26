@@ -239,6 +239,12 @@ if (setupType === 'separate') {
   }
 });
 
+
+let liveStatusCache = {
+  data: new Set(),
+  timestamp: 0
+};
+
 app.get('/api/integration/all', async (req, res) => {
   try {
     const { status, campaign, page = 1, limit = 10 } = req.query;
@@ -249,65 +255,74 @@ app.get('/api/integration/all', async (req, res) => {
     
     const offset = (page - 1) * limit;
 
-    const { count, rows } = await Integration.findAndCountAll({
-      where,
-      order: [['submittedAt', 'DESC']],
-      limit: parseInt(limit),
-      offset: offset
+    // Get client IDs that need live status check (only onboarded/testing)
+    const clientIds = await Integration.findAll({
+      attributes: ['clientsdata_id'],
+      where: {
+        clientsdata_id: { [require('sequelize').Op.ne]: null },
+        status: ['onboarded', 'testing']
+      },
+      raw: true
     });
 
-    // get client IDs that have campaigns | only onboarded/testing status
-    const clientIds = [...new Set(
-      rows
-        .filter(item => item.clientsdata_id && (item.status === 'onboarded' || item.status === 'testing'))
+    const uniqueClientIds = [...new Set(
+      clientIds
+        .filter(item => item.clientsdata_id)
         .map(item => String(item.clientsdata_id))
     )];
 
-    // check live status from admindashboard for all clients at once
+    // Check live status from admindashboard (with 30-second cache)
     let liveClientIds = new Set();
+    const now = Date.now();
+    const CACHE_TTL = 30000; // 30 seconds
     
-    if (clientIds.length > 0) {
+    if (uniqueClientIds.length > 0) {
       try {
-        const results = await adminSequelize.query(`
+        // Use cache if valid
+        if (now - liveStatusCache.timestamp < CACHE_TTL) {
+          liveClientIds = liveStatusCache.data;
+        } else {
+          // Refresh cache
+          const results = await adminSequelize.query(`
           SELECT DISTINCT client_id::text
           FROM calls 
-          WHERE client_id IN (:clientIds)
+          WHERE client_id = ANY(:clientIds::text[])
             AND timestamp >= NOW() - INTERVAL '1 minute'
         `, {
-          replacements: { clientIds },
+          replacements: { clientIds: uniqueClientIds },
           type: adminSequelize.QueryTypes.SELECT
         });
         
         liveClientIds = new Set(results.map(r => String(r.client_id)));
-
-        // Auto-enable clientAccessEnabled for live clients
-        const idsToEnable = Array.from(liveClientIds).map(id => parseInt(id));
-        if (idsToEnable.length > 0) {
-          await Integration.update(
-            { clientAccessEnabled: true },
-            { 
-              where: { 
-                clientsdata_id: idsToEnable,
-                status: ['onboarded', 'testing']
-              } 
-            }
-          );
+        
+        // Update cache
+        liveStatusCache = {
+          data: liveClientIds,
+          timestamp: now
+        };
         }
 
-        // Auto-disable clients with no recent calls
-        const allClientIds = clientIds.map(id => parseInt(id));
-        const inactiveClientIds = allClientIds.filter(id => !liveClientIds.has(String(id)));
+        // Single UPDATE with CASE statement - much faster!
+        if (uniqueClientIds.length > 0) {
+          const allClientIdsInt = uniqueClientIds.map(id => parseInt(id));
+          const liveClientIdsInt = Array.from(liveClientIds).map(id => parseInt(id));
 
-        if (inactiveClientIds.length > 0) {
-          await Integration.update(
-            { clientAccessEnabled: false },
-            { 
-              where: { 
-                clientsdata_id: inactiveClientIds,
-                status: ['onboarded', 'testing']
-              } 
+          await Integration.sequelize.query(`
+            UPDATE integrations 
+            SET 
+              "clientAccessEnabled" = CASE 
+                WHEN "clientsdata_id" = ANY(:liveIds::integer[]) THEN true
+                ELSE false
+              END,
+              "updatedAt" = NOW()
+            WHERE "clientsdata_id" = ANY(:allIds::integer[])
+              AND status IN ('onboarded', 'testing')
+          `, {
+            replacements: { 
+              liveIds: liveClientIdsInt,
+              allIds: allClientIdsInt
             }
-          );
+          });
         }
 
       } catch (error) {
@@ -315,8 +330,8 @@ app.get('/api/integration/all', async (req, res) => {
       }
     }
 
-    // Reload rows to get updated clientAccessEnabled values
-    const { rows: updatedRows } = await Integration.findAndCountAll({
+    // Single fetch with all updates already applied
+    const { count, rows } = await Integration.findAndCountAll({
       where,
       order: [['submittedAt', 'DESC']],
       limit: parseInt(limit),
@@ -325,7 +340,7 @@ app.get('/api/integration/all', async (req, res) => {
 
     res.json({
       success: true,
-      data: updatedRows,
+      data: rows,
       pagination: {
         total: count,
         page: parseInt(page),
