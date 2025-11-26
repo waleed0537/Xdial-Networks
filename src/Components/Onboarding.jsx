@@ -582,7 +582,7 @@ const Onboarding = () => {
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>{col.label}</span>
                     {sortBy === col.key && (
                       <span style={{ fontSize: '12px' }}>
-                        {sortOrder === 'asc' ? '▲' : '▼'}
+                        <i className={`bi ${sortOrder === 'asc' ? 'bi-caret-up-fill' : 'bi-caret-down-fill'}`} />
                       </span>
                     )}
                   </div>
@@ -778,7 +778,7 @@ const Onboarding = () => {
                         <label>Password</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <p className="field-value" style={{ margin: 0, flex: 1 }}>
-                            {selectedItem.primaryPassword ? (showPrimaryPassword ? selectedItem.primaryPassword : '••••••••') : '-'}
+                            {selectedItem.primaryPassword ? (showPrimaryPassword ? selectedItem.primaryPassword : '********') : '-'}
                           </p>
                           {selectedItem.primaryPassword && (
                             <button
@@ -818,7 +818,7 @@ const Onboarding = () => {
                           <label>Password</label>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <p className="field-value" style={{ margin: 0, flex: 1 }}>
-                              {selectedItem.closerPassword ? (showCloserPassword ? selectedItem.closerPassword : '••••••••') : '-'}
+                              {selectedItem.closerPassword ? (showCloserPassword ? selectedItem.closerPassword : '********') : '-'}
                             </p>
                             {selectedItem.closerPassword && (
                               <button

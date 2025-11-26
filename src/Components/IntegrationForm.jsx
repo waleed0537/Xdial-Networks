@@ -114,10 +114,10 @@ const IntegrationForm = () => {
 }, [formData.campaign]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'number' ? (value === '' ? '' : parseInt(value)) : value
     }));
   };
 

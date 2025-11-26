@@ -29,8 +29,8 @@ app.use(express.urlencoded({ extended: true }));
 // Sync database (creates tables if they don't exist)
 // Initialize Database
 sequelize.sync({ alter: false })  // Use alter to add foreign key constraint
-  .then(() => console.log('✅ Database synchronized'))
-  .catch(err => console.error('❌ Database sync error:', err));
+  .then(() => console.log('Database synchronized'))
+  .catch(err => console.error('Database sync error:', err));
 
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) {
@@ -128,6 +128,13 @@ app.post('/api/integration/submit', async (req, res) => {
       clientsdata_id  // Add this
     } = req.body;
 
+    // Log numberOfBots to diagnose the issue
+    console.log('=== INTEGRATION SUBMISSION DEBUG ===');
+    console.log('Received numberOfBots:', numberOfBots);
+    console.log('Type of numberOfBots:', typeof numberOfBots);
+    console.log('Company Name:', companyName);
+    console.log('====================================');
+
   
     const validCombinations = {
   'Medicare': ['Basic', 'Advanced'],
@@ -159,6 +166,13 @@ if (!model || !validModels || !validModels.includes(model)) {
 
 // Validate transfer settings
 
+// Validate numberOfBots
+if (!numberOfBots || isNaN(numberOfBots) || numberOfBots < 1 || numberOfBots > 1000) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid number of bots: ${numberOfBots}. Must be between 1 and 1000.`
+  });
+}
 
 // Validate separate dialler if needed
 if (setupType === 'separate') {
@@ -174,7 +188,7 @@ if (setupType === 'separate') {
     const integration = await Integration.create({
       campaign,
       model,
-      numberOfBots,
+      numberOfBots: parseInt(numberOfBots),
       transferSettings,
       client_id: null,
       clientsdata_id: clientsdata_id || null,  // Add this
@@ -883,8 +897,8 @@ app.post('/api/client/dashboard-auth/:clientsdata_id', async (req, res) => {
 const PORT = process.env.PORT || 5010;
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`🔍 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📝 Submit form: POST http://localhost:${PORT}/api/integration/submit`);
-  console.log(`👥 Client portal: GET http://localhost:${PORT}/api/client/:client_id/campaigns`);
-}); 
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log(`Submit form: POST http://localhost:${PORT}/api/integration/submit`);
+  console.log(`Client portal: GET http://localhost:${PORT}/api/client/:client_id/campaigns`);
+});
