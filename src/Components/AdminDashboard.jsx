@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import '../assets/css/AdminDashboard.css';
 
-// Environment detection
 const getApiUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:5010';
@@ -26,11 +25,8 @@ const AdminDashboard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [campaignFilter, setCampaignFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [editingField, setEditingField] = useState(null);
-  const [editValue, setEditValue] = useState('');
   const [copyFeedback, setCopyFeedback] = useState('');
   const [showStatusHistory, setShowStatusHistory] = useState(false);
-
 
   const [campaignResources, setCampaignResources] = useState({
     longScript: '',
@@ -45,15 +41,12 @@ const AdminDashboard = () => {
     cancelled: 0
   });
 
-
-  // Completion requirements
   const [completionChecks, setCompletionChecks] = useState({
     longScript: false,
     clientDashboard: false,
     disposition: false
   });
 
-  // Campaign configuration
   const campaignConfig = {
     'Medicare': ['Basic', 'Advanced'],
     'Final Expense': ['Basic', 'Advanced'],
@@ -75,6 +68,7 @@ const AdminDashboard = () => {
     { value: 'balanced-broad', label: 'Balanced Broad' },
     { value: 'balanced-qualified', label: 'Balanced Qualified' }
   ];
+
   useEffect(() => {
     document.title = "Onboarding - Xdial";
   }, []);
@@ -85,7 +79,6 @@ const AdminDashboard = () => {
       navigate('/admin/login');
     }
   }, [navigate]);
-  // Auto-set model when campaign changes
 
   useEffect(() => {
     fetchIntegrations();
@@ -136,7 +129,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // REPLACE calculateStats function:
   const calculateStats = (data) => {
     const stats = {
       total: data.length,
@@ -156,7 +148,6 @@ const AdminDashboard = () => {
     setSelectedIntegration(integration);
     setShowModal(true);
 
-    // Load completion checks
     if (integration.completionRequirements) {
       setCompletionChecks(integration.completionRequirements);
     } else {
@@ -167,52 +158,11 @@ const AdminDashboard = () => {
       });
     }
   };
-  const updateTestingStatus = async (value) => {
-    if (!selectedIntegration) return;
-
-    setTestingStatus(value);
-
-    try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ testing: value })
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIntegrations(prev =>
-          prev.map(item =>
-            item.id === selectedIntegration.id ?
-              { ...item, testing: value } : item
-          )
-        );
-
-        setSelectedIntegration({ ...selectedIntegration, testing: value });
-
-        let message = '';
-        if (value === 'in-progress') message = 'Testing phase started';
-        else if (value === 'completed') message = 'Testing marked as completed';
-        else if (value === 'failed') message = 'Testing marked as failed';
-        else message = 'Testing phase removed';
-
-        setCopyFeedback(message);
-        setTimeout(() => setCopyFeedback(''), 2000);
-      }
-    } catch (err) {
-      console.error('Error updating testing status:', err);
-    }
-  };
 
   const closeModal = () => {
     setShowModal(false);
     setShowResourceModal(false);
     setSelectedIntegration(null);
-    setEditingField(null);
-    setEditValue('');
     setIsEditMode(false);
   };
 
@@ -228,87 +178,63 @@ const AdminDashboard = () => {
     }
   };
 
-const startEditing = (field, currentValue) => {
-  setEditingField(field);
-  const isArrayField = ['extensions', 'serverIPs'].includes(field);
+  const updateField = async (field, newValue) => {
+    if (!selectedIntegration) return;
 
-  if (isArrayField) {
-    const textValue = Array.isArray(currentValue) && currentValue.length > 0
-      ? currentValue.join('\n')
-      : '';
-    setEditValue(textValue);
-  } else {
-    // For all other fields, preserve the actual value type
-    setEditValue(currentValue === null || currentValue === undefined ? '' : currentValue);
-  }
-};
-  const cancelEditing = () => {
-    setEditingField(null);
-    setEditValue('');
+    let valueToSave = newValue;
+
+    if (field === 'numberOfBots' || field === 'clientsdata_id' || field === 'client_id') {
+      if (newValue === '' || newValue === null || newValue === undefined) {
+        valueToSave = null;
+      } else {
+        const numValue = Number(newValue);
+        if (isNaN(numValue)) {
+          setError(`Invalid number for ${field}`);
+          setTimeout(() => setError(''), 3000);
+          return;
+        }
+        valueToSave = numValue;
+      }
+    } else if (field === 'extensions' || field === 'serverIPs') {
+      valueToSave = Array.isArray(newValue) ? newValue : [];
+    } else if (field === 'startDate' || field === 'endDate') {
+      valueToSave = newValue ? new Date(newValue).toISOString() : null;
+    }
+
+    console.log(`Updating ${field} from`, selectedIntegration[field], 'to', valueToSave);
+
+    try {
+      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ [field]: valueToSave })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log(`Successfully updated ${field} to`, data.data[field]);
+        
+        const updatedIntegrations = integrations.map(item =>
+          item.id === selectedIntegration.id ? data.data : item
+        );
+        setIntegrations(updatedIntegrations);
+        setFilteredIntegrations(updatedIntegrations);
+        setSelectedIntegration(data.data);
+
+        setCopyFeedback('Field updated successfully');
+        setTimeout(() => setCopyFeedback(''), 2000);
+      } else {
+        throw new Error(data.message || 'Failed to save changes');
+      }
+    } catch (err) {
+      console.error('Error updating field:', err);
+      setError(err.message || 'Failed to update field');
+      setTimeout(() => setError(''), 3000);
+    }
   };
-
-  const saveField = async (field) => {
-  if (!selectedIntegration) return;
-
-  const isArrayField = ['extensions', 'serverIPs'].includes(field);
-  const isDateField = ['startDate', 'endDate'].includes(field);
-  const isNumberField = ['numberOfBots', 'clientsdata_id', 'client_id'].includes(field);
-
-  let valueToSave;
-  
-  if (isArrayField) {
-    valueToSave = editValue
-      .split('\n')
-      .map(item => item.trim())
-      .filter(item => item !== '');
-  } else if (isDateField) {
-    valueToSave = editValue ? new Date(editValue).toISOString() : null;
-  } else if (isNumberField) {
-    // Handle number fields explicitly
-    if (editValue === '' || editValue === null || editValue === undefined) {
-      valueToSave = null;
-    } else {
-      const parsedNumber = parseInt(editValue, 10);
-      valueToSave = isNaN(parsedNumber) ? null : parsedNumber;
-    }
-  } else {
-    valueToSave = editValue;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ [field]: valueToSave })
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      const updatedIntegrations = integrations.map(item =>
-        item.id === selectedIntegration.id ? { ...item, [field]: valueToSave } : item
-      );
-      setIntegrations(updatedIntegrations);
-      setFilteredIntegrations(updatedIntegrations);
-      setSelectedIntegration({ ...selectedIntegration, [field]: valueToSave });
-
-      setEditingField(null);
-      setEditValue('');
-    } else {
-      throw new Error(data.message || 'Failed to save changes');
-    }
-  } catch (err) {
-    console.error('Error updating field:', err);
-    const errorMessage = err.message || 'Failed to update field';
-    setError(errorMessage);
-    setTimeout(() => setError(''), 3000);
-
-    setEditingField(null);
-    setEditValue('');
-  }
-};
 
   const updateCompletionCheck = async (field, value) => {
     if (!selectedIntegration) return;
@@ -473,7 +399,6 @@ const startEditing = (field, currentValue) => {
     try {
       const updatedHistory = [...(selectedIntegration.statusHistory || [])];
 
-      // Find the exact index of the entry in the original history array
       const idx = updatedHistory.findIndex(e => (
         e.timestamp === entry.timestamp &&
         e.action === entry.action &&
@@ -482,7 +407,6 @@ const startEditing = (field, currentValue) => {
       ));
 
       if (idx === -1) {
-        // Entry not found; abort
         return;
       }
 
@@ -558,57 +482,212 @@ const startEditing = (field, currentValue) => {
     return `${year}-${month}-${day}`;
   };
 
-  // Replace getStatusBadgeClass function
-const getStatusBadgeClass = (status) => {
-  const statusMap = {
-    'pending': 'status-pending',
-    'in-progress': 'status-in-progress',
-    'onboarded': 'status-completed',
-    'testing': 'status-testing',
-    'testing-failed': 'status-cancelled',
-    'offboarded': 'status-offboarded',
-    'cancelled': 'status-cancelled',
-    'paused': 'status-paused'
+  const getStatusBadgeClass = (status) => {
+    const statusMap = {
+      'pending': 'status-pending',
+      'in-progress': 'status-in-progress',
+      'onboarded': 'status-completed',
+      'testing': 'status-testing',
+      'testing-failed': 'status-cancelled',
+      'offboarded': 'status-offboarded',
+      'cancelled': 'status-cancelled',
+      'paused': 'status-paused'
+    };
+    return statusMap[status] || 'status-pending';
   };
-  return statusMap[status] || 'status-pending';
-};
 
-  // Replace getStatusLabel function
-const getStatusLabel = (status) => {
-  const labelMap = {
-    'pending': 'Pending',
-    'in-progress': 'In Progress',
-    'onboarded': 'Onboarded',
-    'testing': 'Testing',
-    'testing-failed': 'Testing Failed',
-    'offboarded': 'Offboarded',
-    'cancelled': 'Cancelled',
-    'paused': 'Paused'
+  const getStatusLabel = (status) => {
+    const labelMap = {
+      'pending': 'Pending',
+      'in-progress': 'In Progress',
+      'onboarded': 'Onboarded',
+      'testing': 'Testing',
+      'testing-failed': 'Testing Failed',
+      'offboarded': 'Offboarded',
+      'cancelled': 'Cancelled',
+      'paused': 'Paused'
+    };
+    return labelMap[status] || status;
   };
-  return labelMap[status] || status;
-};
 
-const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
-  const isEditing = editingField === field && isEditMode;
+  const EditableField = ({ field, value, label, type = 'text', isTextarea = false, options = null }) => {
+    const [localValue, setLocalValue] = React.useState(value);
+    const [isEditing, setIsEditing] = React.useState(false);
 
-  if (type === 'date') {
+    React.useEffect(() => {
+      setLocalValue(value);
+    }, [value]);
+
+    const handleSave = () => {
+      updateField(field, localValue);
+      setIsEditing(false);
+    };
+
+    const handleCancel = () => {
+      setLocalValue(value);
+      setIsEditing(false);
+    };
+
+    const handleChange = (e) => {
+      const newVal = e.target.value;
+      if (type === 'number') {
+        if (newVal === '') {
+          setLocalValue('');
+        } else {
+          const num = Number(newVal);
+          if (!isNaN(num)) {
+            setLocalValue(num);
+          }
+        }
+      } else {
+        setLocalValue(newVal);
+      }
+    };
+
+    if (type === 'date') {
+      const dateValue = value ? formatDateForInput(value) : '';
+      return (
+        <div className="form-field">
+          <label>{label}</label>
+          {isEditMode && isEditing ? (
+            <div className="field-edit-group">
+              <input
+                type="date"
+                value={localValue || ''}
+                onChange={(e) => setLocalValue(e.target.value)}
+                autoFocus
+                className="form-input"
+              />
+              <div className="field-actions-inline">
+                <button className="save-btn-sm" onClick={handleSave} title="Save">
+                  <i className="bi bi-check-lg"></i>
+                </button>
+                <button className="cancel-btn-sm" onClick={handleCancel} title="Cancel">
+                  <i className="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditMode) {
+                  setLocalValue(dateValue);
+                  setIsEditing(true);
+                }
+              }}
+              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+            >
+              <p className="field-value" style={{ cursor: isEditMode ? 'pointer' : 'default', padding: '8px', background: isEditMode ? '#f9fafb' : 'transparent', borderRadius: '4px' }}>
+                {value ? formatDate(new Date(value)) : 'Not set'}
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (isTextarea) {
+      return (
+        <div className="form-field full-width">
+          <label>{label}</label>
+          {isEditMode && isEditing ? (
+            <div className="edit-mode">
+              <textarea
+                value={localValue || ''}
+                onChange={handleChange}
+                rows="4"
+                autoFocus
+                className="form-textarea"
+              />
+              <div className="field-actions">
+                <button className="save-btn" onClick={handleSave}>
+                  <i className="bi bi-check-lg"></i> Save
+                </button>
+                <button className="cancel-btn" onClick={handleCancel}>
+                  <i className="bi bi-x-lg"></i> Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditMode) setIsEditing(true);
+              }}
+              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+            >
+              <p className="field-value" style={{ cursor: isEditMode ? 'pointer' : 'default', padding: '8px', background: isEditMode ? '#f9fafb' : 'transparent', borderRadius: '4px' }}>
+                {value || '-'}
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (options) {
+      return (
+        <div className="form-field">
+          <label>{label}</label>
+          {isEditMode && isEditing ? (
+            <div className="field-edit-group">
+              <select
+                value={localValue || ''}
+                onChange={handleChange}
+                autoFocus
+                className="form-select"
+              >
+                <option value="">Select {label}</option>
+                {options.map((option) => (
+                  <option key={option.value || option} value={option.value || option}>
+                    {option.label || option}
+                  </option>
+                ))}
+              </select>
+              <div className="field-actions-inline">
+                <button className="save-btn-sm" onClick={handleSave} title="Save">
+                  <i className="bi bi-check-lg"></i>
+                </button>
+                <button className="cancel-btn-sm" onClick={handleCancel} title="Cancel">
+                  <i className="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (isEditMode) setIsEditing(true);
+              }}
+              style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+            >
+              <p className="field-value" style={{ cursor: isEditMode ? 'pointer' : 'default', padding: '8px', background: isEditMode ? '#f9fafb' : 'transparent', borderRadius: '4px' }}>
+                {value || '-'}
+              </p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     return (
       <div className="form-field">
         <label>{label}</label>
         {isEditMode && isEditing ? (
           <div className="field-edit-group">
             <input
-              type="date"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
+              type={type}
+              value={localValue === null || localValue === undefined ? '' : localValue}
+              onChange={handleChange}
               autoFocus
               className="form-input"
             />
             <div className="field-actions-inline">
-              <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
+              <button className="save-btn-sm" onClick={handleSave} title="Save">
                 <i className="bi bi-check-lg"></i>
               </button>
-              <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
+              <button className="cancel-btn-sm" onClick={handleCancel} title="Cancel">
                 <i className="bi bi-x-lg"></i>
               </button>
             </div>
@@ -617,195 +696,69 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
           <div
             onClick={(e) => {
               e.stopPropagation();
-              if (isEditMode) startEditing(field, value);
+              if (isEditMode) setIsEditing(true);
             }}
             style={{ cursor: isEditMode ? 'pointer' : 'default' }}
           >
-            {isEditMode ? (
-              <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
-                {value || 'Not set'}
-              </p>
-            ) : (
-              <p className="field-value">{value ? formatDate(new Date(value)) : 'Not set'}</p>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (isTextarea) {
-    return (
-      <div className="form-field full-width">
-        <label>{label}</label>
-        {isEditMode && isEditing ? (
-          <div className="edit-mode">
-            <textarea
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              rows="4"
-              autoFocus
-              className="form-textarea"
-            />
-            <div className="field-actions">
-              <button className="save-btn" onClick={() => saveField(field)}>
-                <i className="bi bi-check-lg"></i> Save
-              </button>
-              <button className="cancel-btn" onClick={cancelEditing}>
-                <i className="bi bi-x-lg"></i> Cancel
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              if (isEditMode) startEditing(field, value);
-            }}
-            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-          >
-            {isEditMode ? (
-              <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
-                {value || '-'}
-              </p>
-            ) : (
-              <p className="field-value">{value || '-'}</p>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  if (options) {
-    return (
-      <div className="form-field">
-        <label>{label}</label>
-        {isEditMode && isEditing ? (
-          <div className="field-edit-group">
-            <select
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              autoFocus
-              className="form-select"
-            >
-              <option value="">Select {label}</option>
-              {options.map((option) => (
-                <option key={option.value || option} value={option.value || option}>
-                  {option.label || option}
-                </option>
-              ))}
-            </select>
-            <div className="field-actions-inline">
-              <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
-                <i className="bi bi-check-lg"></i>
-              </button>
-              <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
-                <i className="bi bi-x-lg"></i>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              if (isEditMode) startEditing(field, value);
-            }}
-            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-          >
-            {isEditMode ? (
-              <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
-                {value || '-'}
-              </p>
-            ) : (
-              <p className="field-value">{value || '-'}</p>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div className="form-field">
-      <label>{label}</label>
-      {isEditMode && isEditing ? (
-        <div className="field-edit-group">
-          <input
-            type={type}
-            value={editValue}
-            onChange={(e) => setEditValue(type === 'number' ? e.target.value : e.target.value)}
-            autoFocus
-            className="form-input"
-          />
-          <div className="field-actions-inline">
-            <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
-              <i className="bi bi-check-lg"></i>
-            </button>
-            <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
-              <i className="bi bi-x-lg"></i>
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            if (isEditMode) startEditing(field, value);
-          }}
-          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-        >
-          {isEditMode ? (
-            <p className="field-value" style={{ cursor: 'pointer', padding: '8px', background: '#f9fafb', borderRadius: '4px' }}>
+            <p className="field-value" style={{ cursor: isEditMode ? 'pointer' : 'default', padding: '8px', background: isEditMode ? '#f9fafb' : 'transparent', borderRadius: '4px' }}>
               {value === null || value === undefined ? '-' : value}
             </p>
-          ) : (
-            <p className="field-value">{value === null || value === undefined ? '-' : value}</p>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const EditableArrayField = ({ field, value, label }) => {
-    const isEditing = editingField === field && isEditMode;
+    const [isEditing, setIsEditing] = React.useState(false);
+    const [localValue, setLocalValue] = React.useState('');
+    const [newItem, setNewItem] = React.useState('');
 
-    // Local state for quick add input
-    const [newItem, setNewItem] = useState('');
+    React.useEffect(() => {
+      const valueAsText = Array.isArray(value) && value.length > 0 ? value.join('\n') : '';
+      setLocalValue(valueAsText);
+    }, [value]);
 
-    // Add item on Enter key
+    const handleSave = () => {
+      const arrayValue = localValue
+        .split('\n')
+        .map(item => item.trim())
+        .filter(item => item !== '');
+      updateField(field, arrayValue);
+      setIsEditing(false);
+      setNewItem('');
+    };
+
+    const handleCancel = () => {
+      const valueAsText = Array.isArray(value) && value.length > 0 ? value.join('\n') : '';
+      setLocalValue(valueAsText);
+      setIsEditing(false);
+      setNewItem('');
+    };
+
     const handleAddInputKeyDown = (e) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         addItem();
       }
-    }    
+    };
 
-    // Convert value array to plain text for display
-    const valueAsText = Array.isArray(value) && value.length > 0
-      ? value.join('\n')
-      : '';
-
-    // When entering edit mode, ensure the quick-add input is cleared
-    useEffect(() => {
-      if (isEditing) setNewItem('');
-    }, [isEditing]);
-
-    const items = editValue ? editValue.split('\n').map(s => s.trim()).filter(Boolean) : [];
+    const items = localValue ? localValue.split('\n').map(s => s.trim()).filter(Boolean) : [];
 
     const addItem = () => {
       const trimmed = (newItem || '').trim();
       if (!trimmed) return;
       const updated = items.concat([trimmed]);
-      setEditValue(updated.join('\n'));
+      setLocalValue(updated.join('\n'));
       setNewItem('');
     };
 
     const removeItem = (idx) => {
       const updated = items.filter((_, i) => i !== idx);
-      setEditValue(updated.join('\n'));
+      setLocalValue(updated.join('\n'));
     };
+
+    const valueAsText = Array.isArray(value) && value.length > 0 ? value.join('\n') : '';
 
     return (
       <div className="form-field full-width">
@@ -827,17 +780,17 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
 
             <div className="array-add-row" style={{ marginBottom: '8px' }}>
               <input
-                  type="text"
-                  className="array-add-input"
-                  value={newItem}
-                  onChange={(e) => setNewItem(e.target.value)}
-                  onKeyDown={handleAddInputKeyDown}
-                  placeholder={`Add ${label.replace(/s$/, '')}`}
-                  dir="ltr"
-                />
-                <button type="button" className="array-add-btn" onClick={addItem}>
-                  Add
-                </button>
+                type="text"
+                className="array-add-input"
+                value={newItem}
+                onChange={(e) => setNewItem(e.target.value)}
+                onKeyDown={handleAddInputKeyDown}
+                placeholder={`Add ${label.replace(/s$/, '')}`}
+                dir="ltr"
+              />
+              <button type="button" className="array-add-btn" onClick={addItem}>
+                Add
+              </button>
             </div>
 
             <div style={{
@@ -861,8 +814,8 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                 backgroundColor: '#f9fafb'
               }}>
                 <textarea
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
+                  value={localValue}
+                  onChange={(e) => setLocalValue(e.target.value)}
                   rows="4"
                   placeholder="Enter one value per line"
                   style={{
@@ -888,10 +841,10 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
               Enter one {label.toLowerCase().replace(/s$/, '')} per line
             </small>
             <div className="field-actions">
-              <button className="save-btn" onClick={() => saveField(field)}>
+              <button className="save-btn" onClick={handleSave}>
                 <i className="bi bi-check-lg"></i> Save
               </button>
-              <button className="cancel-btn" onClick={cancelEditing}>
+              <button className="cancel-btn" onClick={handleCancel}>
                 <i className="bi bi-x-lg"></i> Cancel
               </button>
             </div>
@@ -900,7 +853,7 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
           <div
             onClick={(e) => {
               e.stopPropagation();
-              if (isEditMode) startEditing(field, value);
+              if (isEditMode) setIsEditing(true);
             }}
             style={{ cursor: isEditMode ? 'pointer' : 'default' }}
           >
@@ -934,67 +887,82 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
       </div>
     );
   };
-  const EditableLinkField = ({ field, value, label }) => {
-    const isEditing = editingField === field && isEditMode;
 
-    return (
-      <div className="form-field">
-        <label>{label}</label>
-        {isEditMode && isEditing ? (
-          <div className="field-edit-group">
-            <input
-              type="text"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              autoFocus
-              className="form-input"
-            />
-            <div className="field-actions-inline">
-              <button className="save-btn-sm" onClick={() => saveField(field)} title="Save">
-                <i className="bi bi-check-lg"></i>
-              </button>
-              <button className="cancel-btn-sm" onClick={cancelEditing} title="Cancel">
-                <i className="bi bi-x-lg"></i>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              if (isEditMode) startEditing(field, value);
-            }}
-            style={{ cursor: isEditMode ? 'pointer' : 'default' }}
-          >
-            <div className="link-field">
-              <a
-                href={value && value.startsWith('http') ? value : (value ? `https://${value}` : '#')}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => {
-                  if (isEditMode) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    startEditing(field, value);
-                  }
-                }}
-              >
-                {value || '-'}
-              </a>
-              <button
-                className="copy-btn"
-                onClick={(e) => { e.stopPropagation(); copyToClipboard(value, label); }}
-                title="Copy to clipboard"
-              >
-                <i className="bi bi-clipboard"></i>
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    );
+  const EditableLinkField = ({ field, value, label }) => {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [localValue, setLocalValue] = React.useState(value);
+
+  React.useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
+
+  const handleSave = () => {
+    updateField(field, localValue);
+    setIsEditing(false);
   };
 
+  const handleCancel = () => {
+    setLocalValue(value);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="form-field">
+      <label>{label}</label>
+      {isEditMode && isEditing ? (
+        <div className="field-edit-group">
+          <input
+            type="text"
+            value={localValue || ''}
+            onChange={(e) => setLocalValue(e.target.value)}
+            autoFocus
+            className="form-input"
+          />
+          <div className="field-actions-inline">
+            <button className="save-btn-sm" onClick={handleSave} title="Save">
+              <i className="bi bi-check-lg"></i>
+            </button>
+            <button className="cancel-btn-sm" onClick={handleCancel} title="Cancel">
+              <i className="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isEditMode) setIsEditing(true);
+          }}
+          style={{ cursor: isEditMode ? 'pointer' : 'default' }}
+        >
+          <div className="link-field">
+            
+            <a href={value && value.startsWith('http') ? value : (value ? `https://${value}` : '#')}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                if (isEditMode) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }
+              }}
+            >
+              {value || '-'}
+            </a>
+            <button
+              className="copy-btn"
+              onClick={(e) => { e.stopPropagation(); copyToClipboard(value, label); }}
+              title="Copy to clipboard"
+            >
+              <i className="bi bi-clipboard"></i>
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -1003,12 +971,12 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
       </div>
     );
   }
+
   const StatusHistoryTimeline = ({ history, onDelete }) => {
     if (!history || history.length === 0) {
       return <p style={{ color: '#6b7280', fontStyle: 'italic' }}>No status changes yet</p>;
     }
 
-    // Sort history so newest entries appear first
     const sorted = [...history].slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     return (
@@ -1092,7 +1060,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
 
       <div className="stats-container">
         <div className="stat-card stat-total">
-
           <div className="stat-info">
             <p className="stat-label">Total Requests</p>
             <h3 className="stat-value">{stats.total}</h3>
@@ -1100,7 +1067,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
         </div>
 
         <div className="stat-card stat-pending">
-
           <div className="stat-info">
             <p className="stat-label">Pending</p>
             <h3 className="stat-value">{stats.pending}</h3>
@@ -1108,7 +1074,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
         </div>
 
         <div className="stat-card stat-progress">
-
           <div className="stat-info">
             <p className="stat-label">In Progress</p>
             <h3 className="stat-value">{stats.inProgress}</h3>
@@ -1116,7 +1081,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
         </div>
 
         <div className="stat-card stat-completed">
-
           <div className="stat-info">
             <p className="stat-label">Completed</p>
             <h3 className="stat-value">{stats.completed}</h3>
@@ -1135,39 +1099,39 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
           />
         </div>
 
-<div className="filter-group">
-  <select
-    className="status-filter-dropdown"
-    value={statusFilter}
-    onChange={(e) => setStatusFilter(e.target.value)}
-  >
-    <option value="all">All Statuses</option>
-    <option value="pending">Pending</option>
-    <option value="in-progress">In Progress</option>
-    <option value="onboarded">Onboarded</option>
-    <option value="testing">Testing</option>
-    <option value="testing-failed">Testing Failed</option>
-    <option value="paused">Paused</option>
-    <option value="offboarded">Offboarded</option>
-    <option value="cancelled">Cancelled</option>
-  </select>
+        <div className="filter-group">
+          <select
+            className="status-filter-dropdown"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="onboarded">Onboarded</option>
+            <option value="testing">Testing</option>
+            <option value="testing-failed">Testing Failed</option>
+            <option value="paused">Paused</option>
+            <option value="offboarded">Offboarded</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
 
-  <select
-    className="campaign-filter"
-    value={campaignFilter}
-    onChange={(e) => setCampaignFilter(e.target.value)}
-  >
-    <option value="all">All Campaigns</option>
-    <option value="Medicare">Medicare</option>
-    <option value="Final Expense">Final Expense</option>
-    <option value="MVA">MVA</option>
-    <option value="Auto Insurance">Auto Insurance</option>
-    <option value="Auto Warranty">Auto Warranty</option>
-    <option value="ACA">ACA</option>
-    <option value="Home">Home</option>
-    <option value="Medalert">Medalert</option>
-  </select>
-</div>
+          <select
+            className="campaign-filter"
+            value={campaignFilter}
+            onChange={(e) => setCampaignFilter(e.target.value)}
+          >
+            <option value="all">All Campaigns</option>
+            <option value="Medicare">Medicare</option>
+            <option value="Final Expense">Final Expense</option>
+            <option value="MVA">MVA</option>
+            <option value="Auto Insurance">Auto Insurance</option>
+            <option value="Auto Warranty">Auto Warranty</option>
+            <option value="ACA">ACA</option>
+            <option value="Home">Home</option>
+            <option value="Medalert">Medalert</option>
+          </select>
+        </div>
 
         <button className="refresh-btn" onClick={fetchIntegrations}>
           <i className="bi bi-arrow-clockwise"></i>
@@ -1199,7 +1163,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                 <th>Campaign + Model</th>
                 <th>Remote Agents</th>
                 <th>Status</th>
-
               </tr>
             </thead>
             <tbody>
@@ -1211,7 +1174,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                 >
                   <td>
                     <strong>{integration.companyName}</strong>
-
                   </td>
                   <td>
                     {integration.extensions && integration.extensions.length > 0 ? (
@@ -1255,7 +1217,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                       {getStatusLabel(integration.status)}
                     </span>
                   </td>
-
                 </tr>
               ))}
             </tbody>
@@ -1274,15 +1235,13 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
             </div>
 
             <div className="modal-body simple-form">
-
-
               <div className="form-section">
                 <h3>Company Name</h3>
                 <div className="form-row">
                   <EditableField
                     field="companyName"
                     value={selectedIntegration.companyName}
-
+                    label="Company Name"
                   />
                 </div>
               </div>
@@ -1292,11 +1251,11 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                   <h3>Campaign Configuration</h3>
                   <div className="form-row">
                     <EditableField
-  field="clientsdata_id"
-  value={selectedIntegration.clientsdata_id}
-  label="Client ID"
-  type="number"
-/>
+                      field="clientsdata_id"
+                      value={selectedIntegration.clientsdata_id}
+                      label="Client ID"
+                      type="number"
+                    />
                     <EditableField
                       field="campaign"
                       value={selectedIntegration.campaign}
@@ -1312,18 +1271,13 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                       options={campaignConfig[selectedIntegration.campaign] || []}
                     />
                     <EditableField
-  field="numberOfBots"
-  value={selectedIntegration.numberOfBots}
-  label="Number of Bots"
-  type="number"
-/>
+                      field="numberOfBots"
+                      value={selectedIntegration.numberOfBots}
+                      label="Number of Bots"
+                      type="number"
+                    />
                   </div>
                   <div className="form-row">
-                    <EditableField
-                      field="dialplan"
-                      value={selectedIntegration.dialplan}
-                      label="Dialplan"
-                    />
                     <EditableField
                       field="transferSettings"
                       value={selectedIntegration.transferSettings}
@@ -1333,6 +1287,14 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                           ? basicTransferOptions
                           : advancedTransferOptions
                       }
+                    />
+                  </div>
+                  <div className="form-row full">
+                    <EditableField
+                      field="dialplan"
+                      value={selectedIntegration.dialplan}
+                      label="Dialplan"
+                      isTextarea={true}
                     />
                   </div>
                   <div className="form-row full admin-extensions-row" dir="ltr" style={{ direction: 'ltr' }}>
@@ -1490,7 +1452,6 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                 </div>
               )}
 
-
               <div className="form-section">
                 <h3>Status & Requirements</h3>
 
@@ -1552,66 +1513,66 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
                     className="status-dropdown"
                   >
                     <option value="pending">Pending</option>
-  <option value="in-progress">In Progress</option>
-  <option value="onboarded">Onboarded</option>
-  <option value="testing">Testing</option>
-  <option value="testing-failed">Testing Failed</option>
-  <option value="paused">Paused</option>
-  <option value="offboarded">Offboarded</option>
-  <option value="cancelled">Cancelled</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="onboarded">Onboarded</option>
+                    <option value="testing">Testing</option>
+                    <option value="testing-failed">Testing Failed</option>
+                    <option value="paused">Paused</option>
+                    <option value="offboarded">Offboarded</option>
+                    <option value="cancelled">Cancelled</option>
                   </select>
                   {!allCompletionChecksMet() && selectedIntegration.status !== 'onboarded' && (
                     <small className="warning-text">
-                      ⚠️ All requirements must be checked before marking as onboarded
+                      All requirements must be checked before marking as onboarded
                     </small>
                   )}
                 </div>
 
                 <div className="status-history-section" style={{ marginTop: '24px' }}>
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
-    marginBottom: '16px' 
-  }}>
-    <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
-      <i className="bi bi-clock-history"></i> Status History
-    </h4>
-    <button
-      className="toggle-history-btn"
-      onClick={() => setShowStatusHistory(!showStatusHistory)}
-      style={{
-        padding: '6px 12px',
-        fontSize: '14px',
-        color: '#4f46e5',
-        background: 'transparent',
-        border: '1px solid #4f46e5',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '6px',
-        transition: 'all 0.2s'
-      }}
-      onMouseOver={(e) => {
-        e.currentTarget.style.background = '#eef2ff';
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.background = 'transparent';
-      }}
-    >
-      <i className={`bi bi-chevron-${showStatusHistory ? 'up' : 'down'}`}></i>
-      {showStatusHistory ? 'Hide' : 'Show'} History
-    </button>
-  </div>
-  
-  {showStatusHistory && (
-    <StatusHistoryTimeline 
-      history={selectedIntegration.statusHistory || []} 
-      onDelete={deleteStatusHistoryEntry}
-    />
-  )}
-</div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '16px'
+                  }}>
+                    <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
+                      <i className="bi bi-clock-history"></i> Status History
+                    </h4>
+                    <button
+                      className="toggle-history-btn"
+                      onClick={() => setShowStatusHistory(!showStatusHistory)}
+                      style={{
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        color: '#4f46e5',
+                        background: 'transparent',
+                        border: '1px solid #4f46e5',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = '#eef2ff';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      <i className={`bi bi-chevron-${showStatusHistory ? 'up' : 'down'}`}></i>
+                      {showStatusHistory ? 'Hide' : 'Show'} History
+                    </button>
+                  </div>
+
+                  {showStatusHistory && (
+                    <StatusHistoryTimeline
+                      history={selectedIntegration.statusHistory || []}
+                      onDelete={deleteStatusHistoryEntry}
+                    />
+                  )}
+                </div>
               </div>
 
               <div style={{
@@ -1741,10 +1702,7 @@ const EditableField = ({ field, value, label, type = 'text', isTextarea = false,
         </div>
       )}
     </div>
-
   );
-
 };
-
 
 export default AdminDashboard;
