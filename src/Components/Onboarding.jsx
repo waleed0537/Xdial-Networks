@@ -281,10 +281,24 @@ const Onboarding = () => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
                 <div key={item._id} className="list-row" onClick={() => openModal(item)} style={{alignItems: 'center', minHeight: '50px'}}>
-                  <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                
-                    <span style={{fontWeight: 600}}>{item.companyName || '—'}</span>
-                  </div>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '8px', position: 'relative'}}>
+  <span style={{fontWeight: 600}}>{item.companyName || '—'}</span>
+  <span style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '2px 6px',
+    fontSize: '0.65rem',
+    fontWeight: '600',
+    borderRadius: '3px',
+    backgroundColor: item.status === 'testing' ? '#fef3c7' : '#dcfce7',
+    color: item.status === 'testing' ? '#92400e' : '#16a34a',
+    border: item.status === 'testing' ? '1px solid #fde68a' : '1px solid #bbf7d0',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
+  }}>
+    {item.status === 'testing' ? 'Test' : 'Live'}
+  </span>
+</div>
 
                   <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
               
