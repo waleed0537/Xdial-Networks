@@ -263,44 +263,91 @@ app.get('/api/integration/all', async (req, res) => {
         .map(item => String(item.clientsdata_id))
     )];
 
-    // check live status from admindashboard for all clients at once | no need to get them separately for each client
+    console.log('=== LIVE STATUS CHECK DEBUG ===');
+    console.log('Client IDs to check for live status:', clientIds);
+
+    // check live status from admindashboard for all clients at once
     let liveClientIds = new Set();
     
     if (clientIds.length > 0) {
       try {
-        const [results] = await adminSequelize.query(`
-          SELECT DISTINCT client_id
+        const results = await adminSequelize.query(`
+          SELECT DISTINCT client_id, MAX(timestamp) as last_call
           FROM calls 
           WHERE client_id = ANY(:clientIds::text[])
             AND timestamp >= NOW() - INTERVAL '1 minute'
+          GROUP BY client_id
         `, {
           replacements: { clientIds },
           type: adminSequelize.QueryTypes.SELECT
         });
         
-        liveClientIds = new Set(results.map(r => r.client_id));
+        console.log('Live clients query results:', results);
+        console.log('Current server time:', new Date().toISOString());
+        
+        liveClientIds = new Set(results.map(r => String(r.client_id)));
+        console.log('Live client IDs found:', Array.from(liveClientIds));
+
+        // Auto-enable clientAccessEnabled for live clients
+        const idsToEnable = Array.from(liveClientIds).map(id => parseInt(id));
+        console.log('IDs to enable (parsed to int):', idsToEnable);
+        
+        if (idsToEnable.length > 0) {
+          const updateResult = await Integration.update(
+            { clientAccessEnabled: true },
+            { 
+              where: { 
+                clientsdata_id: idsToEnable,
+                status: ['onboarded', 'testing']
+              } 
+            }
+          );
+          console.log('Enabled access for clients - rows affected:', updateResult[0]);
+        }
+
+        // Auto-disable clients with no recent calls
+        const allClientIds = clientIds.map(id => parseInt(id));
+        const inactiveClientIds = allClientIds.filter(id => !liveClientIds.has(String(id)));
+        console.log('All client IDs (int):', allClientIds);
+        console.log('Inactive client IDs:', inactiveClientIds);
+
+        if (inactiveClientIds.length > 0) {
+          const disableResult = await Integration.update(
+            { clientAccessEnabled: false },
+            { 
+              where: { 
+                clientsdata_id: inactiveClientIds,
+                status: ['onboarded', 'testing']
+              } 
+            }
+          );
+          console.log('Disabled access for clients - rows affected:', disableResult[0]);
+        }
+
       } catch (error) {
         console.error('Error checking live status from admindashboard:', error);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
       }
+    } else {
+      console.log('No client IDs found to check for live status');
     }
+    
+    console.log('=== END LIVE STATUS CHECK ===\n');
 
-    // add liveStatus to each item
-    const rowsWithStatus = rows.map(item => {
-      const itemData = item.toJSON();
-      
-      // Determine if client is live
-      const isLive = item.clientsdata_id && liveClientIds.has(String(item.clientsdata_id));
-      
-      itemData.liveStatus = {
-        isLive: isLive
-      };
-      
-      return itemData;
+    // Reload rows to get updated clientAccessEnabled values
+    const { rows: updatedRows } = await Integration.findAndCountAll({
+      where,
+      order: [['submittedAt', 'DESC']],
+      limit: parseInt(limit),
+      offset: offset
     });
+
+    console.log('Sending response with', updatedRows.length, 'campaigns');
 
     res.json({
       success: true,
-      data: rowsWithStatus,
+      data: updatedRows,
       pagination: {
         total: count,
         page: parseInt(page),
