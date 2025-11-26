@@ -229,20 +229,22 @@ const AdminDashboard = () => {
   };
 
   const startEditing = (field, currentValue) => {
-    setEditingField(field);
-    const isArrayField = ['extensions', 'serverIPs'].includes(field);
+  setEditingField(field);
+  const isArrayField = ['extensions', 'serverIPs'].includes(field);
 
-    if (isArrayField) {
-      // Convert array to newline-separated string
-      const textValue = Array.isArray(currentValue) && currentValue.length > 0
-        ? currentValue.join('\n')
-        : '';
-      setEditValue(textValue);
-    } else {
-      const stringValue = Array.isArray(currentValue) ? '' : (currentValue || '');
-      setEditValue(stringValue);
-    }
-  };
+  if (isArrayField) {
+    const textValue = Array.isArray(currentValue) && currentValue.length > 0
+      ? currentValue.join('\n')
+      : '';
+    setEditValue(textValue);
+  } else {
+    // Convert to string, handling null/undefined/numbers properly
+    const stringValue = currentValue === null || currentValue === undefined 
+      ? '' 
+      : String(currentValue);
+    setEditValue(stringValue);
+  }
+};
 
   const cancelEditing = () => {
     setEditingField(null);
@@ -1286,10 +1288,11 @@ const getStatusLabel = (status) => {
                   <h3>Campaign Configuration</h3>
                   <div className="form-row">
                     <EditableField
-                      field="clientsdata_id"
-                      value={selectedIntegration.clientsdata_id}
-                      label="Client ID"
-                    />
+  field="clientsdata_id"
+  value={selectedIntegration.clientsdata_id}
+  label="Client ID"
+  type="number"
+/>
                     <EditableField
                       field="campaign"
                       value={selectedIntegration.campaign}
