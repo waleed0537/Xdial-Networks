@@ -112,11 +112,6 @@ const Onboarding = () => {
     } else {
       fetchIntegrations();
       
-      // Auto-refresh every 30 seconds to update live status
-      const refreshInterval = setInterval(() => {
-        fetchIntegrations();
-      }, 30000);
-
       return () => clearInterval(refreshInterval);
     }
   }, [navigate]);
