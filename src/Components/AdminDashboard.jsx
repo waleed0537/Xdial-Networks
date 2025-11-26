@@ -179,62 +179,73 @@ const AdminDashboard = () => {
   };
 
   const updateField = async (field, newValue) => {
-    if (!selectedIntegration) return;
+  if (!selectedIntegration) return;
 
-    let valueToSave = newValue;
+  let valueToSave = newValue;
 
-    if (field === 'numberOfBots' || field === 'clientsdata_id' || field === 'client_id') {
-      if (newValue === '' || newValue === null || newValue === undefined) {
-        valueToSave = null;
-      } else {
-        const numValue = Number(newValue);
-        if (isNaN(numValue)) {
-          setError(`Invalid number for ${field}`);
-          setTimeout(() => setError(''), 3000);
-          return;
-        }
-        valueToSave = numValue;
+  if (field === 'numberOfBots' || field === 'clientsdata_id' || field === 'client_id') {
+    if (newValue === '' || newValue === null || newValue === undefined) {
+      valueToSave = null;
+    } else {
+      const numValue = Number(newValue);
+      if (isNaN(numValue)) {
+        setError(`Invalid number for ${field}`);
+        setTimeout(() => setError(''), 3000);
+        return;
       }
-    } else if (field === 'extensions' || field === 'serverIPs') {
-      valueToSave = Array.isArray(newValue) ? newValue : [];
-    } else if (field === 'startDate' || field === 'endDate') {
-      valueToSave = newValue ? new Date(newValue).toISOString() : null;
+      // Add validation for reasonable bot counts
+      if (field === 'numberOfBots' && (numValue < 0 || numValue > 10000)) {
+        setError('Number of bots must be between 0 and 10,000');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+      valueToSave = numValue;
+    }
+  } else if (field === 'extensions' || field === 'serverIPs') {
+    valueToSave = Array.isArray(newValue) ? newValue : [];
+  } else if (field === 'startDate' || field === 'endDate') {
+    valueToSave = newValue ? new Date(newValue).toISOString() : null;
+  }
+
+  console.log(`Updating ${field} from`, selectedIntegration[field], 'to', valueToSave);
+
+  try {
+    const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ [field]: valueToSave })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `Server returned ${response.status}`);
     }
 
-    console.log(`Updating ${field} from`, selectedIntegration[field], 'to', valueToSave);
+    const data = await response.json();
 
-    try {
-      const response = await fetch(`${API_URL}/api/integration/${selectedIntegration.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ [field]: valueToSave })
-      });
+    if (data.success) {
+      console.log(`Successfully updated ${field} to`, data.data[field]);
+      
+      const updatedIntegrations = integrations.map(item =>
+        item.id === selectedIntegration.id ? data.data : item
+      );
+      setIntegrations(updatedIntegrations);
+      setFilteredIntegrations(updatedIntegrations);
+      setSelectedIntegration(data.data);
 
-      const data = await response.json();
-
-      if (data.success) {
-        console.log(`Successfully updated ${field} to`, data.data[field]);
-        
-        const updatedIntegrations = integrations.map(item =>
-          item.id === selectedIntegration.id ? data.data : item
-        );
-        setIntegrations(updatedIntegrations);
-        setFilteredIntegrations(updatedIntegrations);
-        setSelectedIntegration(data.data);
-
-        setCopyFeedback('Field updated successfully');
-        setTimeout(() => setCopyFeedback(''), 2000);
-      } else {
-        throw new Error(data.message || 'Failed to save changes');
-      }
-    } catch (err) {
-      console.error('Error updating field:', err);
-      setError(err.message || 'Failed to update field');
-      setTimeout(() => setError(''), 3000);
+      setCopyFeedback('Field updated successfully');
+      setTimeout(() => setCopyFeedback(''), 2000);
+    } else {
+      throw new Error(data.message || 'Failed to save changes');
     }
-  };
+  } catch (err) {
+    console.error('Error updating field:', err);
+    setError(err.message || 'Failed to update field');
+    setTimeout(() => setError(''), 5000);
+  }
+};
 
   const updateCompletionCheck = async (field, value) => {
     if (!selectedIntegration) return;
@@ -1290,13 +1301,12 @@ const AdminDashboard = () => {
                     />
                   </div>
                   <div className="form-row full">
-                    <EditableField
-                      field="dialplan"
-                      value={selectedIntegration.dialplan}
-                      label="Dialplan"
-                      isTextarea={true}
-                    />
-                  </div>
+  <EditableField
+    field="dialplan"
+    value={selectedIntegration.dialplan}
+    label="Dialplan"
+  />
+</div>
                   <div className="form-row full admin-extensions-row" dir="ltr" style={{ direction: 'ltr' }}>
                     <EditableArrayField
                       field="extensions"

@@ -465,6 +465,17 @@ app.patch('/api/integration/:id', async (req, res) => {
       });
     }
 
+    // Add validation for numberOfBots
+    if (req.body.numberOfBots !== undefined) {
+      const numBots = Number(req.body.numberOfBots);
+      if (isNaN(numBots) || numBots < 0 || numBots > 10000) {
+        return res.status(400).json({
+          success: false,
+          message: 'Number of bots must be between 0 and 10,000'
+        });
+      }
+    }
+
     const allowedFields = [
       'campaign', 'testing', 'model', 'numberOfBots', 'transferSettings',
       'client_id', 'clientsdata_id', 'extensions', 'serverIPs', 'dialplan',
