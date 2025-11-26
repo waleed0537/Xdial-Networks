@@ -284,14 +284,14 @@ app.get('/api/integration/all', async (req, res) => {
         } else {
           // Refresh cache
           const results = await adminSequelize.query(`
-          SELECT DISTINCT client_id::text
-          FROM calls 
-          WHERE client_id = ANY(:clientIds::text[])
-            AND timestamp >= NOW() - INTERVAL '1 minute'
-        `, {
-          replacements: { clientIds: uniqueClientIds },
-          type: adminSequelize.QueryTypes.SELECT
-        });
+            SELECT DISTINCT client_id::text
+            FROM calls 
+            WHERE client_id = ANY(ARRAY[:clientIds])
+              AND timestamp >= NOW() - INTERVAL '1 minute'
+          `, {
+            replacements: { clientIds: uniqueClientIds },
+            type: adminSequelize.QueryTypes.SELECT
+          });
         
         liveClientIds = new Set(results.map(r => String(r.client_id)));
         
@@ -311,11 +311,11 @@ app.get('/api/integration/all', async (req, res) => {
             UPDATE integrations 
             SET 
               "clientAccessEnabled" = CASE 
-                WHEN "clientsdata_id" = ANY(:liveIds::integer[]) THEN true
+                WHEN "clientsdata_id" = ANY(ARRAY[:liveIds]::integer[]) THEN true
                 ELSE false
               END,
               "updatedAt" = NOW()
-            WHERE "clientsdata_id" = ANY(:allIds::integer[])
+            WHERE "clientsdata_id" = ANY(ARRAY[:allIds]::integer[])
               AND status IN ('onboarded', 'testing')
           `, {
             replacements: { 
