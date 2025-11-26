@@ -142,29 +142,29 @@ const Onboarding = () => {
   };
 
   const handleToggleAccess = async (id, currentValue) => {
-    const newValue = !currentValue;
-    try {
-      const res = await fetch(`${API_URL}/api/integration/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientAccessEnabled: newValue })
-      });
-      const data = await res.json();
-      
-      if (data.success) {
-        // Update state with the server response to ensure consistency
-        setItems(prev => prev.map(it => it._id === id ? data.data : it));
-      } else {
-        console.error('Failed to update access:', data.message || data);
-        // Fetch fresh data to ensure UI matches server state
-        fetchIntegrations();
-      }
-    } catch (err) {
-      console.error('Error updating access:', err);
+  const newValue = !currentValue;
+  try {
+    const res = await fetch(`${API_URL}/api/integration/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clientAccessEnabled: newValue })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      // Update state with the server response to ensure consistency
+      setItems(prev => prev.map(it => it.id === id ? data.data : it));
+    } else {
+      console.error('Failed to update access:', data.message || data);
       // Fetch fresh data to ensure UI matches server state
       fetchIntegrations();
     }
-  };
+  } catch (err) {
+    console.error('Error updating access:', err);
+    // Fetch fresh data to ensure UI matches server state
+    fetchIntegrations();
+  }
+};
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -280,24 +280,16 @@ const Onboarding = () => {
             {filtered.map(item => {
               const expirationStatus = getExpirationStatus(item.endDate);
               return (
-                <div key={item._id} className="list-row" onClick={() => openModal(item)} style={{alignItems: 'center', minHeight: '50px'}}>
+    <div key={item.id} className="list-row" onClick={() => openModal(item)} style={{alignItems: 'center', minHeight: '50px'}}>
                   <div style={{display: 'flex', alignItems: 'center', gap: '8px', position: 'relative'}}>
   <span style={{fontWeight: 600}}>{item.companyName || '—'}</span>
-  <span style={{
-    display: 'inline-flex',
-    alignItems: 'center',
-    padding: '2px 6px',
-    fontSize: '0.65rem',
-    fontWeight: '600',
-    borderRadius: '3px',
-    backgroundColor: item.status === 'testing' ? '#fef3c7' : '#dcfce7',
-    color: item.status === 'testing' ? '#92400e' : '#16a34a',
-    border: item.status === 'testing' ? '1px solid #fde68a' : '1px solid #bbf7d0',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px'
-  }}>
-    {item.status === 'testing' ? 'Test' : 'Live'}
-  </span>
+  {item.status === 'testing' && (
+    <i className="bi bi-gear-fill" style={{
+      fontSize: '0.75rem',
+      color: '#f59e0b',
+      opacity: 0.8
+    }} title="Testing Phase"></i>
+  )}
 </div>
 
                   <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
@@ -321,11 +313,11 @@ const Onboarding = () => {
                   </div>
                   
                   <div style={{display:'flex', alignItems:'center', gap: '8px'}}>
-                    <label className="switch" onClick={(e) => e.stopPropagation()}>
-                      <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item._id, !!item.clientAccessEnabled)} />
-                      <span className="slider round"></span>
-                    </label>
-                  </div>
+        <label className="switch" onClick={(e) => e.stopPropagation()}>
+          <input type="checkbox" checked={!!item.clientAccessEnabled} onChange={() => handleToggleAccess(item.id, !!item.clientAccessEnabled)} />
+          <span className="slider round"></span>
+        </label>
+      </div>
                   
                   <div style={{display: 'flex', alignItems: 'center'}}>
                     <span style={{
